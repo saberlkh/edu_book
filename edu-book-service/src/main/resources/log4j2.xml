@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG" name="log4j2-cfg" monitorInterval="0" packages="com.seewo.honeycomb.log">
+
+    <Properties>
+        <Property name="log_path">./logs/edu-book-service</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%t][%level][com.seewo.live:1][%traceId][%userId] %m%n"/>
+        </Console>
+
+        <RollingFile name="DailyRollingFile" fileName="${log_path}/edu-book-service.log"
+                     filePattern="${log_path}/edu-book-service-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%t][%level][com.edu.book:-1][%traceId][%userId] %m%n"/>
+            <SizeBasedTriggeringPolicy size="100MB"/>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingFile>
+
+        <Async name="async">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="DailyRollingFile"/>
+        </Async>
+    </Appenders>
+
+    <loggers>
+        <root level="INFO"  includeLocation = "true">
+            <AppenderRef ref="async"/>
+        </root>
+    </loggers>
+
+</Configuration>

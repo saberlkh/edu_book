@@ -1,13 +1,18 @@
-package com.edu.book;
+package com.edu.book
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
+/**
+ * @Auther: liukaihua
+ * @Date: 2024/2/29 23:30
+ * @Description:
+ */
 @SpringBootApplication
-public class EduBoolServiceApplication {
+class EduBoolServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(EduBoolServiceApplication.class, args);
-    }
 
+}
+fun main(args: Array<String>) {
+    runApplication<EduBoolServiceApplication>(*args)
 }
