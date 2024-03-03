@@ -16,7 +16,6 @@ spring:
       connection-timeout: 30000
   redis:
     host: sr-test-redis-master-1.gz.cvte.cn
-    password:
     port: 6379
     database: 0
     time: 60000

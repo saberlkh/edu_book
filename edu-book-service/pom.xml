@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.edu.book</groupId>
             <artifactId>edu-book-service-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SHATSHOP</version>
         </dependency>
 
         <dependency>
