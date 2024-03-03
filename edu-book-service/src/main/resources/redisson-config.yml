@@ -1,32 +1,3 @@
-server:
-  port: 8082
-
-#数据库配置
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://sr-test-mysql-master-1.gz.cvte.cn:3306/seewo_live_server?characterEncoding=UTF-8&rewriteBatchedStatements=true&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai
-    username: seewo
-    password: seewo@cvte
-    hikari:
-      minimum-idle: 20
-      maximum-pool-size: 20
-      idle-timeout: 100000
-      max-lifetime: 270000
-      connection-timeout: 30000
-  redis:
-    host: sr-test-redis-master-1.gz.cvte.cn
-    password:
-    port: 6379
-    database: 0
-    time: 60000
-    jedis:
-      pool:
-        max-active: 8
-        max-wait: -1ms
-        max-idle: 8
-
-
 #Redisson配置
 singleServerConfig:
   address: "redis://redis-seewo-test-public-6624-master.paas.cvtecs.com:6624"
