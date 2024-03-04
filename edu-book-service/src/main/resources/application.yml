@@ -15,7 +15,8 @@ spring:
       max-lifetime: 270000
       connection-timeout: 30000
   redis:
-    host: sr-test-redis-master-1.gz.cvte.cn
+    host: 127.0.0.1
+    password: 123456
     port: 6379
     database: 0
     time: 60000
@@ -28,8 +29,8 @@ spring:
 
 #Redisson配置
 singleServerConfig:
-  address: "redis://redis-seewo-test-public-6624-master.paas.cvtecs.com:6624"
-  password: "mOLPkVDihC"
+  address: "redis://127.0.0.1:6379"
+  password: "123456"
   clientName: null
   database: 12 #选择使用哪个数据库0~15
   idleConnectionTimeout: 10000
