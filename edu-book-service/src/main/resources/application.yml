@@ -54,3 +54,5 @@ nettyThreads: 0
 codec:
   class: "org.redisson.codec.MarshallingCodec"
 transportMode: "NIO"
+logging:
+  config: edu-book-service/src/main/resources/log4j2.xml

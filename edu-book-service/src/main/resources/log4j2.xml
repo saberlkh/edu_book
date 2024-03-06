@@ -24,6 +24,7 @@
     </Appenders>
 
     <loggers>
+        <logger name="com.edu.book" level="DEBUG"/>
         <root level="INFO"  includeLocation = "true">
             <AppenderRef ref="async"/>
         </root>
