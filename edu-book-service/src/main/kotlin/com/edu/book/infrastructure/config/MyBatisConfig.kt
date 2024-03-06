@@ -19,7 +19,9 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.sql.Connection
 import java.sql.SQLException
+import javax.annotation.Resource
 import javax.sql.DataSource
+import org.redisson.api.RedissonClient
 
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration::class)
@@ -33,6 +35,9 @@ class MyBatisConfig {
     @Autowired
     private lateinit var sqlInterceptorConfig: SqlInterceptorConfig
 
+    @Resource
+    private lateinit var redissonClient: RedissonClient
+
     companion object {
         private val log = LoggerFactory.getLogger(MyBatisConfig::class.java)
     }
@@ -44,6 +49,7 @@ class MyBatisConfig {
         try {
             connection = dataSource.connection
             log.info("----init batis-----")
+            redissonClient.getBucket<String>("initKey").set("123123123")
             val bean = MybatisSqlSessionFactoryBean()
             val resolver = PathMatchingResourcePatternResolver()
             bean.setDataSource(dataSource)
