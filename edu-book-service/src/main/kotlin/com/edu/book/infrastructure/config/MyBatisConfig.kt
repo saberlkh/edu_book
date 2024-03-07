@@ -49,6 +49,7 @@ class MyBatisConfig {
         try {
             connection = dataSource.connection
             log.info("----init batis-----")
+            redissonClient.getBucket<String>("initkey12312").set("23123123123")
             val bean = MybatisSqlSessionFactoryBean()
             val resolver = PathMatchingResourcePatternResolver()
             bean.setDataSource(dataSource)
