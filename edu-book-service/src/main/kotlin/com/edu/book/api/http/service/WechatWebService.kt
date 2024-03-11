@@ -43,7 +43,7 @@ class WechatWebService {
             "js_code" to code,
             "grant_type" to WechatConstant.LOGIN_AUTHORIZATION_CODE
         )
-        val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object : TypeReference<WechatApiLoginRespVo>() {})
+        val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object: TypeReference<WechatApiLoginRespVo>() {})
         logger.info("调用微信登录http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
         if (httpResult == null || ObjectUtils.notEqual(httpResult.errcode, NumberUtils.INTEGER_ZERO)) throw WebAppException(ErrorCodeConfig.WECHAT_LOGIN_FAIL)
         return WechatLoginRespVo().apply {
