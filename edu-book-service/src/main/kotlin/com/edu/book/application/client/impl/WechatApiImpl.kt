@@ -56,6 +56,7 @@ class WechatApiImpl: WechatApi {
             WechatConstant.PARAM_GRANT_TYPE to WechatConstant.LOGIN_AUTHORIZATION_CODE
         )
         val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object: TypeReference<WechatApiLoginRespVo>() {})
+        logger.info("调用微信登录http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
         return httpResult
     }
 

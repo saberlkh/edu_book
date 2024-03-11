@@ -39,7 +39,6 @@ class WechatWebService {
      */
     fun wechatLogin(code: String): WechatLoginRespVo {
         val httpResult = wechatApi.wechatLogin(code)
-        logger.info("调用微信登录http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
         if (httpResult == null || ObjectUtils.notEqual(httpResult.errcode, NumberUtils.INTEGER_ZERO)) throw WebAppException(ErrorCodeConfig.WECHAT_LOGIN_FAIL)
         return WechatLoginRespVo().apply {
             this.sessionKey = httpResult.session_key ?: ""
