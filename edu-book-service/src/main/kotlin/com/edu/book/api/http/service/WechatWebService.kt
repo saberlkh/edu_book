@@ -29,9 +29,6 @@ class WechatWebService {
     private lateinit var systemConfig: SystemConfig
 
     @Autowired
-    private lateinit var okHttpClientManager: OkHttpClientManager
-
-    @Autowired
     private lateinit var wechatAppService: WechatAppService
 
     @Autowired
