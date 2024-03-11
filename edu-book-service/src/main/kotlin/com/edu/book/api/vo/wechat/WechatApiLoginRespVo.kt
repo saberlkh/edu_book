@@ -1,6 +1,7 @@
 package com.edu.book.api.vo.wechat
 
 import java.io.Serializable
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -32,6 +33,6 @@ class WechatApiLoginRespVo: Serializable {
     /**
      * errcode
      */
-    var errcode: Int? = null
+    var errcode: Int? = NumberUtils.INTEGER_ZERO
 
 }
