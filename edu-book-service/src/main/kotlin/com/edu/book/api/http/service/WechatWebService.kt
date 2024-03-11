@@ -5,6 +5,8 @@ import com.alibaba.fastjson.TypeReference
 import com.edu.book.api.vo.wechat.WechatApiLoginRespVo
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
 import com.edu.book.application.client.OkHttpClientManager
+import com.edu.book.application.client.WechatApi
+import com.edu.book.application.service.WechatAppService
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.WechatConstant
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
@@ -32,18 +34,17 @@ class WechatWebService {
     @Autowired
     private lateinit var okHttpClientManager: OkHttpClientManager
 
+    @Autowired
+    private lateinit var wechatAppService: WechatAppService
+
+    @Autowired
+    private lateinit var wechatApi: WechatApi
+
     /**
      * 微信登录
      */
     fun wechatLogin(code: String): WechatLoginRespVo {
-        //通过http接口调用微信登录
-        val urlParamMap = mapOf(
-            "appid" to systemConfig.wechatAppId,
-            "secret" to systemConfig.wechatAppSecret,
-            "js_code" to code,
-            "grant_type" to WechatConstant.LOGIN_AUTHORIZATION_CODE
-        )
-        val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object: TypeReference<WechatApiLoginRespVo>() {})
+        val httpResult = wechatApi.wechatLogin(code)
         logger.info("调用微信登录http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
         if (httpResult == null || ObjectUtils.notEqual(httpResult.errcode, NumberUtils.INTEGER_ZERO)) throw WebAppException(ErrorCodeConfig.WECHAT_LOGIN_FAIL)
         return WechatLoginRespVo().apply {
@@ -51,6 +52,22 @@ class WechatWebService {
             this.openId = httpResult.openid ?: ""
             this.unionId = httpResult.unionid ?: ""
         }
+    }
+
+    /**
+     * 获取微信token
+     * 先获取缓存，如果缓存获取不到，则进行http获取
+     */
+    fun getWechatAccessToken(): String {
+        val cacheToken = wechatAppService.getWechatAccessToken(systemConfig.wechatAppId)
+        val finalAccessToken = if (cacheToken.isNullOrBlank()) {
+            val accessToken = wechatApi.getAccessToken(systemConfig.wechatAppId, systemConfig.wechatAppSecret)
+            wechatAppService.setWechatAccessTokenCache(systemConfig.wechatAppId, accessToken)
+            accessToken
+        } else {
+            cacheToken
+        }
+        return finalAccessToken
     }
 
 }

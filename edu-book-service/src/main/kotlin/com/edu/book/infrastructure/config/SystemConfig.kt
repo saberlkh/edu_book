@@ -36,4 +36,10 @@ class SystemConfig {
     @Value("\${wechat.api.login.url}")
     var wechatApiLoginUrl: String = ""
 
+    /**
+     * 微信登录api
+     */
+    @Value("\${wechat.api.get.token.url}")
+    var wechatApiGetTokenUrl: String = ""
+
 }
