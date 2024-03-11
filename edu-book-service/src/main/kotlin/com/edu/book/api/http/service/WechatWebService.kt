@@ -1,14 +1,11 @@
 package com.edu.book.api.http.service
 
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.TypeReference
-import com.edu.book.api.vo.wechat.WechatApiLoginRespVo
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
 import com.edu.book.application.client.OkHttpClientManager
 import com.edu.book.application.client.WechatApi
 import com.edu.book.application.service.WechatAppService
 import com.edu.book.infrastructure.config.SystemConfig
-import com.edu.book.infrastructure.constants.WechatConstant
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import org.apache.commons.lang3.ObjectUtils
