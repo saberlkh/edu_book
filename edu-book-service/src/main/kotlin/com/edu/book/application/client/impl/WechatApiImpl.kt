@@ -35,9 +35,9 @@ class WechatApiImpl: WechatApi {
     override fun getAccessToken(appId: String, appSecret: String): String {
         //通过http接口调用微信登录
         val urlParamMap = mapOf(
-            "appid" to systemConfig.wechatAppId,
-            "secret" to systemConfig.wechatAppSecret,
-            "grant_type" to WechatConstant.GET_ACCESS_TOKEN_CODE
+            WechatConstant.PARAM_APP_ID to systemConfig.wechatAppId,
+            WechatConstant.PARAM_SECRET to systemConfig.wechatAppSecret,
+            WechatConstant.PARAM_GRANT_TYPE to WechatConstant.GET_ACCESS_TOKEN_CODE
         )
         val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiGetTokenUrl, emptyMap(), urlParamMap, object: TypeReference<WechatGetAccessTokenApiDto>() {})
         logger.info("调用微信获取accessToken 返回 httpResult:${JSON.toJSONString(httpResult)}")
@@ -50,10 +50,10 @@ class WechatApiImpl: WechatApi {
     override fun wechatLogin(code: String): WechatApiLoginRespVo? {
         //通过http接口调用微信登录
         val urlParamMap = mapOf(
-            "appid" to systemConfig.wechatAppId,
-            "secret" to systemConfig.wechatAppSecret,
-            "js_code" to code,
-            "grant_type" to WechatConstant.LOGIN_AUTHORIZATION_CODE
+            WechatConstant.PARAM_APP_ID to systemConfig.wechatAppId,
+            WechatConstant.PARAM_SECRET to systemConfig.wechatAppSecret,
+            WechatConstant.PARAM_JS_CODE to code,
+            WechatConstant.PARAM_GRANT_TYPE to WechatConstant.LOGIN_AUTHORIZATION_CODE
         )
         val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object: TypeReference<WechatApiLoginRespVo>() {})
         return httpResult

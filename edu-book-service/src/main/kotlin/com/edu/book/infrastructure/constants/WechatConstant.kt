@@ -12,4 +12,24 @@ object WechatConstant {
      */
     const val GET_ACCESS_TOKEN_CODE = "client_credential"
 
+    /**
+     * appid
+     */
+    const val PARAM_APP_ID = "appid"
+
+    /**
+     * secret
+     */
+    const val PARAM_SECRET = "secret"
+
+    /**
+     * grant_type
+     */
+    const val PARAM_GRANT_TYPE = "grant_type"
+
+    /**
+     * js_code
+     */
+    const val PARAM_JS_CODE = "js_code"
+
 }
