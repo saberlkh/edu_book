@@ -1,8 +1,6 @@
 package com.edu.book.api.http.service
 
-import com.alibaba.fastjson.JSON
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
-import com.edu.book.application.client.OkHttpClientManager
 import com.edu.book.application.client.WechatApi
 import com.edu.book.application.service.WechatAppService
 import com.edu.book.infrastructure.config.SystemConfig
