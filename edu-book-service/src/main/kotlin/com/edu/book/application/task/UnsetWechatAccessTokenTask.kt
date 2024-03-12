@@ -31,7 +31,7 @@ class UnsetWechatAccessTokenTask {
     /**
      * 定时任务
      */
-    @Scheduled(cron ="0 0 */1 * * ?")
+    @Scheduled(cron = "0 0 */1 * * ?")
     fun unsetWechatAccessToken() {
         //获取accessToken
         val accessToken = wechatApi.getAccessToken(systemConfig.wechatAppId, systemConfig.wechatAppSecret)
