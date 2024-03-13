@@ -50,6 +50,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     WECHAT_LOGIN_FAIL(600001, "微信登录失败"),
 
+    WECHAT_GET_PHONE_FAIL(600002, "微信获取手机号失败"),
+
     ;
 
 }

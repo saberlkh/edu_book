@@ -1,5 +1,6 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.vo.wechat.WechatGetPhoneVo
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
 import com.edu.book.application.client.WechatApi
 import com.edu.book.application.service.WechatAppService
@@ -59,6 +60,18 @@ class WechatWebService {
             cacheToken
         }
         return finalAccessToken
+    }
+
+    /**
+     * 获取手机号
+     */
+    fun getWechatPhone(accessToken: String, code: String): WechatGetPhoneVo {
+        val wechatPhoneDto = wechatApi.getPhone(accessToken, code)
+        if (wechatPhoneDto == null || ObjectUtils.notEqual(wechatPhoneDto.errcode, NumberUtils.INTEGER_ZERO)) throw WebAppException(ErrorCodeConfig.WECHAT_GET_PHONE_FAIL)
+        return WechatGetPhoneVo().apply {
+            this.phone = wechatPhoneDto.phone_info?.phoneNumber ?: ""
+            this.countryCode = wechatPhoneDto.phone_info?.countryCode ?: ""
+        }
     }
 
 }
