@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController
  * @Description:
  */
 
-
 @RestController
 @RequestMapping("/wechat")
 @Response
