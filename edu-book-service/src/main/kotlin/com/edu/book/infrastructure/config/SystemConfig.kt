@@ -25,7 +25,7 @@ class SystemConfig {
     var wechatAppSecret: String = ""
 
     /**
-     * 微信登录api
+     * 微信域名
      */
     @Value("\${wechat.api.domain}")
     var wechatApiDomain: String = ""
@@ -37,9 +37,15 @@ class SystemConfig {
     var wechatApiLoginUrl: String = ""
 
     /**
-     * 微信登录api
+     * 微信获取tokenurl
      */
     @Value("\${wechat.api.get.token.url}")
     var wechatApiGetTokenUrl: String = ""
+
+    /**
+     * 微信获取tokenurl
+     */
+    @Value("\${wechat.api.get.phone.url}")
+    var wechatApiGetPhoneUrl: String = ""
 
 }

@@ -61,7 +61,7 @@ class OkHttpClientManagerImpl : OkHttpClientManager {
         try {
             client.newCall(request).execute().use { response ->
                 val result = response.body()!!.string()
-                log.info("请求地址:{}, 响应结果：{}", request.url(), result)
+                log.info("请求地址:{}, 响应结果：{}", request.url(), JSON.toJSONString(result))
                 return JSON.parseObject(result, type)
             }
         } catch (e: IOException) {
@@ -105,6 +105,7 @@ class OkHttpClientManagerImpl : OkHttpClientManager {
     override fun <T> postJson(baseUrl: String, apiUrl: String, headParamMap: Map<String, String>,
                               urlParamMap: Map<String, Any>, jsonBody: Map<String, Any>, type: TypeReference<T>): T? {
         val requestBody = RequestBody.create(JSON_TYPE, JSON.toJSONString(jsonBody))
+        log.warn("调用http接口，post请求，请求参数:${JSON.toJSONString(requestBody)}")
         val result = buildRequest(baseUrl, apiUrl, headParamMap,
                 urlParamMap, HttpUtil.OKSupportMethodEnum.POST, requestBody)
         return executeRequest(result!!, type)

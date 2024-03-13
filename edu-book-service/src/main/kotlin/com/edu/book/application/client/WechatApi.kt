@@ -1,6 +1,7 @@
 package com.edu.book.application.client
 
 import com.edu.book.api.vo.wechat.WechatApiLoginRespVo
+import com.edu.book.infrastructure.dto.wechat.WechatGetPhoneApiDto
 
 /**
  * @Auther: liukaihua
@@ -18,5 +19,10 @@ interface WechatApi {
      * 登录
      */
     fun wechatLogin(code: String): WechatApiLoginRespVo?
+
+    /**
+     * 获取手机号
+     */
+    fun getPhone(accessToken: String, code: String): WechatGetPhoneApiDto?
 
 }

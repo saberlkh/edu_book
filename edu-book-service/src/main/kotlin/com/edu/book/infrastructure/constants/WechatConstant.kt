@@ -32,4 +32,14 @@ object WechatConstant {
      */
     const val PARAM_JS_CODE = "js_code"
 
+    /**
+     * access_token
+     */
+    const val PARAM_ACCESS_TOKEN = "access_token"
+
+    /**
+     * code
+     */
+    const val PARAM_CODE = "code"
+
 }
