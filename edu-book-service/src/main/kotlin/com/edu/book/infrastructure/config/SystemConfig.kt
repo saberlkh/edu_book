@@ -48,4 +48,16 @@ class SystemConfig {
     @Value("\${wechat.api.get.phone.url}")
     var wechatApiGetPhoneUrl: String = ""
 
+    /**
+     * 分布式锁尝试获取时间 ：毫秒
+     */
+    @Value("\${distributed.lock.wait.time:3000}")
+    var distributedLockWaitTime: Long = 3000
+
+    /**
+     * 分布式锁释放时间 ： 毫秒
+     */
+    @Value("\${distributed.lock.release.time:5000}")
+    var distributedLockReleaseTime: Long = 5000
+
 }

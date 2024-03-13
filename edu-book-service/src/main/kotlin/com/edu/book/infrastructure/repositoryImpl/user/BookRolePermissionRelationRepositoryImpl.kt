@@ -1,5 +1,6 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookRolePermissionRelationRepository
 import com.edu.book.infrastructure.po.user.BookRolePermissionRelationPo
@@ -14,5 +15,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookRolePermissionRelationRepositoryImpl : ServiceImpl<BookRolePermissionRelationDao, BookRolePermissionRelationPo>(), BookRolePermissionRelationRepository {
+
+    /**
+     * 获取权限列表
+     */
+    override fun findListByRoleUid(roleUid: String?): List<BookRolePermissionRelationPo> {
+        if (roleUid.isNullOrBlank()) return emptyList()
+        val wrapper = KtQueryWrapper(BookRolePermissionRelationPo::class.java)
+            .eq(BookRolePermissionRelationPo::roleUid, roleUid)
+        return list(wrapper) ?: emptyList()
+    }
 
 }

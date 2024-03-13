@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
  */
 interface BookAccountRoleRelationRepository : IService<BookAccountRoleRelationPo> {
 
+    /**
+     * 根据账号udi查询
+     */
+    fun findByAccountUid(accountUid: String?): BookAccountRoleRelationPo?
+
 }

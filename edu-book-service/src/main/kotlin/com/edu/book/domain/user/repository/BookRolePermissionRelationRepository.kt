@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.user.BookRolePermissionRelationPo
  */
 interface BookRolePermissionRelationRepository : IService<BookRolePermissionRelationPo> {
 
+    /**
+     * 获取权限列表
+     */
+    fun findListByRoleUid(roleUid: String?): List<BookRolePermissionRelationPo>
+
 }

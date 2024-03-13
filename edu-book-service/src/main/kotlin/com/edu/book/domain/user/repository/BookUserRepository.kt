@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.user.BookUserPo
  */
 interface BookUserRepository : IService<BookUserPo> {
 
+    /**
+     * 获取用户
+     */
+    fun findUserByOpenId(openId: String): BookUserPo?
+
 }

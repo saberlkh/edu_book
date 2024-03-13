@@ -1,7 +1,9 @@
 package com.edu.book.api
 
+import com.alibaba.fastjson.JSON
 import com.edu.book.EduBoolServiceApplication
 import com.edu.book.application.client.WechatApi
+import com.edu.book.domain.user.service.UserDomainService
 import com.edu.book.infrastructure.config.SystemConfig
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +26,15 @@ class WechatApiTest {
 
     @Autowired
     private lateinit var systemConfig: SystemConfig
+
+    @Autowired
+    private lateinit var userDomainService: UserDomainService
+
+    @Test
+    fun `注册`() {
+        val result = userDomainService.registerUser("0f3eR6100GlyIR15Pk200IDoN72eR61v")
+        println(JSON.toJSONString(result))
+    }
 
     @Test
     fun `获取accessToken`() {

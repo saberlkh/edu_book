@@ -1,9 +1,12 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.repositoryImpl.dao.user.BookAccountDao
+import com.edu.book.infrastructure.util.limitOne
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +17,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), BookAccountRepository {
+
+    @Autowired
+    private lateinit var bookAccountDao: BookAccountDao
+
+    override fun findByUid(accountUid: String?): BookAccountPo? {
+        if (accountUid.isNullOrBlank()) return null
+        val wrapper = KtQueryWrapper(BookAccountPo::class.java)
+            .eq(BookAccountPo::accountUid, accountUid)
+            .limitOne()
+        return getOne(wrapper)
+    }
 
 }
