@@ -35,9 +35,6 @@ class MyBatisConfig {
     @Autowired
     private lateinit var sqlInterceptorConfig: SqlInterceptorConfig
 
-    @Resource
-    private lateinit var redissonClient: RedissonClient
-
     companion object {
         private val log = LoggerFactory.getLogger(MyBatisConfig::class.java)
     }
@@ -49,7 +46,6 @@ class MyBatisConfig {
         try {
             connection = dataSource.connection
             log.info("----init batis-----")
-            redissonClient.getBucket<String>("initkey12312").set("23123123123")
             val bean = MybatisSqlSessionFactoryBean()
             val resolver = PathMatchingResourcePatternResolver()
             bean.setDataSource(dataSource)

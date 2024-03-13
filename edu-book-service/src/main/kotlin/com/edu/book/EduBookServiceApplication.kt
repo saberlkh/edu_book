@@ -3,6 +3,7 @@ package com.edu.book
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.transaction.annotation.EnableTransactionManagement
 
 /**
  * @Auther: liukaihua
@@ -10,8 +11,9 @@ import org.springframework.scheduling.annotation.EnableScheduling
  * @Description:
  */
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["com.edu"])
 @EnableScheduling
+@EnableTransactionManagement
 class EduBoolServiceApplication {
 
 

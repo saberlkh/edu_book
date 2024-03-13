@@ -21,7 +21,7 @@ class UUIDUtil {
             return UUID.randomUUID().toString().replace("-", "")
         }
 
-        /** 格式化UUID值，去掉“-”符号  */
+        /** 格式化UUID值，去掉“-”符号  */    
         fun formatUUID(uuid: String?): String? {
             return if (StringUtils.isNotEmpty(uuid)) {
                 uuid!!.replace("-", "")
