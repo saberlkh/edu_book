@@ -52,6 +52,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     WECHAT_GET_PHONE_FAIL(600002, "微信获取手机号失败"),
 
+    TOKEN_EXPIRE(600003, "token失效"),
+
     ;
 
 }
