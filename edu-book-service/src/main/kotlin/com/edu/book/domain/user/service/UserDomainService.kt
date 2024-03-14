@@ -2,18 +2,17 @@ package com.edu.book.domain.user.service
 
 import com.edu.book.domain.dto.RegisterUserDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
+import com.edu.book.domain.user.mapper.UserEntityMapper.registerUserBuildUserPo
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.domain.user.repository.BookAccountRoleRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
-import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.repositoryImpl.user.BookRolePermissionRelationRepositoryImpl
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
-import org.apache.commons.lang3.StringUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -70,14 +69,7 @@ class UserDomainService {
             val finalUserPo = if (userPo != null) {
                 userPo
             } else {
-                val newUserPo = BookUserPo().apply {
-                    this.uid = UUIDUtil.createUUID()
-                    this.name = StringUtils.EMPTY
-                    this.nickName = StringUtils.EMPTY
-                    this.wechatUid = openId
-                    this.phone = ""
-                    this.associateAccount = StringUtils.EMPTY
-                }
+                val newUserPo = registerUserBuildUserPo(openId)
                 bookUserRepository.save(newUserPo)
                 newUserPo
             }
@@ -90,7 +82,7 @@ class UserDomainService {
             val token = UUIDUtil.createUUID()
             userCacheRepo.setUserToken(finalUserPo.uid!!, token)
             //组装数据
-            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo)
+            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo, token)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()
