@@ -1,6 +1,7 @@
 package com.edu.book.domain.user.service
 
 import com.edu.book.domain.dto.RegisterUserDto
+import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.domain.user.repository.BookAccountRoleRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
@@ -12,9 +13,7 @@ import com.edu.book.infrastructure.repositoryImpl.user.BookRolePermissionRelatio
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
-import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -91,19 +90,7 @@ class UserDomainService {
             val token = UUIDUtil.createUUID()
             userCacheRepo.setUserToken(finalUserPo.uid!!, token)
             //组装数据
-            return RegisterUserDto().apply {
-                this.bind = BooleanUtils.toInteger(StringUtils.isNotBlank(finalUserPo.associateAccount))
-                this.phone = finalUserPo.phone ?: ""
-                this.userUid = finalUserPo.uid!!
-                this.openId = finalUserPo.wechatUid!!
-                this.username = finalUserPo.name ?: ""
-                this.nickname = finalUserPo.nickName ?: ""
-                this.token = token
-                this.permissionList = rolePermissionRelations.mapNotNull { it.permissionCode }.distinct()
-                this.roleCode = accountRoleRelationPo?.roleCode ?: ""
-                this.accountUid = finalUserPo.associateAccount ?: ""
-                this.accountExpireTime = accountPo?.expireTime?.time ?: NumberUtils.LONG_ZERO
-            }
+            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()
