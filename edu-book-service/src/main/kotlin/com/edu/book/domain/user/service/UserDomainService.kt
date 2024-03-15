@@ -3,6 +3,7 @@ package com.edu.book.domain.user.service
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
+import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.domain.user.exception.UserBindedException
@@ -77,7 +78,7 @@ class UserDomainService {
         if (StringUtils.isNotBlank(userPo.associateAccount)) throw UserBindedException(userPo.uid!!)
         //判断账号是否被绑定
         val currentUserAccountRelationPo = bookAccountUserRelationRepository.findByAccountUid(dto.accountUid)
-        if (currentUserAccountRelationPo != null) throw UserBindedException(userPo.uid!!)
+        if (currentUserAccountRelationPo != null) throw AccountBindedException()
         //查询账号信息
         val accountPo = bookAccountRepository.findByUid(dto.accountUid) ?: throw AccountNotFoundException(dto.accountUid)
         //修改用户数据，并插入用户账号关联数据
