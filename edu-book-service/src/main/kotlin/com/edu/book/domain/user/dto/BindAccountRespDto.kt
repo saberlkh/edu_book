@@ -1,14 +1,14 @@
-package com.edu.book.domain.dto
+package com.edu.book.domain.user.dto
 
 import java.io.Serializable
 import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
- * @Date: 2024/3/13 22:34
+ * @Date: 2024/3/14 21:50
  * @Description:
  */
-class RegisterUserDto: Serializable {
+class BindAccountRespDto: Serializable {
 
     /**
      * 是否绑定

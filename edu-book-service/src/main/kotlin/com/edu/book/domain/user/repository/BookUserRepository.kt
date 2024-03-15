@@ -18,4 +18,9 @@ interface BookUserRepository : IService<BookUserPo> {
      */
     fun findUserByOpenId(openId: String): BookUserPo?
 
+    /**
+     * 修改用户信息
+     */
+    fun updateUserPoByUid(po: BookUserPo)
+
 }

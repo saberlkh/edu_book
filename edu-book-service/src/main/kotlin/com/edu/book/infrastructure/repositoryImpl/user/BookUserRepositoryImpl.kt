@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.po.user.BookUserPo
@@ -29,6 +30,15 @@ class BookUserRepositoryImpl : ServiceImpl<BookUserDao, BookUserPo>(), BookUserR
             .eq(BookUserPo::wechatUid, openId)
             .limitOne()
         return getOne(wrapper)
+    }
+
+    /**
+     * 修改用户信息
+     */
+    override fun updateUserPoByUid(po: BookUserPo) {
+        val updateWrapper = KtUpdateWrapper(BookUserPo::class.java)
+            .eq(BookUserPo::uid, po.uid)
+        update(po, updateWrapper)
     }
 
 }
