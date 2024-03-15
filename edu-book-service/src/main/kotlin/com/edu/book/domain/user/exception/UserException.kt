@@ -34,3 +34,8 @@ class UserBindedException(userUid: String): UserException("用户已经绑定账
  * 账户不存在
  */
 class AccountNotFoundException(accountUid: String): UserException("账户不存在,${accountUid}")
+
+/**
+ * 账号已经被绑定
+ */
+class AccountBindedException(): UserException("账号已经被绑定")

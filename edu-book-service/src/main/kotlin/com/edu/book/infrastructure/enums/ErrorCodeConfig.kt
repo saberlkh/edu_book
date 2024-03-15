@@ -60,6 +60,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     ACCOUNT_NOT_FOUND(600006, "账号不存在"),
 
+    ACCOUNT_IS_BINDED(600007, "账号已经被绑定"),
+
     ;
 
 }

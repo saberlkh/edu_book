@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.user.BookAccountUserRelationPo
  */
 interface BookAccountUserRelationRepository : IService<BookAccountUserRelationPo> {
 
+    /**
+     * 查询
+     */
+    fun findByAccountUid(accountUid: String?): BookAccountUserRelationPo?
+
 }

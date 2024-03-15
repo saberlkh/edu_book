@@ -1,6 +1,7 @@
 package com.edu.book.api.http.exception
 
 import com.edu.book.api.vo.exception.ErrorResponse
+import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserException
@@ -84,6 +85,9 @@ class GlobalExceptionHandler {
             }
             is AccountNotFoundException -> {
                 ErrorCodeConfig.ACCOUNT_NOT_FOUND
+            }
+            is AccountBindedException -> {
+                ErrorCodeConfig.ACCOUNT_IS_BINDED
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

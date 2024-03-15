@@ -1,9 +1,11 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.infrastructure.po.user.BookAccountUserRelationPo
 import com.edu.book.infrastructure.repositoryImpl.dao.user.BookAccountUserRelationDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +16,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookAccountUserRelationRepositoryImpl : ServiceImpl<BookAccountUserRelationDao, BookAccountUserRelationPo>(), BookAccountUserRelationRepository {
+
+    /**
+     * 查询
+     */
+    override fun findByAccountUid(accountUid: String?): BookAccountUserRelationPo? {
+        if (accountUid.isNullOrBlank()) return null
+        val wrapper = KtQueryWrapper(BookAccountUserRelationPo::class.java)
+            .eq(BookAccountUserRelationPo::accountUid, accountUid)
+            .limitOne()
+        return getOne(wrapper)
+    }
 
 }

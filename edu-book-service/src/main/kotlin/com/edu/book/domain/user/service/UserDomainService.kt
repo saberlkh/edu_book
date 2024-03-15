@@ -75,6 +75,9 @@ class UserDomainService {
         val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
         //如果用户已经绑定账号，进行提示
         if (StringUtils.isNotBlank(userPo.associateAccount)) throw UserBindedException(userPo.uid!!)
+        //判断账号是否被绑定
+        val currentUserAccountRelationPo = bookAccountUserRelationRepository.findByAccountUid(dto.accountUid)
+        if (currentUserAccountRelationPo != null) throw UserBindedException(userPo.uid!!)
         //查询账号信息
         val accountPo = bookAccountRepository.findByUid(dto.accountUid) ?: throw AccountNotFoundException(dto.accountUid)
         //修改用户数据，并插入用户账号关联数据
