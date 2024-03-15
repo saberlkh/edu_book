@@ -54,6 +54,12 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     TOKEN_EXPIRE(600003, "token失效"),
 
+    USER_NOT_FOUND(600004, "没有找到该用户"),
+
+    USER_IS_BINDED(600005, "用户已经绑定"),
+
+    ACCOUNT_NOT_FOUND(600006, "账号不存在"),
+
     ;
 
 }

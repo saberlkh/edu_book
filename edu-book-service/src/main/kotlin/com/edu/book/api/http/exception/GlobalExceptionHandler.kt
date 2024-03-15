@@ -1,6 +1,10 @@
 package com.edu.book.api.http.exception
 
 import com.edu.book.api.vo.exception.ErrorResponse
+import com.edu.book.domain.user.exception.AccountNotFoundException
+import com.edu.book.domain.user.exception.UserBindedException
+import com.edu.book.domain.user.exception.UserException
+import com.edu.book.domain.user.exception.UserNotFoundException
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.response.ResponseVo
@@ -69,6 +73,26 @@ class GlobalExceptionHandler {
         return ResponseEntity(res, ex.getHttpStatus())
     }
 
+    @ExceptionHandler(UserException::class)
+    fun handleInteractivityRoomException(ex: UserException): ResponseEntity<ResponseVo<Nothing>> {
+        val errorCode = when (ex) {
+            is UserNotFoundException -> {
+                ErrorCodeConfig.USER_NOT_FOUND
+            }
+            is UserBindedException -> {
+                ErrorCodeConfig.USER_IS_BINDED
+            }
+            is AccountNotFoundException -> {
+                ErrorCodeConfig.ACCOUNT_NOT_FOUND
+            }
+            else -> {
+                ErrorCodeConfig.NOT_FOUNT
+            }
+        }
+        log.warn("errorCode is ${errorCode.errorCode}, message = ${ex.message}")
+        val res = ResponseVo(errorCode, null)
+        return ResponseEntity(res, errorCode.httpStatus)
+    }
 
     private fun logArgumentException(ex: Exception): ResponseEntity<ErrorResponse> {
         val appException = WebAppException(ErrorCodeConfig.REQUEST_PARAMS_NOT_VALID, ex.localizedMessage)
