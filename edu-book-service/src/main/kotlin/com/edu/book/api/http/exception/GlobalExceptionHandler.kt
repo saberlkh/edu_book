@@ -6,6 +6,7 @@ import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserException
 import com.edu.book.domain.user.exception.UserNotFoundException
+import com.edu.book.domain.user.exception.UserTokenExpiredException
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.response.ResponseVo
@@ -88,6 +89,9 @@ class GlobalExceptionHandler {
             }
             is AccountBindedException -> {
                 ErrorCodeConfig.ACCOUNT_IS_BINDED
+            }
+            is UserTokenExpiredException -> {
+                ErrorCodeConfig.TOKEN_EXPIRE
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

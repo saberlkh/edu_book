@@ -3,11 +3,13 @@ package com.edu.book.domain.user.service
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
+import com.edu.book.domain.user.dto.UserDto
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserNotFoundException
+import com.edu.book.domain.user.exception.UserTokenExpiredException
 import com.edu.book.domain.user.mapper.UserEntityMapper.bindBindAccountRespDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildBindAccountUserRelationPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
@@ -21,6 +23,7 @@ import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
+import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
@@ -65,6 +68,18 @@ class UserDomainService {
 
     @Autowired
     private lateinit var bookAccountUserRelationRepository: BookAccountUserRelationRepository
+
+    /**
+     * 用户鉴权
+     * 通过token返回用户信息
+     */
+    fun authUser(token: String): UserDto {
+        //获取缓存
+        val tokenCacheDto = userCacheRepo.getUserToken(token) ?: throw UserTokenExpiredException()
+        //获取用户信息
+        val userPo = bookUserRepository.findByUserUid(tokenCacheDto.userUid) ?: throw UserNotFoundException(tokenCacheDto.userUid)
+        return MapperUtil.map(UserDto::class.java, userPo)
+    }
 
     /**
      * 绑定账号

@@ -2,6 +2,7 @@ package com.edu.book.api.http.config
 
 import com.edu.book.api.http.aspect.WebReqLogAspect
 import com.edu.book.api.http.interceptor.TraceIdInterceptor
+import com.edu.book.api.http.interceptor.UserTokenInterceptor
 import org.springframework.aop.aspectj.AspectJExpressionPointcut
 import org.springframework.aop.support.DefaultPointcutAdvisor
 import org.springframework.context.annotation.Bean
@@ -21,9 +22,16 @@ class WebConfiguration: WebMvcConfigurer {
 
     private val traceExecution = "execution(* com.edu.book.api.http.controller..*.*(..))"
 
+    private final val openPath = listOf("/wechat/**", "/user/v1/login", "/test/**")
+
     @Bean
     fun traceIdInterceptor(): TraceIdInterceptor {
         return TraceIdInterceptor()
+    }
+
+    @Bean
+    fun userTokenInterceptor(): UserTokenInterceptor {
+        return UserTokenInterceptor()
     }
 
     @Bean
@@ -41,6 +49,7 @@ class WebConfiguration: WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(traceIdInterceptor()).addPathPatterns("/**")
+        registry.addInterceptor(userTokenInterceptor()).addPathPatterns("/**").excludePathPatterns(openPath)
         super.addInterceptors(registry)
     }
 

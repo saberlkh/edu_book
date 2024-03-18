@@ -3,6 +3,7 @@ package com.edu.book.application.service
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
+import com.edu.book.domain.user.dto.UserDto
 import com.edu.book.domain.user.service.UserDomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,6 +19,13 @@ class UserAppService {
 
     @Autowired
     private lateinit var userDomainService: UserDomainService
+
+    /**
+     * 鉴权
+     */
+    fun authUser(token: String): UserDto {
+        return userDomainService.authUser(token)
+    }
 
     /**
      * 注册用户

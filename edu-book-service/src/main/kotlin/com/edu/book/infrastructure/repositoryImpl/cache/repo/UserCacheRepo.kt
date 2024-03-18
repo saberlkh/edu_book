@@ -1,5 +1,6 @@
 package com.edu.book.infrastructure.repositoryImpl.cache.repo
 
+import com.edu.book.domain.user.dto.UserTokenCacheDto
 import com.edu.book.infrastructure.constants.RedisKeyConstant.USER_TOKEN_KEY
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
@@ -28,24 +29,28 @@ class UserCacheRepo {
      * 设置缓存
      */
     fun setUserToken(userUid: String, token: String) {
-        val key = USER_TOKEN_KEY + userUid
-        redissonClient.getBucket<String>(key).set(token, SEVEN, TimeUnit.DAYS)
+        val key = USER_TOKEN_KEY + token
+        val dto = UserTokenCacheDto().apply {
+            this.token = token
+            this.userUid = userUid
+        }
+        redissonClient.getBucket<UserTokenCacheDto>(key).set(dto, SEVEN, TimeUnit.DAYS)
     }
 
     /**
      * 删除token
      */
-    fun removeUserToken(userUid: String) {
-        val key = USER_TOKEN_KEY + userUid
-        redissonClient.getBucket<String>(key).delete()
+    fun removeUserToken(token: String) {
+        val key = USER_TOKEN_KEY + token
+        redissonClient.getBucket<UserTokenCacheDto>(key).delete()
     }
 
     /**
      * 获取缓存
      */
-    fun getUserToken(userUid: String): String {
-        val key = USER_TOKEN_KEY + userUid
-        return redissonClient.getBucket<String>(key).get()
+    fun getUserToken(token: String): UserTokenCacheDto? {
+        val key = USER_TOKEN_KEY + token
+        return redissonClient.getBucket<UserTokenCacheDto>(key).get()
     }
 
 }

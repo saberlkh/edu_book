@@ -23,4 +23,9 @@ interface BookUserRepository : IService<BookUserPo> {
      */
     fun updateUserPoByUid(po: BookUserPo)
 
+    /**
+     * 根据用户uid查询用户
+     */
+    fun findByUserUid(userUid: String): BookUserPo?
+
 }

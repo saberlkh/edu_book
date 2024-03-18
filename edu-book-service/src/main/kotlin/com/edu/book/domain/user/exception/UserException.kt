@@ -39,3 +39,8 @@ class AccountNotFoundException(accountUid: String): UserException("账户不存�
  * 账号已经被绑定
  */
 class AccountBindedException(): UserException("账号已经被绑定")
+
+/**
+ * token失效
+ */
+class UserTokenExpiredException: UserException("token失效")

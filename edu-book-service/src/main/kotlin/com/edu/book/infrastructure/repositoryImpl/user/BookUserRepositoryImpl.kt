@@ -41,4 +41,14 @@ class BookUserRepositoryImpl : ServiceImpl<BookUserDao, BookUserPo>(), BookUserR
         update(po, updateWrapper)
     }
 
+    /**
+     * 根据用户uid查询用户
+     */
+    override fun findByUserUid(userUid: String): BookUserPo? {
+        val wrapper = KtQueryWrapper(BookUserPo::class.java)
+            .eq(BookUserPo::uid, userUid)
+            .limitOne()
+        return getOne(wrapper)
+    }
+
 }
