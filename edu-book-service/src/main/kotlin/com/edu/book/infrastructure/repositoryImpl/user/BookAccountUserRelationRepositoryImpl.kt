@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.infrastructure.po.user.BookAccountUserRelationPo
@@ -26,6 +27,16 @@ class BookAccountUserRelationRepositoryImpl : ServiceImpl<BookAccountUserRelatio
             .eq(BookAccountUserRelationPo::accountUid, accountUid)
             .limitOne()
         return getOne(wrapper)
+    }
+
+    /**
+     * 根据账号删除
+     */
+    override fun removeByAccountUid(accountUid: String?) {
+        if (accountUid.isNullOrBlank()) return
+        val updateWrapper = KtUpdateWrapper(BookAccountUserRelationPo::class.java)
+            .eq(BookAccountUserRelationPo::accountUid, accountUid)
+        remove(updateWrapper)
     }
 
 }

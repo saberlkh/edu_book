@@ -18,4 +18,9 @@ interface BookAccountUserRelationRepository : IService<BookAccountUserRelationPo
      */
     fun findByAccountUid(accountUid: String?): BookAccountUserRelationPo?
 
+    /**
+     * 根据账号删除
+     */
+    fun removeByAccountUid(accountUid: String?)
+
 }

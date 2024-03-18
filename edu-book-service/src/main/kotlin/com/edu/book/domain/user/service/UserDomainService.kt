@@ -3,6 +3,8 @@ package com.edu.book.domain.user.service
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
+import com.edu.book.domain.user.dto.UnbindAccountDto
+import com.edu.book.domain.user.dto.UnbindAccountRespDto
 import com.edu.book.domain.user.dto.UserDto
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
@@ -10,6 +12,7 @@ import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserNotFoundException
 import com.edu.book.domain.user.exception.UserTokenExpiredException
+import com.edu.book.domain.user.exception.UserUnBindedException
 import com.edu.book.domain.user.mapper.UserEntityMapper.bindBindAccountRespDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildBindAccountUserRelationPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
@@ -21,7 +24,9 @@ import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.domain.user.repository.BookRolePermissionRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.constants.RedisKeyConstant.BIND_UNBIND_USER_ACCOUNT_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
+import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
@@ -82,30 +87,77 @@ class UserDomainService {
     }
 
     /**
+     * 解绑账号
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun userUnbindAccount(dto: UnbindAccountDto): UnbindAccountRespDto {
+        val unbindLockKey = BIND_UNBIND_USER_ACCOUNT_LOCK_KEY + dto.openId
+        val lock = redissonClient.getLock(unbindLockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.openId)
+            }
+            //查询用户信息
+            val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            //如果用户已经解绑，进行提示
+            if (StringUtils.isBlank(userPo.associateAccount)) throw UserUnBindedException()
+            //修改用户信息
+            val updateUserPo = MapperUtil.map(BookUserPo::class.java, userPo).apply {
+                this.associateAccount = ""
+            }
+            bookUserRepository.updateUserPoByUid(updateUserPo)
+            //删除账号用户绑定记录关联数据
+            bookAccountUserRelationRepository.removeByAccountUid(userPo.associateAccount)
+            return UnbindAccountRespDto().apply {
+                this.phone = userPo.phone ?: ""
+                this.userUid = userPo.uid ?: ""
+                this.openId = userPo.wechatUid ?: ""
+                this.username = userPo.name ?: ""
+                this.nickname = userPo.nickName ?: ""
+            }
+        } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
+        }
+    }
+
+    /**
      * 绑定账号
      * 账号已经存在，需要进行绑定
      */
     @Transactional(rollbackFor = [Exception::class])
     fun userBindAccount(dto: BindAccountDto): BindAccountRespDto {
-        //查询用户信息
-        val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
-        //如果用户已经绑定账号，进行提示
-        if (StringUtils.isNotBlank(userPo.associateAccount)) throw UserBindedException(userPo.uid!!)
-        //判断账号是否被绑定
-        val currentUserAccountRelationPo = bookAccountUserRelationRepository.findByAccountUid(dto.accountUid)
-        if (currentUserAccountRelationPo != null) throw AccountBindedException()
-        //查询账号信息
-        val accountPo = bookAccountRepository.findByUid(dto.accountUid) ?: throw AccountNotFoundException(dto.accountUid)
-        //修改用户数据，并插入用户账号关联数据
-        val updateUserPo = buildUpdateUserPo(userPo, accountPo, dto.phone)
-        bookUserRepository.updateUserPoByUid(updateUserPo)
-        val userAccountRelationPo = buildBindAccountUserRelationPo(userPo.uid!!, accountPo.accountUid!!, UUIDUtil.createUUID())
-        bookAccountUserRelationRepository.save(userAccountRelationPo)
-        //获取角色和权限信息
-        val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo.accountUid)
-        val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
-        val finalUserPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
-        return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo)
+        val bindLockKey = BIND_UNBIND_USER_ACCOUNT_LOCK_KEY + dto.openId
+        val lock = redissonClient.getLock(bindLockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.openId)
+            }
+            //查询用户信息
+            val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            //如果用户已经绑定账号，进行提示
+            if (StringUtils.isNotBlank(userPo.associateAccount)) throw UserBindedException(userPo.uid!!)
+            //判断账号是否被绑定
+            val currentUserAccountRelationPo = bookAccountUserRelationRepository.findByAccountUid(dto.accountUid)
+            if (currentUserAccountRelationPo != null) throw AccountBindedException()
+            //查询账号信息
+            val accountPo = bookAccountRepository.findByUid(dto.accountUid) ?: throw AccountNotFoundException(dto.accountUid)
+            //修改用户数据，并插入用户账号关联数据
+            val updateUserPo = buildUpdateUserPo(userPo, accountPo, dto.phone)
+            bookUserRepository.updateUserPoByUid(updateUserPo)
+            val userAccountRelationPo = buildBindAccountUserRelationPo(userPo.uid!!, accountPo.accountUid!!, UUIDUtil.createUUID())
+            bookAccountUserRelationRepository.save(userAccountRelationPo)
+            //获取角色和权限信息
+            val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo.accountUid)
+            val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
+            val finalUserPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo)
+        } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
+        }
     }
 
     /**

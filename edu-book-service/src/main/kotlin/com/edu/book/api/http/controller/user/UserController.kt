@@ -5,6 +5,8 @@ import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
 import com.edu.book.api.vo.user.LoginOrRegisterVo
 import com.edu.book.api.vo.user.RegisterUserVo
+import com.edu.book.api.vo.user.UnbindAccountRespVo
+import com.edu.book.api.vo.user.UnbindAccountVo
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.response.ResponseVo
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,6 +43,14 @@ class UserController {
     @PostMapping("/v1/bind")
     fun bindAccount(@RequestBody vo: BindAccountVo): ResponseVo<BindAccountRespVo> {
         return ResponseVo(userWebService.userBindAccount(vo))
+    }
+
+    /**
+     * 解绑
+     */
+    @PostMapping("/v1/unbind")
+    fun unbindAccount(@RequestBody vo: UnbindAccountVo): ResponseVo<UnbindAccountRespVo> {
+        return ResponseVo(userWebService.userUnbindAccount(vo))
     }
 
 }

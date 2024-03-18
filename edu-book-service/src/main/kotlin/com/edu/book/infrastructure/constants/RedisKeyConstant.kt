@@ -17,4 +17,9 @@ object RedisKeyConstant {
      */
     const val USER_TOKEN_KEY = "USER:TOKEN:"
 
+    /**
+     * 绑定解绑
+     */
+    const val BIND_UNBIND_USER_ACCOUNT_LOCK_KEY = "BIND:UNBIND:USER:ACCOUNT:LOCK:"
+
 }

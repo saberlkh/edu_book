@@ -23,8 +23,8 @@ object UserEntityMapper {
             this.phone = userPo.phone ?: ""
             this.userUid = userPo.uid!!
             this.openId = userPo.wechatUid!!
-            this.username = userPo.name ?: ""
-            this.nickname = userPo.nickName ?: ""
+            this.username = userPo.name ?: accountPo.accountName ?: ""
+            this.nickname = userPo.nickName ?: accountPo.accountNickName ?: ""
             this.permissionList = rolePermissionRelations.mapNotNull { it.permissionCode }.distinct()
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""
             this.accountUid = accountPo.accountUid!!
@@ -50,8 +50,6 @@ object UserEntityMapper {
         return BookUserPo().apply {
             this.uid = userPo.uid
             this.associateAccount = accountPo.accountUid
-            this.name = accountPo.accountName
-            this.nickName = accountPo.accountNickName
             this.phone = phone
         }
     }
