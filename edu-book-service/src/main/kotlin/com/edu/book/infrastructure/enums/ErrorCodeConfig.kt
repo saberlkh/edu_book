@@ -62,6 +62,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     ACCOUNT_IS_BINDED(600007, "账号已经被绑定"),
 
+    USER_IS_UNBINDED(600008, "用户已经解绑"),
+
     ;
 
 }

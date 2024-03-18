@@ -30,6 +30,8 @@ import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import java.sql.Timestamp
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import org.apache.commons.lang3.StringUtils
@@ -104,6 +106,7 @@ class UserDomainService {
             //修改用户信息
             val updateUserPo = MapperUtil.map(BookUserPo::class.java, userPo).apply {
                 this.associateAccount = ""
+                this.updateTime = Timestamp(Date().time)
             }
             bookUserRepository.updateUserPoByUid(updateUserPo)
             //删除账号用户绑定记录关联数据
