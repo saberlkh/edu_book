@@ -24,4 +24,9 @@ class BindAccountDto: Serializable {
      */
     var accountUid: String = ""
 
+    /**
+     * unionid
+     */
+    var unionId: String = ""
+
 }

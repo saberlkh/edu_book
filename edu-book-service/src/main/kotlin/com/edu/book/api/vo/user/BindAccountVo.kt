@@ -28,4 +28,9 @@ class BindAccountVo: Serializable {
     @NotBlank
     var accountUid: String = ""
 
+    /**
+     * unionid
+     */
+    var unionId: String = ""
+
 }

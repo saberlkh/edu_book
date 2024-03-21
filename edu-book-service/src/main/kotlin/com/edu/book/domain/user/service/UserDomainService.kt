@@ -147,7 +147,7 @@ class UserDomainService {
             //查询账号信息
             val accountPo = bookAccountRepository.findByUid(dto.accountUid) ?: throw AccountNotFoundException(dto.accountUid)
             //修改用户数据，并插入用户账号关联数据
-            val updateUserPo = buildUpdateUserPo(userPo, accountPo, dto.phone)
+            val updateUserPo = buildUpdateUserPo(userPo, accountPo, dto)
             bookUserRepository.updateUserPoByUid(updateUserPo)
             val userAccountRelationPo = buildBindAccountUserRelationPo(userPo.uid!!, accountPo.accountUid!!, UUIDUtil.createUUID())
             bookAccountUserRelationRepository.save(userAccountRelationPo)

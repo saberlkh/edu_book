@@ -51,4 +51,10 @@ class BookUserPo : BasePo() {
     @TableField("c_associate_account")
     var associateAccount: String? = null
 
+    /**
+     * unionid
+     */
+    @TableField("c_union_id")
+    var unionId: String? = null
+
 }

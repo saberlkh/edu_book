@@ -65,4 +65,9 @@ class BindAccountRespDto: Serializable {
      */
     var accountExpireTime: Long = NumberUtils.LONG_ZERO
 
+    /**
+     * unionid
+     */
+    var unionId: String = ""
+
 }

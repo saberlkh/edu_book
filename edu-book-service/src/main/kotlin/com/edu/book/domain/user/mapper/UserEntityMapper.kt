@@ -1,5 +1,6 @@
 package com.edu.book.domain.user.mapper
 
+import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.infrastructure.po.user.BookAccountPo
@@ -29,6 +30,7 @@ object UserEntityMapper {
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""
             this.accountUid = accountPo.accountUid!!
             this.accountExpireTime = accountPo.expireTime!!.time
+            this.unionId = userPo.unionId ?: ""
         }
     }
 
@@ -46,11 +48,12 @@ object UserEntityMapper {
     /**
      * 构建实体
      */
-    fun buildUpdateUserPo(userPo: BookUserPo, accountPo: BookAccountPo, phone: String): BookUserPo {
+    fun buildUpdateUserPo(userPo: BookUserPo, accountPo: BookAccountPo, dto: BindAccountDto): BookUserPo {
         return BookUserPo().apply {
             this.uid = userPo.uid
             this.associateAccount = accountPo.accountUid
-            this.phone = phone
+            this.phone = dto.phone
+            this.unionId = dto.unionId
         }
     }
 
@@ -70,6 +73,7 @@ object UserEntityMapper {
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""
             this.accountUid = finalUserPo.associateAccount ?: ""
             this.accountExpireTime = accountPo?.expireTime?.time ?: NumberUtils.LONG_ZERO
+            this.unionId = finalUserPo.unionId ?: ""
         }
     }
 
