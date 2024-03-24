@@ -2,6 +2,7 @@ package com.edu.book.api
 
 import com.alibaba.fastjson.JSON
 import com.edu.book.EduBoolServiceApplication
+import com.edu.book.application.client.IsbnApi
 import com.edu.book.application.client.WechatApi
 import com.edu.book.domain.user.service.UserDomainService
 import com.edu.book.infrastructure.config.SystemConfig
@@ -29,6 +30,14 @@ class WechatApiTest {
 
     @Autowired
     private lateinit var userDomainService: UserDomainService
+
+    @Autowired
+    private lateinit var isbnApi: IsbnApi
+
+    @Test
+    fun `查询图书`() {
+        println(isbnApi.getBookInfoByIsbnCode("9787510150241"))
+    }
 
     @Test
     fun `注册`() {

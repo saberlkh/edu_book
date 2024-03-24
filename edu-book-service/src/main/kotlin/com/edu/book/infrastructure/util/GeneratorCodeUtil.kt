@@ -22,9 +22,7 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_book_account","t_book_account_role_relation"
-//    ,"t_book_account_user_relation","t_book_permission_basic","t_book_role_basic","t_book_role_permission_relation",
-//        "t_book_user"))
+//    GeneratorCodeUtils().execute(listOf("t_book","t_book_sell","t_book_detail","t_book_borrow_flow"))
 //}
 //
 //@Component
@@ -50,11 +48,11 @@
 //
 //        const val MODULE_NAME = "edu-book-service"
 //
-//        const val DATASOURCE_URL = "jdbc:mysql://192.168.64.10:3306/edu_book?characterEncoding=UTF-8&rewriteBatchedStatements=true&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai"
+//        const val DATASOURCE_URL = "jdbc:mysql://8.138.113.149:3306/edu_book?characterEncoding=UTF-8&rewriteBatchedStatements=true&useSSL=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai"
 //
 //        const val DATA_USER_NAME = "root"
 //
-//        const val DATA_PASSWORD = "123456"
+//        const val DATA_PASSWORD = "!@#kdl002841"
 //
 //    }
 //

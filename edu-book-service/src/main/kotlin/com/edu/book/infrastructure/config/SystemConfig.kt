@@ -60,4 +60,34 @@ class SystemConfig {
     @Value("\${distributed.lock.release.time:5000}")
     var distributedLockReleaseTime: Long = 5000
 
+    /**
+     * isbnappkeuy
+     */
+    @Value("\${isbn.app.key}")
+    var isbnAppKey: String = ""
+
+    /**
+     * isbnappsectet
+     */
+    @Value("\${isbn.app.secret}")
+    var isbnAppSecret: String = ""
+
+    /**
+     * cpde
+     */
+    @Value("\${isbn.app.code}")
+    var isbnAppCode: String = ""
+
+    /**
+     * isbnappsectet
+     */
+    @Value("\${isbn.host}")
+    var isbnHost: String = ""
+
+    /**
+     * cpde
+     */
+    @Value("\${isbn.query.api.url}")
+    var isbnQueryApiUrl: String = ""
+
 }
