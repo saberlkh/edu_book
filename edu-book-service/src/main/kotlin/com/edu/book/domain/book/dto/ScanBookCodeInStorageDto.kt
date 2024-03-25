@@ -107,7 +107,7 @@ class ScanBookCodeInStorageDto: Serializable {
     /**
      * isbn
      */
-    var isbnCode: String = ""
+    var isbn: String = ""
 
     /**
      * 图书自编码

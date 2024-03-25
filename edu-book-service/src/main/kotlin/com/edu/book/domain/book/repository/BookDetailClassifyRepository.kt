@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
  */
 interface BookDetailClassifyRepository : IService<BookDetailClassifyPo> {
 
+    /**
+     * 查询列表
+     */
+    fun findClassifyList(bookUid: String, isbnCode: String): List<BookDetailClassifyPo>
+
 }

@@ -29,9 +29,9 @@ class BookController {
     /**
      * 扫码
      */
-    @PostMapping("/v1/{isbnCode}/scan")
-    fun scanIsbnCode(@PathVariable isbnCode: String): ScanIsbnCodeBookVo {
-        return bookWebService.scanIsbnCode(isbnCode)
+    @PostMapping("/v1/{isbn}/scan")
+    fun scanIsbnCode(@PathVariable isbn: String): ScanIsbnCodeBookVo {
+        return bookWebService.scanIsbnCode(isbn)
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.edu.book.domain.book.service
 
 import com.alibaba.fastjson.JSON
+import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
+import com.edu.book.domain.book.exception.BookDetailNotExistException
+import com.edu.book.domain.book.exception.BookInfoNotExistException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
@@ -61,6 +64,20 @@ class BookDomainService {
     }
 
     /**
+     * 查询图书详情
+     */
+    fun findBookDetail(bookUid: String): BookDetailDto {
+        //查询图书详情信息
+        val detailPo = bookDetailRepository.findByBookUid(bookUid) ?: throw BookDetailNotExistException()
+        //查询isbn信息
+        val bookPo = bookRepository.findByIsbnCode(detailPo.isbnCode) ?: throw BookInfoNotExistException()
+        //查询分类信息
+        val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
+        //参数组装
+        return BookDetailDto()
+    }
+
+    /**
      * 图书扫码入库
      * 1.判断isbn是否正确
      * 2.新增书籍
@@ -77,7 +94,7 @@ class BookDomainService {
             val currentBookDetailPo = bookDetailRepository.findByBookUid(dto.bookUid)
             if (currentBookDetailPo != null) throw BookDetailAlreadyExistException()
             //根据isbn查询图书信息
-            val bookPo = bookRepository.findByIsbnCode(dto.isbnCode)
+            val bookPo = bookRepository.findByIsbnCode(dto.isbn)
             if (bookPo != null) {
                 //修改属性
                 val updateBookPo = buildScanBookCodeUpdateBookPo(dto, bookPo)

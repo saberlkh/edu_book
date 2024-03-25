@@ -1,15 +1,13 @@
-package com.edu.book.api.vo.book
+package com.edu.book.domain.book.dto
 
 import java.io.Serializable
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotEmpty
 
 /**
  * @Auther: liukaihua
- * @Date: 2024/3/25 20:04
+ * @Date: 2024/3/25 23:34
  * @Description:
  */
-class ScanBookCodeInStorageVo: Serializable {
+class BookDetailDto: Serializable {
 
     /**
      * title
@@ -109,25 +107,26 @@ class ScanBookCodeInStorageVo: Serializable {
     /**
      * isbn
      */
-    @NotBlank(message = "isbn不能为空")
     var isbn: String = ""
 
     /**
      * 图书自编码
      */
-    @NotBlank(message = "图书自编码不能为空")
     var bookUid: String = ""
 
     /**
      * 园区
      */
-    @NotBlank(message = "园区不能为空")
     var garden: String = ""
 
     /**
      * 分类
      */
-    @NotEmpty(message = "分类不能为空")
     var classify: List<String> = emptyList()
+
+    /**
+     * 状态
+     */
+    var bookStatus: Int? = null
 
 }

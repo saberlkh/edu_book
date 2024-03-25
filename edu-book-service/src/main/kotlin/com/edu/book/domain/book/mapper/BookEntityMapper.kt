@@ -2,6 +2,7 @@ package com.edu.book.domain.book.mapper
 
 import com.alibaba.fastjson.JSON
 import com.edu.book.api.vo.isbn.IsbnBookInfoRespDto
+import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
@@ -24,9 +25,16 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
+//    fun buildBookDetailDto(): BookDetailDto {
+//
+//    }
+
+    /**
+     * 构建实体类
+     */
     fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageDto, bookPo: BookPo): BookPo {
         return bookPo.apply {
-            this.isbnCode = dto.isbnCode
+            this.isbnCode = dto.isbn
             this.title = dto.title ?: bookPo.title
             this.subTitle = dto.subtitle ?: bookPo.subTitle
             this.picUrl = dto.pic ?: bookPo.picUrl
@@ -88,7 +96,7 @@ object BookEntityMapper {
     fun buildBookDetailPo(dto: ScanBookCodeInStorageDto): BookDetailPo {
         return BookDetailPo().apply {
             this.uid = UUIDUtil.createUUID()
-            this.isbnCode = dto.isbnCode
+            this.isbnCode = dto.isbn
             this.bookUid = dto.bookUid
             this.status = BookDetailStatusEnum.IN_STORAGE.status
             this.inStorageTime = Timestamp(Date().time)
@@ -103,7 +111,7 @@ object BookEntityMapper {
         return dto.classify.map {
             BookDetailClassifyPo().apply {
                 this.uid = UUIDUtil.createUUID()
-                this.isbnCode = dto.isbnCode
+                this.isbnCode = dto.isbn
                 this.classify = it
                 this.bookUid = dto.bookUid
             }
@@ -126,7 +134,7 @@ object BookEntityMapper {
             }
             this.price = dto.price?.toDouble()?.times(hundred)?.toInt()
             this.isbn10Code = dto.isbn10
-            this.isbnCode = dto.isbnCode
+            this.isbnCode = dto.isbn
             this.bookClass = dto.`class`
             this.summary = JSON.toJSONString(dto.summary)
         }

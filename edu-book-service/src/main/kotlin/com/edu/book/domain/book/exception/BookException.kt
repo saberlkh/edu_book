@@ -24,3 +24,13 @@ class QueryIsbnApiInfoErrorException: BookException("通过isbn的api查询图�
  * 图书已经存在
  */
 class BookDetailAlreadyExistException: BookException("图书已经存在")
+
+/**
+ * 图书不存在
+ */
+class BookDetailNotExistException: BookException("图书不存在")
+
+/**
+ * 不存在
+ */
+class BookInfoNotExistException: BookException("图书不存在")
