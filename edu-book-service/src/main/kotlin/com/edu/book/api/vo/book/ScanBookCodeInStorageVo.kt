@@ -2,6 +2,7 @@ package com.edu.book.api.vo.book
 
 import java.io.Serializable
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 
 /**
  * @Auther: liukaihua
@@ -126,7 +127,7 @@ class ScanBookCodeInStorageVo: Serializable {
     /**
      * 分类
      */
-    @NotBlank(message = "分类不能为空")
-    var classify: String = ""
+    @NotEmpty(message = "分类不能为空")
+    var classify: List<String> = emptyList()
 
 }

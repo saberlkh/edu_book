@@ -64,10 +64,4 @@ class BookDetailPo : BasePo() {
     @TableField("c_garden")
     var garden: String? = null
 
-    /**
-     * 分类
-     */
-    @TableField("c_classify")
-    var classify: String? = null
-
 }

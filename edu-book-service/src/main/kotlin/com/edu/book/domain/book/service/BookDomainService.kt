@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
+import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.domain.book.repository.BookSellRepository
@@ -47,6 +49,9 @@ class BookDomainService {
     @Autowired
     private lateinit var systemConfig: SystemConfig
 
+    @Autowired
+    private lateinit var bookDetailClassifyRepository: BookDetailClassifyRepository
+
     /**
      * 根据isbn查询书
      */
@@ -85,6 +90,9 @@ class BookDomainService {
             //新增图书详情
             val bookDetailPo = buildBookDetailPo(dto)
             bookDetailRepository.save(bookDetailPo)
+            //添加分类
+            val classifyPos = buildBookDetailClassifyPos(dto)
+            bookDetailClassifyRepository.saveBatch(classifyPos)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()

@@ -122,6 +122,6 @@ class ScanBookCodeInStorageDto: Serializable {
     /**
      * 分类
      */
-    var classify: String = ""
+    var classify: List<String> = emptyList()
 
 }

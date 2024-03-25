@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.util.DateUtil
@@ -92,7 +93,20 @@ object BookEntityMapper {
             this.status = BookDetailStatusEnum.IN_STORAGE.status
             this.inStorageTime = Timestamp(Date().time)
             this.garden = dto.garden
-            this.classify = dto.classify
+        }
+    }
+
+    /**
+     * 构建列表
+     */
+    fun buildBookDetailClassifyPos(dto: ScanBookCodeInStorageDto): List<BookDetailClassifyPo> {
+        return dto.classify.map {
+            BookDetailClassifyPo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.isbnCode = dto.isbnCode
+                this.classify = it
+                this.bookUid = dto.bookUid
+            }
         }
     }
 

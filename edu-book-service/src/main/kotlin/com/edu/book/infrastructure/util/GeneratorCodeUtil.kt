@@ -22,7 +22,7 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_book","t_book_sell","t_book_detail","t_book_borrow_flow"))
+//    GeneratorCodeUtils().execute(listOf("t_book_detail_classify"))
 //}
 //
 //@Component
