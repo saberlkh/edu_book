@@ -1,6 +1,7 @@
 package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDto
@@ -37,6 +38,13 @@ class BookAppService {
 
     @Autowired
     private lateinit var systemConfig: SystemConfig
+
+    /**
+     * 图书扫码入库
+     */
+    fun scanBookCodeInStorage(dto: ScanBookCodeInStorageDto) {
+        bookDomainService.scanBookCodeInStorage(dto)
+    }
 
     /**
      * 扫码isbn

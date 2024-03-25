@@ -18,4 +18,9 @@ interface BookRepository : IService<BookPo> {
      */
     fun findByIsbnCode(isbnCode: String?): BookPo?
 
+    /**
+     * 更新
+     */
+    fun updateByUid(po: BookPo)
+
 }

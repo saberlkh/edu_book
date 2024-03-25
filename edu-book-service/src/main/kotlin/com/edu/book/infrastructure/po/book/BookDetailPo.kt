@@ -58,4 +58,16 @@ class BookDetailPo : BasePo() {
     @TableField("c_out_storage_time")
     var outStorageTime: Date? = null
 
+    /**
+     * 园区
+     */
+    @TableField("c_garden")
+    var garden: String? = null
+
+    /**
+     * 分类
+     */
+    @TableField("c_classify")
+    var classify: String? = null
+
 }

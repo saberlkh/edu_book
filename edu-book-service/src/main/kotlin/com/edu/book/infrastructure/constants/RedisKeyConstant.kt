@@ -27,4 +27,9 @@ object RedisKeyConstant {
      */
     const val SCAN_ISBN_LOCK_KEY = "SCAN:ISBN:CODE:LOCK:KEY:"
 
+    /**
+     * 图书入库
+     */
+    const val SCAN_BOOK_CODE_KEY = "SCAN:BOOK:CODE:LOCK:KEY:"
+
 }

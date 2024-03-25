@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.infrastructure.po.book.BookPo
@@ -30,6 +31,15 @@ class BookRepositoryImpl : ServiceImpl<BookDao, BookPo>(), BookRepository {
             .eq(BookPo::isbnCode, isbnCode)
             .limitOne()
         return getOne(wrapper)
+    }
+
+    /**
+     * 更新
+     */
+    override fun updateByUid(po: BookPo) {
+        val updateWrapper = KtUpdateWrapper(BookPo::class.java)
+            .eq(BookPo::uid, po.uid)
+        update(po, updateWrapper)
     }
 
 }

@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.book.BookDetailPo
  */
 interface BookDetailRepository : IService<BookDetailPo> {
 
+    /**
+     * 查询
+     */
+    fun findByBookUid(bookUid: String): BookDetailPo?
+
 }

@@ -1,6 +1,9 @@
 package com.edu.book.api.http.exception
 
 import com.edu.book.api.vo.exception.ErrorResponse
+import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
+import com.edu.book.domain.book.exception.BookException
+import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.UserBindedException
@@ -96,6 +99,24 @@ class GlobalExceptionHandler {
             }
             is UserUnBindedException -> {
                 ErrorCodeConfig.USER_IS_UNBINDED
+            }
+            else -> {
+                ErrorCodeConfig.NOT_FOUNT
+            }
+        }
+        log.warn("errorCode is ${errorCode.errorCode}, message = ${ex.message}")
+        val res = ResponseVo(errorCode, null)
+        return ResponseEntity(res, errorCode.httpStatus)
+    }
+
+    @ExceptionHandler(BookException::class)
+    fun handleInteractivityRoomException(ex: BookException): ResponseEntity<ResponseVo<Nothing>> {
+        val errorCode = when (ex) {
+            is QueryIsbnApiInfoErrorException -> {
+                ErrorCodeConfig.ISBN_API_FAIL
+            }
+            is BookDetailAlreadyExistException -> {
+                ErrorCodeConfig.BOOK_EXIST
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

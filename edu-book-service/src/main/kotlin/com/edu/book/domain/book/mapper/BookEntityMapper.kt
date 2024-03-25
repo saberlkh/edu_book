@@ -1,16 +1,68 @@
 package com.edu.book.domain.book.mapper
 
+import com.alibaba.fastjson.JSON
 import com.edu.book.api.vo.isbn.IsbnBookInfoRespDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
+import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.po.book.BookDetailPo
+import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE
 import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE3
 import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.util.UUIDUtil
+import java.sql.Timestamp
+import java.util.Date
 
 object BookEntityMapper {
+
+    /**
+     * 构建实体类
+     */
+    fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageDto, bookPo: BookPo): BookPo {
+        return bookPo.apply {
+            this.isbnCode = dto.isbnCode
+            this.title = dto.title ?: bookPo.title
+            this.subTitle = dto.subtitle ?: bookPo.subTitle
+            this.picUrl = dto.pic ?: bookPo.picUrl
+            this.author = dto.author ?: bookPo.author
+            this.summary = if (dto.summary.isNullOrBlank()) {
+                JSON.toJSONString(bookPo.summary)
+            } else {
+                JSON.toJSONString(dto.summary)
+            }
+            this.publisher = dto.publisher ?: bookPo.publisher
+            this.publicPlace = dto.pubplace ?: bookPo.publicPlace
+            this.publicDate = if (dto.pubdate != null) {
+                DateUtil.convertToDate(dto.pubdate, PATTREN_DATE3)
+            } else {
+                bookPo.publicDate
+            }
+            this.page = if (dto.page.isNullOrBlank()){
+                bookPo.page
+            } else {
+                dto.page!!.toInt()
+            }
+            this.price = if (dto.price.isNullOrBlank()) {
+                bookPo.price
+            } else {
+                dto.price!!.toDouble().times(hundred).toInt()
+            }
+            this.binding = dto.binding ?: bookPo.binding
+            this.isbn10Code = dto.isbn10 ?: bookPo.isbn10Code
+            this.keyword = dto.keyword ?: bookPo.keyword
+            this.cip = dto.cip ?: bookPo.cip
+            this.edition = dto.edition ?: bookPo.edition
+            this.impression = dto.impression ?: bookPo.impression
+            this.language = dto.language ?: bookPo.language
+            this.format = dto.format ?: bookPo.format
+            this.bookClass = dto.`class` ?: bookPo.bookClass
+        }
+    }
 
     /**
      * 构建
@@ -26,6 +78,43 @@ object BookEntityMapper {
             this.subtitle = bookDto.subTitle
             this.price = bookDto.price?.toDouble()?.div(hundred)?.toString()
             this.`class` = bookDto.bookClass
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
+    fun buildBookDetailPo(dto: ScanBookCodeInStorageDto): BookDetailPo {
+        return BookDetailPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.isbnCode = dto.isbnCode
+            this.bookUid = dto.bookUid
+            this.status = BookDetailStatusEnum.IN_STORAGE.status
+            this.inStorageTime = Timestamp(Date().time)
+            this.garden = dto.garden
+            this.classify = dto.classify
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
+    fun buildScanBookCodeInsertBookPo(dto: ScanBookCodeInStorageDto): BookPo {
+        return MapperUtil.map(BookPo::class.java, dto, excludes = listOf("price")).apply {
+            this.uid = UUIDUtil.createUUID()
+            this.subTitle = dto.subtitle
+            this.picUrl = dto.pic
+            this.publicPlace = dto.pubplace
+            this.publicDate = if (dto.pubdate.isNullOrBlank()) {
+                null
+            } else {
+                DateUtil.convertToDate(dto.pubdate, PATTREN_DATE3)
+            }
+            this.price = dto.price?.toDouble()?.times(hundred)?.toInt()
+            this.isbn10Code = dto.isbn10
+            this.isbnCode = dto.isbnCode
+            this.bookClass = dto.`class`
+            this.summary = JSON.toJSONString(dto.summary)
         }
     }
 

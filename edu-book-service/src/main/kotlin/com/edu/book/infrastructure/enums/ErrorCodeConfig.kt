@@ -64,6 +64,10 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     USER_IS_UNBINDED(600008, "用户已经解绑"),
 
+    ISBN_API_FAIL(600009, "通过isbn的api查询图书信息失败"),
+
+    BOOK_EXIST(600010, "图书已经存在")
+
     ;
 
 }
