@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.book.BookPo
  */
 interface BookRepository : IService<BookPo> {
 
+    /**
+     * 根据isbn查询
+     */
+    fun findByIsbnCode(isbnCode: String?): BookPo?
+
 }

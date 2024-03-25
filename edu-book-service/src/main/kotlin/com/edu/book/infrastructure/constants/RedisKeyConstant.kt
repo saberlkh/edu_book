@@ -22,4 +22,9 @@ object RedisKeyConstant {
      */
     const val BIND_UNBIND_USER_ACCOUNT_LOCK_KEY = "BIND:UNBIND:USER:ACCOUNT:LOCK:"
 
+    /**
+     * isbn扫码
+     */
+    const val SCAN_ISBN_LOCK_KEY = "SCAN:ISBN:CODE:LOCK:KEY:"
+
 }
