@@ -1,6 +1,7 @@
 package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
+import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
@@ -44,6 +45,13 @@ class BookAppService {
      */
     fun scanBookCodeInStorage(dto: ScanBookCodeInStorageDto) {
         bookDomainService.scanBookCodeInStorage(dto)
+    }
+
+    /**
+     * 查询图书详情
+     */
+    fun findBookDetail(bookUid: String): BookDetailDto {
+        return bookDomainService.findBookDetail(bookUid)
     }
 
     /**

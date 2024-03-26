@@ -1,5 +1,6 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
@@ -26,6 +27,14 @@ class BookWebService {
     fun scanBookCodeInStorage(vo: ScanBookCodeInStorageVo) {
         val dto = MapperUtil.map(ScanBookCodeInStorageDto::class.java, vo)
         bookAppService.scanBookCodeInStorage(dto)
+    }
+
+    /**
+     * 查询图书详情
+     */
+    fun findBookDetail(bookUid: String): BookDetailVo {
+        val dto = bookAppService.findBookDetail(bookUid)
+        return MapperUtil.map(BookDetailVo::class.java, dto)
     }
 
     /**

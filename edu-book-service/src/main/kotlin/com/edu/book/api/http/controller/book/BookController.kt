@@ -1,11 +1,13 @@
 package com.edu.book.api.http.controller.book
 
 import com.edu.book.api.http.service.BookWebService
+import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.infrastructure.anno.Response
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -40,6 +42,14 @@ class BookController {
     @PostMapping("/v1/storage")
     fun scanIsbnCode(@RequestBody @Valid vo: ScanBookCodeInStorageVo) {
         bookWebService.scanBookCodeInStorage(vo)
+    }
+
+    /**
+     * 查询图书详情
+     */
+    @GetMapping("/v1/{bookUid}/detail")
+    fun findBookDetail(@PathVariable bookUid: String): BookDetailVo {
+        return bookWebService.findBookDetail(bookUid)
     }
 
 }

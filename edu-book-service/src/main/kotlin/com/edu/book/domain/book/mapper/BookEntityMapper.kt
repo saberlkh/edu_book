@@ -25,9 +25,23 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-//    fun buildBookDetailDto(): BookDetailDto {
-//
-//    }
+    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>): BookDetailDto {
+        return MapperUtil.map(BookDetailDto::class.java, bookPo, excludes = listOf("price")).apply {
+            this.pic = bookPo.picUrl
+            this.pubplace = bookPo.publicPlace
+            this.pubdate = if (bookPo.publicDate != null) DateUtil.format(bookPo.publicDate!!, PATTREN_DATE3) else ""
+            this.isbn = bookPo.isbnCode!!
+            this.isbn10 = bookPo.isbn10Code
+            this.`class` = bookPo.bookClass
+            this.subtitle = bookPo.subTitle
+            this.price = bookPo.price?.toDouble()?.div(hundred)?.toString()
+            this.`class` = bookPo.bookClass
+            this.bookUid = detailPo.bookUid!!
+            this.garden = detailPo.garden ?: ""
+            this.bookStatus = detailPo.status
+            this.classify = classifyList.mapNotNull { it.classify }
+        }
+    }
 
     /**
      * 构建实体类

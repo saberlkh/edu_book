@@ -8,6 +8,7 @@ import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
@@ -74,7 +75,7 @@ class BookDomainService {
         //查询分类信息
         val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
         //参数组装
-        return BookDetailDto()
+        return buildBookDetailDto(detailPo, bookPo, classifyList)
     }
 
     /**
