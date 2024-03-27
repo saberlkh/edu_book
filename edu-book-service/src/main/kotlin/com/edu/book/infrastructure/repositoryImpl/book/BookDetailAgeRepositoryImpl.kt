@@ -30,4 +30,14 @@ class BookDetailAgeRepositoryImpl : ServiceImpl<BookDetailAgeDao, BookDetailAgeP
         return bookDetailAgeDao.selectList(wrapper)
     }
 
+    /**
+     * 批量查询
+     */
+    override fun batchQueryBookAgeGroups(bookUids: List<String>): List<BookDetailAgePo> {
+        if (bookUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookDetailAgePo::class.java)
+            .`in`(BookDetailAgePo::bookUid, bookUids)
+        return bookDetailAgeDao.selectList(wrapper)
+    }
+
 }

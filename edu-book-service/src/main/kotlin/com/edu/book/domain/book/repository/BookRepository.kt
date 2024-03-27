@@ -1,6 +1,9 @@
 package com.edu.book.domain.book.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookResultEntity
 import com.edu.book.infrastructure.po.book.BookPo
 
 /**
@@ -22,5 +25,10 @@ interface BookRepository : IService<BookPo> {
      * 更新
      */
     fun updateByUid(po: BookPo)
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBooks(dto: PageQueryBookDto): Page<PageQueryBookResultEntity>
 
 }

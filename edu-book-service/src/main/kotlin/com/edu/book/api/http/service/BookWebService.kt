@@ -1,11 +1,16 @@
 package com.edu.book.api.http.service
 
 import com.edu.book.api.vo.book.BookDetailVo
+import com.edu.book.api.vo.book.PageQueryBookResultVo
+import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
+import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.util.page.Page
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -45,6 +50,16 @@ class BookWebService {
         return MapperUtil.map(ScanIsbnCodeBookVo::class.java, dto).apply {
             this.`class` = dto.`class`
         }
+    }
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBooks(vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
+        val paramDto = MapperUtil.map(PageQueryBookDto::class.java, vo)
+        val pageResult = bookAppService.pageQueryBooks(paramDto)
+        if (pageResult.result.isNullOrEmpty()) return Page()
+        return Page(vo.page, vo.pageSize, pageResult.totalCount, MapperUtil.mapToList(PageQueryBookResultVo::class.java, pageResult.result!!))
     }
 
 }

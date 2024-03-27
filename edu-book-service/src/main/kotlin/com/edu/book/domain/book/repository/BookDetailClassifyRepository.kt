@@ -18,4 +18,9 @@ interface BookDetailClassifyRepository : IService<BookDetailClassifyPo> {
      */
     fun findClassifyList(bookUid: String, isbnCode: String): List<BookDetailClassifyPo>
 
+    /**
+     * 批量查询
+     */
+    fun batchQueryClassifyList(bookUids: List<String>): List<BookDetailClassifyPo>
+
 }

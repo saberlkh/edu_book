@@ -2,6 +2,8 @@ package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.BookDetailDto
+import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
@@ -11,6 +13,7 @@ import com.edu.book.domain.book.service.BookDomainService
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_ISBN_LOCK_KEY
+import com.edu.book.infrastructure.util.page.Page
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import org.apache.commons.lang3.ObjectUtils
@@ -84,6 +87,13 @@ class BookAppService {
                 lock.unlock()
             }
         }
+    }
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBooks(dto: PageQueryBookDto): Page<PageQueryBookResultDto> {
+        return bookDomainService.pageQueryBooks(dto)
     }
 
 }

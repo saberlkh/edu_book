@@ -14,7 +14,9 @@ enum class AgeGroupEnum(val age: Int, val desc: String) {
     FIVE_TO_SIX(2, "5-6"),
 
     SIX_TO_SEVEN(3, "6-7"),
-    
+
+    tkindergarten_to_school(4, "幼小衔接"),
+
     ;
 
 }

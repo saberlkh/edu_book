@@ -30,4 +30,14 @@ class BookDetailClassifyRepositoryImpl : ServiceImpl<BookDetailClassifyDao, Book
         return bookDetailClassifyDao.selectList(wrapper)
     }
 
+    /**
+     * 批量查询
+     */
+    override fun batchQueryClassifyList(bookUids: List<String>): List<BookDetailClassifyPo> {
+        if (bookUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookDetailClassifyPo::class.java)
+            .`in`(BookDetailClassifyPo::bookUid, bookUids)
+        return bookDetailClassifyDao.selectList(wrapper)
+    }
+
 }

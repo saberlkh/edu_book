@@ -3,6 +3,8 @@ package com.edu.book.domain.book.service
 import com.alibaba.fastjson.JSON
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
+import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
@@ -20,11 +22,15 @@ import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.domain.book.repository.BookSellRepository
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.po.book.BookSellPo
+import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import com.edu.book.infrastructure.util.page.Page
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import org.redisson.api.RedissonClient
@@ -143,6 +149,34 @@ class BookDomainService {
             it
         }
         bookSellRepository.saveBatch(bookSellList)
+    }
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBooks(dto: PageQueryBookDto): Page<PageQueryBookResultDto> {
+        val pageQuery = bookRepository.pageQueryBooks(dto)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        val bookUids = pageQuery.records.mapNotNull { it.bookUid }
+        //查询分类和年龄段
+        val classifyPos = bookDetailClassifyRepository.batchQueryClassifyList(bookUids)
+        val classifyPoMap = classifyPos.groupBy { it.bookUid!! }
+        val ageGroups = bookDetailAgeRepository.batchQueryBookAgeGroups(bookUids)
+        val ageGroupMap = ageGroups.groupBy { it.bookUid!! }
+        //参数组装
+        val bookDtos = pageQuery.records.map {
+            val result = MapperUtil.map(PageQueryBookResultDto::class.java, it, excludes = listOf("price", "page", "pubdate", "ageGroups", "classify")).apply {
+                this.price = it.price?.toDouble()?.div(Constants.hundred)?.toString()
+                this.page = it.page?.toString()
+                this.pubdate = if (it.pubdate != null) DateUtil.format(it.pubdate!!, DateUtil.PATTREN_DATE3) else ""
+                val bookClassifyPos = classifyPoMap.get(it.bookUid)
+                this.classify = bookClassifyPos?.mapNotNull { it.classify } ?: emptyList()
+                val bookAgeGroups = ageGroupMap.get(it.bookUid)
+                this.ageGroups = bookAgeGroups?.mapNotNull { it.ageGroup } ?: emptyList()
+            }
+            result
+        }
+        return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), bookDtos)
     }
 
 }

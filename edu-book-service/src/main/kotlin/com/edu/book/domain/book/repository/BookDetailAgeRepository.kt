@@ -18,4 +18,9 @@ interface BookDetailAgeRepository : IService<BookDetailAgePo> {
      */
     fun findByBookUid(isbn: String, bookUid: String): List<BookDetailAgePo>
 
+    /**
+     * 批量查询
+     */
+    fun batchQueryBookAgeGroups(bookUids: List<String>): List<BookDetailAgePo>
+
 }
