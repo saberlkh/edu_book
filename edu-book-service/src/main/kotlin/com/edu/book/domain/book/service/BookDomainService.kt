@@ -7,11 +7,13 @@ import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailAgeGroupPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
+import com.edu.book.domain.book.repository.BookDetailAgeRepository
 import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
 import com.edu.book.domain.book.repository.BookRepository
@@ -56,6 +58,9 @@ class BookDomainService {
     @Autowired
     private lateinit var bookDetailClassifyRepository: BookDetailClassifyRepository
 
+    @Autowired
+    private lateinit var bookDetailAgeRepository: BookDetailAgeRepository
+
     /**
      * 根据isbn查询书
      */
@@ -74,8 +79,10 @@ class BookDomainService {
         val bookPo = bookRepository.findByIsbnCode(detailPo.isbnCode) ?: throw BookInfoNotExistException()
         //查询分类信息
         val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
+        //查询年龄段
+        val ageGroups = bookDetailAgeRepository.findByBookUid(bookUid, detailPo.isbnCode!!)
         //参数组装
-        return buildBookDetailDto(detailPo, bookPo, classifyList)
+        return buildBookDetailDto(detailPo, bookPo, classifyList, ageGroups)
     }
 
     /**
@@ -111,6 +118,9 @@ class BookDomainService {
             //添加分类
             val classifyPos = buildBookDetailClassifyPos(dto)
             bookDetailClassifyRepository.saveBatch(classifyPos)
+            //添加年龄段
+            val ageGroups = buildBookDetailAgeGroupPos(dto)
+            bookDetailAgeRepository.saveBatch(ageGroups)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()

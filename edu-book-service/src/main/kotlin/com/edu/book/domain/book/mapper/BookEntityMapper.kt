@@ -9,6 +9,7 @@ import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.po.book.BookDetailAgePo
 import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
@@ -25,7 +26,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>): BookDetailDto {
+    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>, ageGroups: List<BookDetailAgePo>): BookDetailDto {
         return MapperUtil.map(BookDetailDto::class.java, bookPo, excludes = listOf("price")).apply {
             this.pic = bookPo.picUrl
             this.pubplace = bookPo.publicPlace
@@ -40,6 +41,7 @@ object BookEntityMapper {
             this.garden = detailPo.garden ?: ""
             this.bookStatus = detailPo.status
             this.classify = classifyList.mapNotNull { it.classify }
+            this.ageGroups = ageGroups.mapNotNull { it.ageGroup }
         }
     }
 
@@ -115,6 +117,20 @@ object BookEntityMapper {
             this.status = BookDetailStatusEnum.IN_STORAGE.status
             this.inStorageTime = Timestamp(Date().time)
             this.garden = dto.garden
+        }
+    }
+
+    /**
+     * 构建实体
+     */
+    fun buildBookDetailAgeGroupPos(dto: ScanBookCodeInStorageDto): List<BookDetailAgePo> {
+        return dto.ageGroups.map {
+            BookDetailAgePo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.isbnCode = dto.isbn
+                this.ageGroup = it
+                this.bookUid = dto.bookUid
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.edu.book.domain.book.dto
 
 import java.io.Serializable
+import javax.validation.constraints.NotEmpty
 
 /**
  * @Auther: liukaihua
@@ -123,5 +124,11 @@ class ScanBookCodeInStorageDto: Serializable {
      * 分类
      */
     var classify: List<String> = emptyList()
+
+    /**
+     * 年龄段
+     */
+    @NotEmpty(message = "年龄段不能为空")
+    var ageGroups: List<Int> = emptyList()
 
 }

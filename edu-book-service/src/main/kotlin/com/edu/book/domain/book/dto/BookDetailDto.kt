@@ -129,4 +129,9 @@ class BookDetailDto: Serializable {
      */
     var bookStatus: Int? = null
 
+    /**
+     * 年龄段
+     */
+    var ageGroups: List<Int> = emptyList()
+
 }

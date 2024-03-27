@@ -130,4 +130,10 @@ class ScanBookCodeInStorageVo: Serializable {
     @NotEmpty(message = "分类不能为空")
     var classify: List<String> = emptyList()
 
+    /**
+     * 年龄段
+     */
+    @NotEmpty(message = "年龄段不能为空")
+    var ageGroups: List<Int> = emptyList()
+
 }
