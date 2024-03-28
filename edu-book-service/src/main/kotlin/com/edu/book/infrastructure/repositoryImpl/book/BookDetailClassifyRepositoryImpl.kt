@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
@@ -38,6 +39,15 @@ class BookDetailClassifyRepositoryImpl : ServiceImpl<BookDetailClassifyDao, Book
         val wrapper = KtQueryWrapper(BookDetailClassifyPo::class.java)
             .`in`(BookDetailClassifyPo::bookUid, bookUids)
         return bookDetailClassifyDao.selectList(wrapper)
+    }
+
+    /**
+     * 删除分类
+     */
+    override fun deleteByBookUid(bookUid: String) {
+        val wrapper = KtUpdateWrapper(BookDetailClassifyPo::class.java)
+            .eq(BookDetailClassifyPo::bookUid, bookUid)
+        remove(wrapper)
     }
 
 }

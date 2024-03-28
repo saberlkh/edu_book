@@ -36,6 +36,7 @@ import javax.annotation.Resource
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * @Auther: liukaihua
@@ -76,6 +77,20 @@ class BookDomainService {
     }
 
     /**
+     * 删除图书详情
+     * 1.删除bookdetail
+     * 2.删除分类
+     * 3.删除年龄段
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun deleteBookDetail(bookUid: String) {
+        bookDetailRepository.findByBookUid(bookUid) ?: return
+        bookDetailRepository.deleteByBookUid(bookUid)
+        bookDetailClassifyRepository.deleteByBookUid(bookUid)
+        bookDetailAgeRepository.deleteByBookUid(bookUid)
+    }
+
+    /**
      * 查询图书详情
      */
     fun findBookDetail(bookUid: String): BookDetailDto {
@@ -97,6 +112,7 @@ class BookDomainService {
      * 2.新增书籍
      * 3.修改图书基础信息
      */
+    @Transactional(rollbackFor = [Exception::class])
     fun scanBookCodeInStorage(dto: ScanBookCodeInStorageDto) {
         val lockKey = SCAN_BOOK_CODE_KEY + dto.bookUid
         val lock = redissonClient.getLock(lockKey)

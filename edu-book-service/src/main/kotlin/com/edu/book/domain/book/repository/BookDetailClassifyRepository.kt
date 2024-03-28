@@ -23,4 +23,9 @@ interface BookDetailClassifyRepository : IService<BookDetailClassifyPo> {
      */
     fun batchQueryClassifyList(bookUids: List<String>): List<BookDetailClassifyPo>
 
+    /**
+     * 删除分类
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }

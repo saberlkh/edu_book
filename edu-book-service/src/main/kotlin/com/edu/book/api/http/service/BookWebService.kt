@@ -43,6 +43,13 @@ class BookWebService {
     }
 
     /**
+     * 删除图书
+     */
+    fun deleteBookDetail(bookUid: String) {
+        bookAppService.deleteBookDetail(bookUid)
+    }
+
+    /**
      * 扫码
      */
     fun scanIsbnCode(isbnCode: String): ScanIsbnCodeBookVo {

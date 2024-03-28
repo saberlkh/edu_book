@@ -10,6 +10,7 @@ import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.util.page.Page
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -61,6 +62,14 @@ class BookController {
     @GetMapping("/v1/page")
     fun pageQuery(vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
         return bookWebService.pageQueryBooks(vo)
+    }
+
+    /**
+     * 删除图书
+     */
+    @DeleteMapping("/v1/{bookUid}")
+    fun deleteBookDetail(@PathVariable bookUid: String) {
+        bookWebService.deleteBookDetail(bookUid)
     }
 
 }

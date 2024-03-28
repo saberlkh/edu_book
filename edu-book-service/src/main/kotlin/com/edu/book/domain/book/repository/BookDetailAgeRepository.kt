@@ -23,4 +23,9 @@ interface BookDetailAgeRepository : IService<BookDetailAgePo> {
      */
     fun batchQueryBookAgeGroups(bookUids: List<String>): List<BookDetailAgePo>
 
+    /**
+     * 删除
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }

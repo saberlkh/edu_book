@@ -18,4 +18,9 @@ interface BookDetailRepository : IService<BookDetailPo> {
      */
     fun findByBookUid(bookUid: String): BookDetailPo?
 
+    /**
+     * 删除
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }
