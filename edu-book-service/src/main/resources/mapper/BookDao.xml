@@ -69,16 +69,16 @@
 
     <sql id="pageQueryCondition">
         <if test="title != null and title != ''">
-            AND book.c_title = #{title}
+            AND book.c_title like CONCAT(#{title},'%')
         </if>
         <if test="subTitle != null and subTitle != ''">
-            AND book.c_sub_title = #{subTitle}
+            AND book.c_sub_title like CONCAT(#{subTitle},'%')
         </if>
         <if test="isbn != null and isbn != ''">
-            AND book.c_isbn_code = #{isbn}
+            AND book.c_isbn_code like CONCAT(#{isbn},'%')
         </if>
         <if test="bookUid != null and bookUid != ''">
-            AND detail.c_book_uid = #{bookUid}
+            AND detail.c_book_uid like CONCAT(#{bookUid},'%')
         </if>
         <if test="classifyList != null and classifyList.size > 0">
             AND classify.c_classify in
