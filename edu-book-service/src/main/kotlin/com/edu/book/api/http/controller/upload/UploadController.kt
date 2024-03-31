@@ -27,9 +27,9 @@ class UploadController {
     /**
      * 上传图片
      */
-    @PostMapping("/v1/image")
-    fun uploadImage(file: MultipartFile): ResponseVo<String> {
-        return ResponseVo(uploadWebService.upload(file, FileTypeEnum.IMAGE.fileType))
+    @PostMapping("/v1/file")
+    fun uploadFile(file: MultipartFile): ResponseVo<String> {
+        return ResponseVo(uploadWebService.upload(file, FileTypeEnum.FILE.fileType))
     }
 
 }
