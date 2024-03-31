@@ -27,6 +27,16 @@ class BookRepositoryImpl : ServiceImpl<BookDao, BookPo>(), BookRepository {
     private lateinit var bookDao: BookDao
 
     /**
+     * 查询isbn列表
+     */
+    override fun findIsbnList(garden: String?, isbn: String?): List<BookPo> {
+        val wrapper = KtQueryWrapper(BookPo::class.java)
+            .eq(!garden.isNullOrBlank(), BookPo::garden, garden)
+            .likeRight(!isbn.isNullOrBlank(), BookPo::isbnCode, isbn)
+        return bookDao.selectList(wrapper)
+    }
+
+    /**
      * 根据isbn查询
      */
     override fun findByIsbnCode(isbnCode: String?): BookPo? {

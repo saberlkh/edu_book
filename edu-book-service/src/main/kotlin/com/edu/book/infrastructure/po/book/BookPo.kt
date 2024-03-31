@@ -142,4 +142,10 @@ class BookPo : BasePo() {
     @TableField("c_book_class")
     var bookClass: String? = null
 
+    /**
+     * 园区
+     */
+    @TableField("c_garden")
+    var garden: String? = null
+
 }

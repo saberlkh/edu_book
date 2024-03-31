@@ -69,4 +69,11 @@ class BookWebService {
         return Page(vo.page, vo.pageSize, pageResult.totalCount, MapperUtil.mapToList(PageQueryBookResultVo::class.java, pageResult.result!!))
     }
 
+    /**
+     * 查询isbn列表
+     */
+    fun getIsbnList(garden: String?, isbn: String?): List<String> {
+        return bookAppService.getIsbnList(garden, isbn)
+    }
+
 }

@@ -30,7 +30,6 @@ import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import com.edu.book.infrastructure.util.page.Page
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import org.redisson.api.RedissonClient
@@ -193,6 +192,13 @@ class BookDomainService {
             result
         }
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), bookDtos)
+    }
+
+    /**
+     * 查询isbn列表
+     */
+    fun getIsbnList(garden: String?, isbn: String?): List<String> {
+        return bookRepository.findIsbnList(garden, isbn).mapNotNull { it.isbnCode }
     }
 
 }

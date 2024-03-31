@@ -86,6 +86,7 @@ object BookEntityMapper {
             this.language = dto.language ?: bookPo.language
             this.format = dto.format ?: bookPo.format
             this.bookClass = dto.`class` ?: bookPo.bookClass
+            this.garden = dto.garden
         }
     }
 

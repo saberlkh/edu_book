@@ -17,6 +17,11 @@ import com.edu.book.infrastructure.po.book.BookPo
 interface BookRepository : IService<BookPo> {
 
     /**
+     * 查询isbn列表
+     */
+    fun findIsbnList(garden: String?, isbn: String?): List<BookPo>
+
+    /**
      * 根据isbn查询
      */
     fun findByIsbnCode(isbnCode: String?): BookPo?

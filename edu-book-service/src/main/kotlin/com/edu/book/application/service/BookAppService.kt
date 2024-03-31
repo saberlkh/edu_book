@@ -103,4 +103,11 @@ class BookAppService {
         return bookDomainService.pageQueryBooks(dto)
     }
 
+    /**
+     * 查询isbn列表
+     */
+    fun getIsbnList(garden: String?, isbn: String?): List<String> {
+        return bookDomainService.getIsbnList(garden, isbn)
+    }
+
 }

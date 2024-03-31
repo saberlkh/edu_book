@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -70,6 +71,14 @@ class BookController {
     @DeleteMapping("/v1/{bookUid}")
     fun deleteBookDetail(@PathVariable bookUid: String) {
         bookWebService.deleteBookDetail(bookUid)
+    }
+
+    /**
+     * 获取isbn列表
+     */
+    @GetMapping("/v1/isbn")
+    fun getIsbnList(@RequestParam(required = false) garden: String?, @RequestParam(required = false) isbn: String?): List<String> {
+        return bookWebService.getIsbnList(garden, isbn)
     }
 
 }
