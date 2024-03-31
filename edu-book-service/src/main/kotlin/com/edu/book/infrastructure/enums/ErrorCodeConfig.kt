@@ -66,7 +66,9 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     ISBN_API_FAIL(600009, "通过isbn的api查询图书信息失败"),
 
-    BOOK_EXIST(600010, "图书已经存在")
+    BOOK_EXIST(600010, "图书已经存在"),
+
+    FILE_NAME_NOT_NULL(600011, "文件名不能为空"),
 
     ;
 

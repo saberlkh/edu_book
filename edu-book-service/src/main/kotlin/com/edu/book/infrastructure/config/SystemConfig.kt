@@ -90,4 +90,40 @@ class SystemConfig {
     @Value("\${isbn.query.api.url}")
     var isbnQueryApiUrl: String = ""
 
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.access.key}")
+    var qiniuAccessKey: String = ""
+
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.secret.key}")
+    var qiniuSecretKey: String = ""
+
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.bucket.name}")
+    var qiniuBucketName: String = ""
+
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.bucket.picture.path}")
+    var qiniuBucketPicturePath: String = ""
+
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.bucket.file.path}")
+    var qiniuBucketFilePath: String = ""
+
+    /**
+     * qiniu
+     */
+    @Value("\${qiniu.upload.domain}")
+    var qiniuUploadDomain: String = ""
+
 }
