@@ -14,7 +14,6 @@ import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.util.DateUtil
-import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE
 import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE3
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
