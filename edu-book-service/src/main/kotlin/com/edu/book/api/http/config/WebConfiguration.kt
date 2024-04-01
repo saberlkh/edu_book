@@ -22,7 +22,7 @@ class WebConfiguration: WebMvcConfigurer {
 
     private val traceExecution = "execution(* com.edu.book.api.http.controller..*.*(..))"
 
-    private final val openPath = listOf("/wechat/**", "/user/v1/login", "/test/**")
+    private final val openPath = listOf("/wechat/**", "/user/v1/login", "/test/**", "/verification.html")
 
     @Bean
     fun traceIdInterceptor(): TraceIdInterceptor {
