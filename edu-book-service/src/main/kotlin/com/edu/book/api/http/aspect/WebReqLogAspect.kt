@@ -30,7 +30,7 @@ class WebReqLogAspect : MethodInterceptor {
         private val objectMapper = ObjectMapper()
     }
 
-    @Pointcut("@annotation(com.seewo.live.web.log.WebReqLog)")
+    @Pointcut("@annotation(com.edu.book.api.http.anno.WebReqLog)")
     fun webReqLog() {
     }
 
