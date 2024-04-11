@@ -22,7 +22,7 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_book_detail_age"))
+//    GeneratorCodeUtils().execute(listOf("t_area", "t_kindergarten", "t_garden", "t_garde", "t_class"))
 //}
 //
 //@Component

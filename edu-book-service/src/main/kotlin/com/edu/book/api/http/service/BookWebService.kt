@@ -7,7 +7,6 @@ import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.PageQueryBookDto
-import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.page.Page
