@@ -3,7 +3,9 @@ package com.edu.book.api.http.service
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.util.QiNiuUtil
+import java.io.File
 import java.io.FileInputStream
+import net.coobird.thumbnailator.Thumbnails
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -25,8 +27,17 @@ class UploadWebService {
         if (fileName.isNullOrBlank()) {
             throw WebAppException(ErrorCodeConfig.FILE_NAME_NOT_NULL)
         }
-        val fileInputStream = file.inputStream as FileInputStream
+        val finalFile = File(this.javaClass.getClassLoader().getResource("").path + file.originalFilename)
+        Thumbnails.of(file.getInputStream())
+            .scale(1.00)
+            .outputQuality(0.5)
+            .toFile(finalFile)
+        val fileInputStream = FileInputStream(finalFile)
         val url = qiNiuUtil.upload(fileInputStream, fileType)
+        if (fileInputStream != null) {
+            fileInputStream.close()
+        }
+        finalFile.delete()
         return url
     }
 
