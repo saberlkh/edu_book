@@ -1,7 +1,9 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.infrastructure.enums.CommonFileTypeEnum
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
+import com.edu.book.infrastructure.util.FileTypeUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import java.io.File
 import java.io.FileInputStream
@@ -27,18 +29,24 @@ class UploadWebService {
         if (fileName.isNullOrBlank()) {
             throw WebAppException(ErrorCodeConfig.FILE_NAME_NOT_NULL)
         }
-        val path = System.getProperty("user.dir")
-        val finalFile = File(path + file.originalFilename)
-        Thumbnails.of(file.getInputStream())
-            .scale(1.00)
-            .outputQuality(0.5)
-            .toFile(finalFile)
-        val fileInputStream = FileInputStream(finalFile)
-        val url = qiNiuUtil.upload(fileInputStream, fileType)
-        if (fileInputStream != null) {
-            fileInputStream.close()
+        //判断文件类型，如果是图片进行压缩
+        val commonFileType = FileTypeUtil.getFileType(file.inputStream as FileInputStream)
+        var finalFile: File? = null
+        val fileInputStream = if (CommonFileTypeEnum.imageFile(commonFileType)) {
+            val path = System.getProperty("user.dir")
+            finalFile = File(path + file.originalFilename)
+            //进行图片压缩
+            Thumbnails.of(file.inputStream)
+                .scale(1.00)
+                .outputQuality(0.5)
+                .toFile(finalFile)
+            FileInputStream(finalFile)
+        } else {
+            file.inputStream as FileInputStream
         }
-        finalFile.delete()
+        val url = qiNiuUtil.upload(fileInputStream, fileType)
+        fileInputStream?.close()
+        finalFile?.delete()
         return url
     }
 
