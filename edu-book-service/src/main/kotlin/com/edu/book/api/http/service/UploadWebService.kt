@@ -27,7 +27,8 @@ class UploadWebService {
         if (fileName.isNullOrBlank()) {
             throw WebAppException(ErrorCodeConfig.FILE_NAME_NOT_NULL)
         }
-        val finalFile = File(this.javaClass.getClassLoader().getResource("").path + file.originalFilename)
+        val path = System.getProperty("user.dir")
+        val finalFile = File(path + file.originalFilename)
         Thumbnails.of(file.getInputStream())
             .scale(1.00)
             .outputQuality(0.5)
