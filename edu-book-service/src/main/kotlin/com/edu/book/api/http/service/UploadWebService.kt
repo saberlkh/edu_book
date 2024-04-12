@@ -1,9 +1,11 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.vo.upload.UploadFileVo
 import com.edu.book.infrastructure.enums.CommonFileTypeEnum
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.util.FileTypeUtil
+import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import java.io.File
 import java.io.FileInputStream
@@ -24,7 +26,7 @@ class UploadWebService {
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
 
-    fun upload(file: MultipartFile, fileType: String): String {
+    fun upload(file: MultipartFile, fileType: String): UploadFileVo {
         val fileName = file.originalFilename
         if (fileName.isNullOrBlank()) {
             throw WebAppException(ErrorCodeConfig.FILE_NAME_NOT_NULL)
@@ -44,10 +46,10 @@ class UploadWebService {
         } else {
             file.inputStream as FileInputStream
         }
-        val url = qiNiuUtil.upload(fileInputStream, fileType)
+        val dto = qiNiuUtil.upload(fileInputStream, fileType)
         fileInputStream?.close()
         finalFile?.delete()
-        return url
+        return MapperUtil.map(UploadFileVo::class.java, dto)
     }
 
     /**
