@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.upload.UploadFilePo
  */
 interface UploadFileRepository : IService<UploadFilePo> {
 
+    /**
+     * 查询
+     */
+    fun queryUploadFileByFileKey(fileKey: String): UploadFilePo?
+
 }

@@ -10,11 +10,6 @@ import java.io.Serializable
 class UploadFileDto: Serializable {
 
     /**
-     * 业务唯一id
-     */
-    var uid: String? = null
-
-    /**
      * 文件路径
      */
     var filePath: String? = null
@@ -38,5 +33,19 @@ class UploadFileDto: Serializable {
      * 视频封面地址
      */
     var videoCoverUrl: String? = null
+
+    companion object {
+
+        fun buildUploadFileDto(filePath: String, fileKey: String, fileType: String, bucketName: String, videoCoverUrl: String): UploadFileDto {
+            return UploadFileDto().apply {
+                this.filePath = filePath
+                this.fileKey = fileKey
+                this.fileType = fileType
+                this.bucketName = bucketName
+                this.videoCoverUrl = videoCoverUrl
+            }
+        }
+
+    }
 
 }

@@ -9,7 +9,7 @@ enum class FileTypeEnum(val fileType: String) {
 
     IMAGE("IMAGE"),
 
-    FILE("FILE"),
+    VIDEO("VIDEO"),
 
     ;
 

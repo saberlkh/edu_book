@@ -3,6 +3,7 @@ package com.edu.book.api.http.service
 import com.edu.book.api.vo.upload.UploadFileVo
 import com.edu.book.infrastructure.enums.CommonFileTypeEnum
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
+import com.edu.book.infrastructure.enums.FileTypeEnum
 import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.util.FileTypeUtil
 import com.edu.book.infrastructure.util.MapperUtil
@@ -26,7 +27,7 @@ class UploadWebService {
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
 
-    fun upload(file: MultipartFile, fileType: String): UploadFileVo {
+    fun upload(file: MultipartFile): UploadFileVo {
         val fileName = file.originalFilename
         if (fileName.isNullOrBlank()) {
             throw WebAppException(ErrorCodeConfig.FILE_NAME_NOT_NULL)
@@ -34,6 +35,7 @@ class UploadWebService {
         //判断文件类型，如果是图片进行压缩
         val commonFileType = FileTypeUtil.getFileType(file.inputStream as FileInputStream)
         var finalFile: File? = null
+        var fileType = FileTypeEnum.IMAGE.fileType
         val fileInputStream = if (CommonFileTypeEnum.imageFile(commonFileType)) {
             val path = System.getProperty("user.dir")
             finalFile = File(path + file.originalFilename)
@@ -44,6 +46,7 @@ class UploadWebService {
                 .toFile(finalFile)
             FileInputStream(finalFile)
         } else {
+            fileType = FileTypeEnum.VIDEO.fileType
             file.inputStream as FileInputStream
         }
         val dto = qiNiuUtil.upload(fileInputStream, fileType)

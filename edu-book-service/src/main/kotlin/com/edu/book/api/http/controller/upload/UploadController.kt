@@ -29,7 +29,7 @@ class UploadController {
      */
     @PostMapping("/v1/file")
     fun uploadFile(file: MultipartFile): UploadFileVo {
-        return uploadWebService.upload(file, FileTypeEnum.FILE.fileType)
+        return uploadWebService.upload(file)
     }
 
 }
