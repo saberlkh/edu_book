@@ -22,7 +22,7 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_upload_file"))
+//    GeneratorCodeUtils().execute(listOf("t_hair_classify", "t_hair_classify_file"))
 //}
 //
 //@Component
