@@ -3,9 +3,11 @@ package com.edu.book.infrastructure.repositoryImpl.hair;
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.repository.HairClassifyFileRepository
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 import com.edu.book.infrastructure.repositoryImpl.dao.hair.HairClassifyFileDao
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class HairClassifyFileRepositoryImpl : ServiceImpl<HairClassifyFileDao, HairClassifyFilePo>(), HairClassifyFileRepository {
+
+    @Autowired
+    private lateinit var hairClassifyFileDao: HairClassifyFileDao
 
     /**
      * 删除
@@ -33,6 +38,22 @@ class HairClassifyFileRepositoryImpl : ServiceImpl<HairClassifyFileDao, HairClas
         val wrapper = KtQueryWrapper(HairClassifyFilePo::class.java)
             .eq(HairClassifyFilePo::classifyUid, classifyUid)
         return list(wrapper)
+    }
+
+    /**
+     * 查询数量
+     */
+    override fun queryTotalCountByClassifyUid(classifyUid: String): Int {
+        val wrapper = KtQueryWrapper(HairClassifyFilePo::class.java)
+            .eq(HairClassifyFilePo::classifyUid, classifyUid)
+        return count(wrapper)
+    }
+
+    /**
+     * 分页查询
+     */
+    override fun queryListByClassifyUid(param: PageQueryClassifyDetailParam): List<HairClassifyFilePo> {
+        return hairClassifyFileDao.queryListByClassifyUid(param)
     }
 
 }

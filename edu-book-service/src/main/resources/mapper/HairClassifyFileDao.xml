@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kindlink.repositoryImpl.dao.HairClassifyFileDao">
+<mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.hair.HairClassifyFileDao">
+
+    <!--fun queryListByClassifyUid(param: PageQueryClassifyDetailParam): List<HairClassifyFilePo>-->
+    <select id="queryListByClassifyUid" parameterType="com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam"
+        resultType="com.edu.book.infrastructure.po.hair.HairClassifyFilePo">
+        SELECT
+            c_uid AS uid,
+            c_classify_uid AS classifyUid,
+            c_file_path AS filePath,
+            c_file_key AS fileKey
+        FROM
+            t_hair_classify_file
+        WHERE
+            c_classify_uid = #{classifyUid}
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
 
 </mapper>

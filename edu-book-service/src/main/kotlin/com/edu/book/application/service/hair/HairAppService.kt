@@ -1,5 +1,7 @@
 package com.edu.book.application.service.hair
 
+import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
+import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.service.HairDomainService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +24,13 @@ class HairAppService {
      */
     fun saveHairClassify(dto: SaveHairClassifyDto): String {
         return hairDomainService.saveHairClassify(dto)
+    }
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryClassifyDetail(param: PageQueryClassifyDetailParam): PageQueryHairDetailDto {
+        return hairDomainService.pageQueryClassifyDetail(param)
     }
 
     /**

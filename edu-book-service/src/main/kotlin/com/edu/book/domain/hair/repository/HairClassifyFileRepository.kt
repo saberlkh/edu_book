@@ -1,6 +1,7 @@
 package com.edu.book.domain.hair.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService
+import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 
 /**
@@ -22,5 +23,15 @@ interface HairClassifyFileRepository : IService<HairClassifyFilePo> {
      * 查询
      */
     fun getByClassifyUid(classifyUid: String): List<HairClassifyFilePo>
+
+    /**
+     * 查询总量
+     */
+    fun queryTotalCountByClassifyUid(classifyUid: String): Int
+
+    /**
+     * 分页查询
+     */
+    fun queryListByClassifyUid(param: PageQueryClassifyDetailParam): List<HairClassifyFilePo>
 
 }

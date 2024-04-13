@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.dao.hair;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,10 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 interface HairClassifyFileDao : BaseMapper<HairClassifyFilePo> {
+
+    /**
+     * 分页查询
+     */
+    fun queryListByClassifyUid(param: PageQueryClassifyDetailParam): List<HairClassifyFilePo>
 
 }

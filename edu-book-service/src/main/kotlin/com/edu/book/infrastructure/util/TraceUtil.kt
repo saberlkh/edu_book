@@ -31,7 +31,7 @@ object TraceUtil {
     /**
      * 获取traceId
      */
-    fun getTraceId(): String {
+    fun getTraceId(): String? {
         return MDC.get(TRACE_ID)
     }
 

@@ -1,5 +1,8 @@
 package com.edu.book.domain.hair.service
 
+import com.edu.book.domain.hair.dto.HairClassifyFileDto
+import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
+import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.repository.HairClassifyFileRepository
 import com.edu.book.domain.hair.repository.HairClassifyRepository
@@ -11,6 +14,7 @@ import com.edu.book.infrastructure.util.UUIDUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -35,6 +39,24 @@ class HairDomainService {
 
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
+
+    /**
+     * 查询分类详情
+     */
+    fun pageQueryClassifyDetail(param: PageQueryClassifyDetailParam): PageQueryHairDetailDto {
+        //查询分类
+        val classifyPo = hairClassifyRepository.queryByUid(param.classifyUid) ?: return PageQueryHairDetailDto()
+        //查询图片列表
+        val totalCount = hairClassifyFileRepository.queryTotalCountByClassifyUid(param.classifyUid)
+        if (totalCount <= NumberUtils.INTEGER_ZERO) return PageQueryHairDetailDto(
+            param.page, param.pageSize, totalCount, emptyList(), classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
+        )
+        val fileList = hairClassifyFileRepository.queryListByClassifyUid(param)
+        val pageResult = MapperUtil.mapToList(HairClassifyFileDto::class.java, fileList)
+        return PageQueryHairDetailDto(
+            param.page, param.pageSize, totalCount, pageResult, classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
+        )
+    }
 
     /**
      * 删除分类
