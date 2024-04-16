@@ -1,5 +1,6 @@
 package com.edu.book.domain.hair.service
 
+import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.HairClassifyFileDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
@@ -39,6 +40,19 @@ class HairDomainService {
 
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
+
+    /**
+     * 查询所有分类
+     */
+    fun queryAllClassify(): List<HairClassifyDto> {
+        val pos = hairClassifyRepository.list()
+        if (pos.isNullOrEmpty()) return emptyList()
+        return pos.map {
+            MapperUtil.map(HairClassifyDto::class.java, it).apply {
+                this.classifyUid = it.uid
+            }
+        }
+    }
 
     /**
      * 查询分类详情

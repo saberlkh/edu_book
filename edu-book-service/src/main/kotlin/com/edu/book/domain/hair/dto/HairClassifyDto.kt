@@ -10,6 +10,11 @@ import java.io.Serializable
 class HairClassifyDto: Serializable {
 
     /**
+     * 分类Uid
+     */
+    var classifyUid: String? = null
+
+    /**
      * 分类名称
      */
     var classifyName: String? = null

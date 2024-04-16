@@ -3,6 +3,7 @@ package com.edu.book.api.http.controller.hair
 import com.edu.book.api.vo.hair.DeleteClassifyVo
 import com.edu.book.api.vo.hair.SaveHairClassifyVo
 import com.edu.book.application.service.hair.HairAppService
+import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -48,6 +48,14 @@ class HairController {
     @DeleteMapping("/v1/classify")
     fun deleteClassify(@RequestBody @Valid vo: DeleteClassifyVo) {
         hairAppService.deleteClassify(vo.classifyUid)
+    }
+
+    /**
+     * 查询所有分类
+     */
+    @GetMapping("/v1/classify")
+    fun queryAllClassify(): List<HairClassifyDto> {
+        return hairAppService.queryAllClassify()
     }
 
     /**
