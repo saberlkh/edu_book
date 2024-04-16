@@ -20,6 +20,11 @@ interface HairClassifyFileRepository : IService<HairClassifyFilePo> {
     fun deleteByClassifyUid(classifyUid: String)
 
     /**
+     * 删除
+     */
+    fun deleteByFileKeys(fileKeys: List<String>)
+
+    /**
      * 查询
      */
     fun getByClassifyUid(classifyUid: String): List<HairClassifyFilePo>

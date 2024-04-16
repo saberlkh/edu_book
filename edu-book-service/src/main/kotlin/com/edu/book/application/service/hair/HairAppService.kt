@@ -1,6 +1,7 @@
 package com.edu.book.application.service.hair
 
 import com.edu.book.domain.hair.dto.HairClassifyDto
+import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
@@ -32,6 +33,13 @@ class HairAppService {
      */
     fun queryAllClassify(): List<HairClassifyDto> {
         return hairDomainService.queryAllClassify()
+    }
+
+    /**
+     * 编辑分类
+     */
+    fun modifyClassify(dto: ModifyClassifyDto) {
+        hairDomainService.modifyClassify(dto)
     }
 
     /**

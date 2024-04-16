@@ -14,6 +14,11 @@ import com.edu.book.infrastructure.po.hair.HairClassifyPo
 interface HairClassifyRepository : IService<HairClassifyPo> {
 
     /**
+     * 更新
+     */
+    fun updateByUid(po: HairClassifyPo)
+
+    /**
      * 查询
      */
     fun queryByUid(classifyUid: String): HairClassifyPo?

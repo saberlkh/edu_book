@@ -2,6 +2,7 @@ package com.edu.book.domain.hair.service
 
 import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.HairClassifyFileDto
+import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
@@ -40,6 +41,47 @@ class HairDomainService {
 
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
+
+    /**
+     * 编辑分类
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun modifyClassify(dto: ModifyClassifyDto) {
+        //查询分类信息
+        val classifyPo = hairClassifyRepository.queryByUid(dto.classifyUid) ?: return
+        //编辑分类信息
+        val modifyClassifyPo = MapperUtil.map(HairClassifyPo::class.java, dto).apply {
+            this.uid = dto.classifyUid
+        }
+        hairClassifyRepository.updateByUid(modifyClassifyPo)
+        //查询当前文件列表
+        val filePos = hairClassifyFileRepository.getByClassifyUid(dto.classifyUid)
+        if (filePos.isNullOrEmpty()) {
+            val saveFilePos = dto.files.map {
+                MapperUtil.map(HairClassifyFilePo::class.java, it).apply {
+                    this.uid = UUIDUtil.createUUID()
+                    this.classifyUid = dto.classifyUid
+                }
+            }
+            if (!saveFilePos.isNullOrEmpty()) {
+                hairClassifyFileRepository.saveBatch(saveFilePos)
+            }
+            return
+        }
+        //删除文件
+        val deleteFilePos = filePos.filter { !dto.files.mapNotNull { it.fileKey }.contains(it.fileKey) }
+        hairClassifyFileRepository.deleteByFileKeys(deleteFilePos.mapNotNull { it.fileKey })
+        //插入新增的
+        val saveFilePos = dto.files.filter { !filePos.mapNotNull { it.fileKey }.contains(it.fileKey) }.map {
+            MapperUtil.map(HairClassifyFilePo::class.java, it).apply {
+                this.uid = UUIDUtil.createUUID()
+                this.classifyUid = dto.classifyUid
+            }
+        }
+        if (!saveFilePos.isNullOrEmpty()) {
+            hairClassifyFileRepository.saveBatch(saveFilePos)
+        }
+    }
 
     /**
      * 查询所有分类
@@ -110,7 +152,9 @@ class HairDomainService {
                 this.classifyUid = classifyUid
             }
         }
-        hairClassifyFileRepository.saveBatch(filePos)
+        if (!filePos.isNullOrEmpty()) {
+            hairClassifyFileRepository.saveBatch(filePos)
+        }
         return classifyUid
     }
 

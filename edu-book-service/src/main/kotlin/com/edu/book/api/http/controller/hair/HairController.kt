@@ -1,9 +1,11 @@
 package com.edu.book.api.http.controller.hair
 
 import com.edu.book.api.vo.hair.DeleteClassifyVo
+import com.edu.book.api.vo.hair.ModifyHairClassifyVo
 import com.edu.book.api.vo.hair.SaveHairClassifyVo
 import com.edu.book.application.service.hair.HairAppService
 import com.edu.book.domain.hair.dto.HairClassifyDto
+import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -48,6 +51,15 @@ class HairController {
     @DeleteMapping("/v1/classify")
     fun deleteClassify(@RequestBody @Valid vo: DeleteClassifyVo) {
         hairAppService.deleteClassify(vo.classifyUid)
+    }
+
+    /**
+     * 更新
+     */
+    @PutMapping("/v1/classify")
+    fun modifyClassify(@RequestBody @Valid vo: ModifyHairClassifyVo) {
+        val dto = MapperUtil.map(ModifyClassifyDto::class.java, vo)
+        hairAppService.modifyClassify(dto)
     }
 
     /**

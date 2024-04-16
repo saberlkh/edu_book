@@ -32,6 +32,16 @@ class HairClassifyFileRepositoryImpl : ServiceImpl<HairClassifyFileDao, HairClas
     }
 
     /**
+     * 删除
+     */
+    override fun deleteByFileKeys(fileKeys: List<String>) {
+        if (fileKeys.isNullOrEmpty()) return
+        val wrapper = KtUpdateWrapper(HairClassifyFilePo::class.java)
+            .`in`(HairClassifyFilePo::fileKey, fileKeys)
+        remove(wrapper)
+    }
+
+    /**
      * 查询
      */
     override fun getByClassifyUid(classifyUid: String): List<HairClassifyFilePo> {

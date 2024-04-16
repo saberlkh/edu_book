@@ -14,6 +14,7 @@
             t_hair_classify_file
         WHERE
             c_classify_uid = #{classifyUid}
+        AND c_is_deleted = 0
         <bind name="key_offset" value="(page-1) * pageSize"/>
         <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
             LIMIT #{key_offset},#{pageSize}

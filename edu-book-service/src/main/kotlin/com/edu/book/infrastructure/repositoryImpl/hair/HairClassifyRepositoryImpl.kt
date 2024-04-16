@@ -19,6 +19,15 @@ import org.springframework.stereotype.Repository;
 class HairClassifyRepositoryImpl : ServiceImpl<HairClassifyDao, HairClassifyPo>(), HairClassifyRepository {
 
     /**
+     * 更新
+     */
+    override fun updateByUid(po: HairClassifyPo) {
+        val wrapper = KtUpdateWrapper(HairClassifyPo::class.java)
+            .eq(HairClassifyPo::uid, po.uid)
+        update(po, wrapper)
+    }
+
+    /**
      * 查询
      */
     override fun queryByUid(classifyUid: String): HairClassifyPo? {
