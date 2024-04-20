@@ -27,4 +27,14 @@ class UploadFileRepositoryImpl : ServiceImpl<UploadFileDao, UploadFilePo>(), Upl
         return getOne(wrapper)
     }
 
+    /**
+     * 批量查询
+     */
+    override fun batchQuery(fileKeys: List<String>): List<UploadFilePo>? {
+        if (fileKeys.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(UploadFilePo::class.java)
+            .`in`(UploadFilePo::fileKey, fileKeys)
+        return list(wrapper)
+    }
+
 }

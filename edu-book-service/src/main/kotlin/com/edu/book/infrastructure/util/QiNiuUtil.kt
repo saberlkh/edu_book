@@ -75,7 +75,7 @@ class QiNiuUtil {
         )
         uploadFileDomainService.saveUploadFileRecord(fileUploadDto)
         return UploadFileRespDto().apply {
-            this.downloadUrl = filePath
+            this.filePath = filePath
             this.fileKey = putRet.key
         }
     }

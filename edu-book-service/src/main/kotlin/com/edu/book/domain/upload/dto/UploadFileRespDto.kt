@@ -11,6 +11,6 @@ class UploadFileRespDto: Serializable {
 
     var fileKey: String = ""
 
-    var downloadUrl: String = ""
+    var filePath: String = ""
 
 }

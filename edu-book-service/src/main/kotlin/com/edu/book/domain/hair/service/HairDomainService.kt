@@ -8,6 +8,7 @@ import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.repository.HairClassifyFileRepository
 import com.edu.book.domain.hair.repository.HairClassifyRepository
+import com.edu.book.domain.upload.repository.UploadFileRepository
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 import com.edu.book.infrastructure.po.hair.HairClassifyPo
 import com.edu.book.infrastructure.util.MapperUtil
@@ -41,6 +42,9 @@ class HairDomainService {
 
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
+
+    @Autowired
+    private lateinit var uploadFileRepository: UploadFileRepository
 
     /**
      * 编辑分类
@@ -108,7 +112,14 @@ class HairDomainService {
             param.page, param.pageSize, totalCount, emptyList(), classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
         )
         val fileList = hairClassifyFileRepository.queryListByClassifyUid(param)
-        val pageResult = MapperUtil.mapToList(HairClassifyFileDto::class.java, fileList)
+        //获取文件信息
+        val uploadFiles = uploadFileRepository.batchQuery(fileList.mapNotNull { it.fileKey }) ?: emptyList()
+        val uploadFileMap = uploadFiles.associateBy { it.fileKey!! }
+        val pageResult = fileList.map {
+            MapperUtil.map(HairClassifyFileDto::class.java, it).apply {
+                this.fileType = uploadFileMap.get(it.fileKey)?.fileType
+            }
+        }
         return PageQueryHairDetailDto(
             param.page, param.pageSize, totalCount, pageResult, classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
         )
