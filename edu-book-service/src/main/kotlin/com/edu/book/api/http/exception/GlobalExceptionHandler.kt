@@ -6,6 +6,7 @@ import com.edu.book.domain.book.exception.BookException
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
+import com.edu.book.domain.user.exception.IllegalPasswordException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserException
 import com.edu.book.domain.user.exception.UserNotFoundException
@@ -90,6 +91,9 @@ class GlobalExceptionHandler {
             }
             is AccountNotFoundException -> {
                 ErrorCodeConfig.ACCOUNT_NOT_FOUND
+            }
+            is IllegalPasswordException -> {
+                ErrorCodeConfig.PASSWORD_ILLEGAL
             }
             is AccountBindedException -> {
                 ErrorCodeConfig.ACCOUNT_IS_BINDED

@@ -1,5 +1,6 @@
 package com.edu.book.domain.hair.service
 
+import com.edu.book.domain.hair.dto.AdminLoginDto
 import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.HairClassifyFileDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
@@ -9,14 +10,21 @@ import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.repository.HairClassifyFileRepository
 import com.edu.book.domain.hair.repository.HairClassifyRepository
 import com.edu.book.domain.upload.repository.UploadFileRepository
+import com.edu.book.domain.user.dto.UserTokenCacheDto
+import com.edu.book.domain.user.exception.AccountNotFoundException
+import com.edu.book.domain.user.exception.IllegalPasswordException
+import com.edu.book.domain.user.exception.UserTokenExpiredException
+import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 import com.edu.book.infrastructure.po.hair.HairClassifyPo
+import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,6 +46,9 @@ class HairDomainService {
     private lateinit var hairClassifyFileRepository: HairClassifyFileRepository
 
     @Autowired
+    private lateinit var bookAccountRepository: BookAccountRepository
+
+    @Autowired
     private lateinit var hairClassifyRepository: HairClassifyRepository
 
     @Autowired
@@ -45,6 +56,31 @@ class HairDomainService {
 
     @Autowired
     private lateinit var uploadFileRepository: UploadFileRepository
+
+    @Autowired
+    private lateinit var userCacheRepo: UserCacheRepo
+
+    /**
+     * 鉴权
+     */
+    fun adminUserAuth(token: String): UserTokenCacheDto {
+        //获取缓存
+        val cacheDto = userCacheRepo.getAdminUserToken(token) ?: throw UserTokenExpiredException()
+        return cacheDto
+    }
+
+    /**
+     * 管理后台登录
+     */
+    fun adminLogin(dto: AdminLoginDto): String {
+        //查询账户信息
+        val accountPo = bookAccountRepository.findByUid(dto.username) ?: throw AccountNotFoundException(dto.username)
+        //判断密码是否正确
+        if (!StringUtils.equals(accountPo.password, dto.password)) throw IllegalPasswordException()
+        val token = UUIDUtil.createUUID()
+        userCacheRepo.setHariAdminUserToken(dto.username, token)
+        return token
+    }
 
     /**
      * 编辑分类

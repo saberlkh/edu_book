@@ -1,5 +1,6 @@
 package com.edu.book.application.service.hair
 
+import com.edu.book.domain.hair.dto.AdminLoginDto
 import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
@@ -40,6 +41,13 @@ class HairAppService {
      */
     fun modifyClassify(dto: ModifyClassifyDto) {
         hairDomainService.modifyClassify(dto)
+    }
+
+    /**
+     * 管理后台登录
+     */
+    fun adminLogin(dto: AdminLoginDto): String {
+        return hairDomainService.adminLogin(dto)
     }
 
     /**

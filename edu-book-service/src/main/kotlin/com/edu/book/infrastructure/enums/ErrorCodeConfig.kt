@@ -70,6 +70,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     FILE_NAME_NOT_NULL(600011, "文件名不能为空"),
 
+    PASSWORD_ILLEGAL(600012, "密码错误"),
+
     ;
 
 }

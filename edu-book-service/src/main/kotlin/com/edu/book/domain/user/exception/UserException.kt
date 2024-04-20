@@ -41,6 +41,11 @@ class UserUnBindedException: UserException("用户已经解绑")
 class AccountNotFoundException(accountUid: String): UserException("账户不存在,${accountUid}")
 
 /**
+ * 账户不存在
+ */
+class IllegalPasswordException: UserException("账户密码错误")
+
+/**
  * 账号已经被绑定
  */
 class AccountBindedException(): UserException("账号已经被绑定")

@@ -4,6 +4,7 @@ import com.edu.book.api.vo.hair.DeleteClassifyVo
 import com.edu.book.api.vo.hair.ModifyHairClassifyVo
 import com.edu.book.api.vo.hair.SaveHairClassifyVo
 import com.edu.book.application.service.hair.HairAppService
+import com.edu.book.domain.hair.dto.AdminLoginDto
 import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
@@ -60,6 +61,14 @@ class HairController {
     fun modifyClassify(@RequestBody @Valid vo: ModifyHairClassifyVo) {
         val dto = MapperUtil.map(ModifyClassifyDto::class.java, vo)
         hairAppService.modifyClassify(dto)
+    }
+
+    /**
+     * 登录
+     */
+    @PostMapping("/v1/admin/login")
+    fun modifyClassify(@RequestBody @Valid dto: AdminLoginDto): ResponseVo<String> {
+        return ResponseVo(hairAppService.adminLogin(dto))
     }
 
     /**

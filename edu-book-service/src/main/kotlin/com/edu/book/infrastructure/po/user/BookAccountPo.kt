@@ -29,6 +29,12 @@ class BookAccountPo : BasePo() {
     var accountUid: String? = null
 
     /**
+     * 密码
+     */
+    @TableField("c_password")
+    var password: String? = null
+
+    /**
      * 账号名称
      */
     @TableField("c_account_name")

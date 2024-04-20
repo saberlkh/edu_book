@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.cache.repo
 
 import com.edu.book.domain.user.dto.UserTokenCacheDto
+import com.edu.book.infrastructure.constants.RedisKeyConstant.ADMIN_USER_TOKEN_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.USER_TOKEN_KEY
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
@@ -28,6 +29,18 @@ class UserCacheRepo {
     /**
      * 设置缓存
      */
+    fun setHariAdminUserToken(userUid: String, token: String) {
+        val key = ADMIN_USER_TOKEN_KEY + token
+        val dto = UserTokenCacheDto().apply {
+            this.token = token
+            this.userUid = userUid
+        }
+        redissonClient.getBucket<UserTokenCacheDto>(key).set(dto, SEVEN, TimeUnit.DAYS)
+    }
+
+    /**
+     * 设置缓存
+     */
     fun setUserToken(userUid: String, token: String) {
         val key = USER_TOKEN_KEY + token
         val dto = UserTokenCacheDto().apply {
@@ -50,6 +63,14 @@ class UserCacheRepo {
      */
     fun getUserToken(token: String): UserTokenCacheDto? {
         val key = USER_TOKEN_KEY + token
+        return redissonClient.getBucket<UserTokenCacheDto>(key).get()
+    }
+
+    /**
+     * 获取缓存
+     */
+    fun getAdminUserToken(token: String): UserTokenCacheDto? {
+        val key = ADMIN_USER_TOKEN_KEY + token
         return redissonClient.getBucket<UserTokenCacheDto>(key).get()
     }
 

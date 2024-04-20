@@ -18,6 +18,11 @@ object RedisKeyConstant {
     const val USER_TOKEN_KEY = "USER:TOKEN:"
 
     /**
+     * 超管用户
+     */
+    const val ADMIN_USER_TOKEN_KEY = "HAIR:ADMIN:USER:TOKEN:"
+
+    /**
      * 绑定解绑
      */
     const val BIND_UNBIND_USER_ACCOUNT_LOCK_KEY = "BIND:UNBIND:USER:ACCOUNT:LOCK:"
