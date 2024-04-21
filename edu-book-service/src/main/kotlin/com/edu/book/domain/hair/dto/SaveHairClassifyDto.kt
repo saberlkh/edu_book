@@ -1,6 +1,7 @@
 package com.edu.book.domain.hair.dto
 
 import java.io.Serializable
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -23,5 +24,10 @@ class SaveHairClassifyDto: Serializable {
      * 文件
      */
     var files: List<HairClassifyFileDto> = emptyList()
+
+    /**
+     * 排序
+     */
+    var sort: Int? = NumberUtils.INTEGER_ZERO
 
 }

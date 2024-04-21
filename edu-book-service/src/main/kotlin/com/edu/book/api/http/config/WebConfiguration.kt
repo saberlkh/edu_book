@@ -23,7 +23,7 @@ class WebConfiguration: WebMvcConfigurer {
     private val traceExecution = "execution(* com.edu.book.api.http.controller..*.*(..))"
 
     private final val openPath = listOf(
-        "/wechat/**", "/user/v1/login", "/test/**", "/verification.html", "/hair/v1/admin/login"
+        "/wechat/**", "/user/v1/login", "/test/**", "/verification.html", "/hair/v1/admin/login", "/hair/v1/classify"
     )
 
     @Bean

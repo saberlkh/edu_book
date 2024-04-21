@@ -33,4 +33,10 @@ class HairClassifyPo : BasePo() {
     @TableField("c_classify_cover_url")
     var classifyCoverUrl: String? = null
 
+    /**
+     * 排序
+     */
+    @TableField("c_sort")
+    var sort: Int? = null
+
 }

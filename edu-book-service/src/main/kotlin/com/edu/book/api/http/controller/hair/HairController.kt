@@ -9,6 +9,7 @@ import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
+import com.edu.book.domain.hair.dto.QueryClassifyListParam
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.response.ResponseVo
@@ -75,8 +76,8 @@ class HairController {
      * 查询所有分类
      */
     @GetMapping("/v1/classify")
-    fun queryAllClassify(): List<HairClassifyDto> {
-        return hairAppService.queryAllClassify()
+    fun queryAllClassify(param: QueryClassifyListParam): List<HairClassifyDto> {
+        return hairAppService.queryAllClassify(param)
     }
 
     /**

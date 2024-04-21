@@ -6,6 +6,7 @@ import com.edu.book.domain.hair.dto.HairClassifyFileDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
+import com.edu.book.domain.hair.dto.QueryClassifyListParam
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.repository.HairClassifyFileRepository
 import com.edu.book.domain.hair.repository.HairClassifyRepository
@@ -15,6 +16,7 @@ import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.IllegalPasswordException
 import com.edu.book.domain.user.exception.UserTokenExpiredException
 import com.edu.book.domain.user.repository.BookAccountRepository
+import com.edu.book.infrastructure.enums.SortTypeEnum
 import com.edu.book.infrastructure.po.hair.HairClassifyFilePo
 import com.edu.book.infrastructure.po.hair.HairClassifyPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
@@ -126,9 +128,14 @@ class HairDomainService {
     /**
      * 查询所有分类
      */
-    fun queryAllClassify(): List<HairClassifyDto> {
+    fun queryAllClassify(param: QueryClassifyListParam): List<HairClassifyDto> {
         val pos = hairClassifyRepository.list()
         if (pos.isNullOrEmpty()) return emptyList()
+        if (StringUtils.equals(param.sortType, SortTypeEnum.ASC.sortType)) {
+            pos.sortBy { it.sort }
+        } else {
+            pos.sortByDescending { it.sort }
+        }
         return pos.map {
             MapperUtil.map(HairClassifyDto::class.java, it).apply {
                 this.classifyUid = it.uid

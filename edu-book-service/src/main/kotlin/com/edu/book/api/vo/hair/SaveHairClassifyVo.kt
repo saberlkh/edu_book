@@ -2,6 +2,7 @@ package com.edu.book.api.vo.hair
 
 import java.io.Serializable
 import javax.validation.constraints.NotBlank
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -26,5 +27,10 @@ class SaveHairClassifyVo: Serializable {
      * 文件
      */
     var files: List<HairClassifyFileVo> = emptyList()
+
+    /**
+     * 排序
+     */
+    var sort: Int? = NumberUtils.INTEGER_ZERO
 
 }

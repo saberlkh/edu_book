@@ -5,6 +5,7 @@ import com.edu.book.domain.hair.dto.HairClassifyDto
 import com.edu.book.domain.hair.dto.ModifyClassifyDto
 import com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam
 import com.edu.book.domain.hair.dto.PageQueryHairDetailDto
+import com.edu.book.domain.hair.dto.QueryClassifyListParam
 import com.edu.book.domain.hair.dto.SaveHairClassifyDto
 import com.edu.book.domain.hair.service.HairDomainService
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,8 +33,8 @@ class HairAppService {
     /**
      * 查询所有分类
      */
-    fun queryAllClassify(): List<HairClassifyDto> {
-        return hairDomainService.queryAllClassify()
+    fun queryAllClassify(param: QueryClassifyListParam): List<HairClassifyDto> {
+        return hairDomainService.queryAllClassify(param)
     }
 
     /**
