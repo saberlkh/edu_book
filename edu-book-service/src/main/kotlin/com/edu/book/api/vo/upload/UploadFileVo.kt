@@ -13,4 +13,11 @@ class UploadFileVo: Serializable {
 
     var filePath: String = ""
 
+    /**
+     * 视频封面
+     */
+    var videoCoverUrl: String? = null
+
+    var fileType: String? = null
+
 }

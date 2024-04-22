@@ -77,6 +77,8 @@ class QiNiuUtil {
         return UploadFileRespDto().apply {
             this.filePath = filePath
             this.fileKey = putRet.key
+            this.videoCoverUrl = videoCoverUrl
+            this.fileType = fileType
         }
     }
 
