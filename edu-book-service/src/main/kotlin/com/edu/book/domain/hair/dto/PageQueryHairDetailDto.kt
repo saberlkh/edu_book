@@ -17,9 +17,14 @@ class PageQueryHairDetailDto: Page<HairClassifyFileDto>, Serializable {
 
     var classifyCoverUrl: String = ""
 
+    /**
+     * 排序
+     */
+    var sort: Int? = null
+
     constructor(){}
 
-    constructor(page: Int, pageSize: Int, totalCount: Int, result: List<HairClassifyFileDto>?, classifyUid: String, classifyName: String, classifyCoverUrl: String) {
+    constructor(page: Int, pageSize: Int, totalCount: Int, result: List<HairClassifyFileDto>?, classifyUid: String, classifyName: String, classifyCoverUrl: String, sort: Int?) {
         this.page = page
         this.result = result
         this.pageSize = pageSize
@@ -28,6 +33,7 @@ class PageQueryHairDetailDto: Page<HairClassifyFileDto>, Serializable {
         this.classifyName = classifyName
         this.classifyCoverUrl = classifyCoverUrl
         this.classifyUid = classifyUid
+        this.sort = sort
     }
 
 }

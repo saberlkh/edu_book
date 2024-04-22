@@ -24,4 +24,9 @@ class HairClassifyDto: Serializable {
      */
     var classifyCoverUrl: String? = null
 
+    /**
+     * 排序
+     */
+    var sort: Int? = null
+
 }

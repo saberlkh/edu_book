@@ -152,7 +152,14 @@ class HairDomainService {
         //查询图片列表
         val totalCount = hairClassifyFileRepository.queryTotalCountByClassifyUid(param.classifyUid)
         if (totalCount <= NumberUtils.INTEGER_ZERO) return PageQueryHairDetailDto(
-            param.page, param.pageSize, totalCount, emptyList(), classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
+            param.page,
+            param.pageSize,
+            totalCount,
+            emptyList(),
+            classifyPo.uid ?: "",
+            classifyPo.classifyName ?: "",
+            classifyPo.classifyCoverUrl ?: "",
+            classifyPo.sort
         )
         val fileList = hairClassifyFileRepository.queryListByClassifyUid(param)
         //获取文件信息
@@ -165,7 +172,13 @@ class HairDomainService {
             }
         }
         return PageQueryHairDetailDto(
-            param.page, param.pageSize, totalCount, pageResult, classifyPo.uid ?: "", classifyPo.classifyName ?: "", classifyPo.classifyCoverUrl ?: ""
+            param.page,
+            param.pageSize,
+            totalCount,
+            pageResult, classifyPo.uid ?: "",
+            classifyPo.classifyName ?: "",
+            classifyPo.classifyCoverUrl ?: "",
+            classifyPo.sort
         )
     }
 
