@@ -29,4 +29,9 @@ class HairClassifyFileDto: Serializable {
      */
     var fileType: String? = null
 
+    /**
+     * 视频封面
+     */
+    var videoCoverUrl: String? = null
+
 }

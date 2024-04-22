@@ -161,6 +161,7 @@ class HairDomainService {
         val pageResult = fileList.map {
             MapperUtil.map(HairClassifyFileDto::class.java, it).apply {
                 this.fileType = uploadFileMap.get(it.fileKey)?.fileType
+                this.videoCoverUrl = uploadFileMap.get(it.fileKey)?.videoCoverUrl
             }
         }
         return PageQueryHairDetailDto(
