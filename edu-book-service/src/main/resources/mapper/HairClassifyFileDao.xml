@@ -6,16 +6,17 @@
     <select id="queryListByClassifyUid" parameterType="com.edu.book.domain.hair.dto.PageQueryClassifyDetailParam"
         resultType="com.edu.book.infrastructure.po.hair.HairClassifyFilePo">
         SELECT
-            c_uid AS uid,
-            c_classify_uid AS classifyUid,
-            c_file_path AS filePath,
-            c_file_key AS fileKey
+            file.c_uid AS uid,
+            file.c_classify_uid AS classifyUid,
+            file.c_file_path AS filePath,
+            file.c_file_key AS fileKey
         FROM
-            t_hair_classify_file
+            t_hair_classify_file file
+        JOIN t_upload_file upload ON file.c_file_key = upload.c_file_key AND upload.c_is_deleted = 0
         WHERE
-            c_classify_uid = #{classifyUid}
-        AND c_is_deleted = 0
-        ORDER BY c_create_time DESC
+            file.c_classify_uid = #{classifyUid}
+        AND file.c_is_deleted = 0
+        ORDER BY upload.c_create_time DESC
         <bind name="key_offset" value="(page-1) * pageSize"/>
         <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
             LIMIT #{key_offset},#{pageSize}
