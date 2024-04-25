@@ -72,6 +72,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     PASSWORD_ILLEGAL(600012, "密码错误"),
 
+    UPLOAD_MAX_NUM(600013, "上传个数达到最大"),
+
     ;
 
 }

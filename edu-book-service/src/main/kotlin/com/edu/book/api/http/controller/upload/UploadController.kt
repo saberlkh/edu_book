@@ -27,6 +27,14 @@ class UploadController {
     /**
      * 上传图片
      */
+    @PostMapping("/v1/file/batch")
+    fun batchUploadFile(files: List<MultipartFile>): List<UploadFileVo> {
+        return uploadWebService.batchUpload(files)
+    }
+
+    /**
+     * 上传图片
+     */
     @PostMapping("/v1/file")
     fun uploadFile(file: MultipartFile): UploadFileVo {
         return uploadWebService.upload(file)

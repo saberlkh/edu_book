@@ -37,4 +37,9 @@ object RedisKeyConstant {
      */
     const val SCAN_BOOK_CODE_KEY = "SCAN:BOOK:CODE:LOCK:KEY:"
 
+    /**
+     * 文件上传
+     */
+    const val UPLOAD_FILE_KEY = "UPLOAD:FILE:KEY:"
+
 }

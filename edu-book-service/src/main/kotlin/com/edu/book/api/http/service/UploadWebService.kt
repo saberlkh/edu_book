@@ -10,7 +10,11 @@ import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import java.io.File
 import java.io.FileInputStream
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.FutureTask
 import net.coobird.thumbnailator.Thumbnails
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -24,8 +28,51 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class UploadWebService {
 
+    private val logger = LoggerFactory.getLogger(UploadWebService::class.java)
+
     @Autowired
     private lateinit var qiNiuUtil: QiNiuUtil
+
+    companion object {
+
+        const val UPLOAD_MAX_NUM = 8
+
+    }
+
+    /**
+     * 批量上传
+     */
+    fun batchUpload(files: List<MultipartFile>): List<UploadFileVo> {
+        //个数不能大于8
+        if (files.size > UPLOAD_MAX_NUM) throw WebAppException(ErrorCodeConfig.UPLOAD_MAX_NUM)
+        //循环调用
+        val futureTaskList = mutableListOf<FutureTask<UploadFileVo?>>()
+        val threadPool = Executors.newFixedThreadPool(files.size)
+        files.mapNotNull { file ->
+            val callTask = Callable {
+                try {
+                    upload(file)
+                } catch (e: Exception) {
+                    logger.error("上传文件失败-throw error:${e.localizedMessage}, 文件名:${file.originalFilename}")
+                    null
+                }
+            }
+            val futureTask = FutureTask(callTask)
+            futureTaskList.add(futureTask)
+            threadPool.submit(futureTask)
+        }
+        //判断结果拿到返回值
+        val result = futureTaskList.mapNotNull {
+            try {
+                it.get()
+            } catch (e: Exception) {
+                logger.error("通过get方法获取返回结果-失败 throw error:${e.message}")
+                null
+            }
+        }
+        threadPool.shutdown()
+        return result
+    }
 
     fun upload(file: MultipartFile): UploadFileVo {
         val fileName = file.originalFilename
