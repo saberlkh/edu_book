@@ -3,7 +3,6 @@ package com.edu.book.api.http.controller.upload
 import com.edu.book.api.http.service.UploadWebService
 import com.edu.book.api.vo.upload.UploadFileVo
 import com.edu.book.infrastructure.anno.Response
-import com.edu.book.infrastructure.enums.FileTypeEnum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
