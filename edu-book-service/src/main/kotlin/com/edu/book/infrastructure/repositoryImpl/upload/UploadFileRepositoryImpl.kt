@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.upload;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.upload.repository.UploadFileRepository
 import com.edu.book.infrastructure.po.upload.UploadFilePo
@@ -25,6 +26,15 @@ class UploadFileRepositoryImpl : ServiceImpl<UploadFileDao, UploadFilePo>(), Upl
           .eq(UploadFilePo::fileKey, fileKey)
           .limitOne()
         return getOne(wrapper)
+    }
+
+    /**
+     * 更新
+     */
+    override fun updateUploadFile(po: UploadFilePo) {
+        val wrapper = KtUpdateWrapper(UploadFilePo::class.java)
+            .eq(UploadFilePo::uid, po.uid)
+        update(po, wrapper)
     }
 
     /**

@@ -8,6 +8,8 @@ import com.edu.book.infrastructure.constants.RedisKeyConstant.UPLOAD_FILE_KEY
 import com.edu.book.infrastructure.po.upload.UploadFilePo
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import java.sql.Timestamp
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,6 +46,9 @@ class UploadFileDomainService {
             //判断fileKey是否存在
             val currentFilePo = uploadFileRepository.queryUploadFileByFileKey(dto.fileKey!!)
             if (currentFilePo != null) {
+                //更新
+                currentFilePo.updateTime = Timestamp(Date().time)
+                uploadFileRepository.updateUploadFile(currentFilePo)
                 return
             }
             val po = MapperUtil.map(UploadFilePo::class.java, dto).apply {

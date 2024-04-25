@@ -19,6 +19,11 @@ interface UploadFileRepository : IService<UploadFilePo> {
     fun queryUploadFileByFileKey(fileKey: String): UploadFilePo?
 
     /**
+     * 更新
+     */
+    fun updateUploadFile(po: UploadFilePo)
+
+    /**
      * 批量查询
      */
     fun batchQuery(fileKeys: List<String>): List<UploadFilePo>?
