@@ -89,7 +89,7 @@ class UploadWebService {
             //进行图片压缩
             Thumbnails.of(file.inputStream)
                 .scale(1.00)
-                .outputQuality(0.5)
+                .outputQuality(0.43)
                 .toFile(finalFile)
             FileInputStream(finalFile)
         } else {
