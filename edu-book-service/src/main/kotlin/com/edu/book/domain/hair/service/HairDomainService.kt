@@ -113,6 +113,12 @@ class HairDomainService {
         //删除文件
         val deleteFilePos = filePos.filter { !dto.files.mapNotNull { it.fileKey }.contains(it.fileKey) }
         hairClassifyFileRepository.deleteByFileKeys(deleteFilePos.mapNotNull { it.fileKey })
+        if (!deleteFilePos.isNullOrEmpty()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                //删除七牛
+                qiNiuUtil.delete(deleteFilePos.mapNotNull { it.fileKey })
+            }
+        }
         //插入新增的
         val saveFilePos = dto.files.filter { !filePos.mapNotNull { it.fileKey }.contains(it.fileKey) }.map {
             MapperUtil.map(HairClassifyFilePo::class.java, it).apply {

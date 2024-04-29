@@ -19,6 +19,15 @@ import org.springframework.stereotype.Repository;
 class UploadFileRepositoryImpl : ServiceImpl<UploadFileDao, UploadFilePo>(), UploadFileRepository {
 
     /**
+     * 批量删除
+     */
+    override fun batchRemove(fileKeys: List<String>) {
+        val wrapper = KtUpdateWrapper(UploadFilePo::class.java)
+            .`in`(UploadFilePo::fileKey, fileKeys)
+        remove(wrapper)
+    }
+
+    /**
      * 查询
      */
     override fun queryUploadFileByFileKey(fileKey: String): UploadFilePo? {

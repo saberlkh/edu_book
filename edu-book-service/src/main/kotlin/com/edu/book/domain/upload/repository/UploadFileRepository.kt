@@ -14,6 +14,11 @@ import com.edu.book.infrastructure.po.upload.UploadFilePo
 interface UploadFileRepository : IService<UploadFilePo> {
 
     /**
+     * 批量删除
+     */
+    fun batchRemove(fileKeys: List<String>)
+
+    /**
      * 查询
      */
     fun queryUploadFileByFileKey(fileKey: String): UploadFilePo?

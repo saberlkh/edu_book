@@ -39,6 +39,7 @@ class QiNiuUtil {
      * 删除文件
      */
     fun delete(fileKeys: List<String>) {
+        if (fileKeys.isNullOrEmpty()) return
         val configuration = Configuration(Region.region2())
         val auth = Auth.create(systemConfig.qiniuAccessKey, systemConfig.qiniuSecretKey)
         val bucketManager = BucketManager(auth, configuration)
@@ -47,6 +48,8 @@ class QiNiuUtil {
             batchOperations.addDeleteOp(systemConfig.qiniuBucketName, it)
         }
         val response = bucketManager.batch(batchOperations)
+        //删除数据库
+        uploadFileDomainService.batchRemove(fileKeys)
         logger.info("删除文件-成功删除文件集合: ${JSON.toJSONString(response)}")
     }
 

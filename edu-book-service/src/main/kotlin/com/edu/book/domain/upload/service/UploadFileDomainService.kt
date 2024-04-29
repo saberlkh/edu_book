@@ -34,6 +34,13 @@ class UploadFileDomainService {
     private lateinit var systemConfig: SystemConfig
 
     /**
+     * 批量删除
+     */
+    fun batchRemove(fileKeys: List<String>) {
+        uploadFileRepository.batchRemove(fileKeys)
+    }
+
+    /**
      * 添加上传文件记录
      */
     fun saveUploadFileRecord(dto: UploadFileDto) {
