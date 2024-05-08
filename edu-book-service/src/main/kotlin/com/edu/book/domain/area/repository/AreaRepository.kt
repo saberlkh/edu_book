@@ -16,6 +16,11 @@ interface AreaRepository : IService<AreaPo> {
     /**
      * 获取地区
      */
-    fun queryByAreaType(areaCode: String?, areaType: Int?): List<AreaPo>?
+    fun queryByParentUid(parentUid: String?, areaType: Int?): List<AreaPo>?
+
+    /**
+     * 根据地区码查询
+     */
+    fun queryByAreaCode(areaCode: String?): AreaPo?
 
 }

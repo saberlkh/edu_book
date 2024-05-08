@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.area.repository.AreaRepository
 import com.edu.book.infrastructure.po.area.AreaPo
 import com.edu.book.infrastructure.repositoryImpl.dao.area.AreaDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
@@ -23,11 +24,22 @@ class AreaRepositoryImpl : ServiceImpl<AreaDao, AreaPo>(), AreaRepository {
     /**
      * 获取地区列表
      */
-    override fun queryByAreaType(areaCode: String?, areaType: Int?): List<AreaPo>? {
+    override fun queryByParentUid(parentUid: String?, areaType: Int?): List<AreaPo>? {
         val wrapper = KtQueryWrapper(AreaPo::class.java)
             .eq(areaType != null, AreaPo::areaType, areaType)
-            .eq(!areaCode.isNullOrBlank(), AreaPo::parentUid, areaCode)
+            .eq(!parentUid.isNullOrBlank(), AreaPo::parentUid, parentUid)
         return areaDao.selectList(wrapper)
+    }
+
+    /**
+     * 根据区域码查询
+     */
+    override fun queryByAreaCode(areaCode: String?): AreaPo? {
+        if (areaCode.isNullOrBlank()) return null
+        val wrapper = KtQueryWrapper(AreaPo::class.java)
+            .eq(AreaPo::areaCode, areaCode)
+            .limitOne()
+        return areaDao.selectOne(wrapper)
     }
 
 }

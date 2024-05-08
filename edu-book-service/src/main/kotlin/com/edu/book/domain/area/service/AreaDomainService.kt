@@ -31,7 +31,13 @@ class AreaDomainService {
         } else {
             null
         }
-        val pos = areaRepository.queryByAreaType(areaCode, areaType) ?: return emptyList()
+        //根据areaCode获取区域信息
+        val parentUid = if (areaCode.isNullOrBlank()) {
+            null
+        } else {
+            areaRepository.queryByAreaCode(areaCode)?.uid
+        }
+        val pos = areaRepository.queryByParentUid(parentUid, areaType) ?: return emptyList()
         return MapperUtil.mapToList(QueryAreaInfoDto::class.java, pos)
     }
 
