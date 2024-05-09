@@ -1,9 +1,17 @@
 package com.edu.book.domain.area.service
 
 import com.edu.book.domain.area.dto.QueryAreaInfoDto
+import com.edu.book.domain.area.dto.SaveLevelInfoDto
 import com.edu.book.domain.area.enums.AreaTypeEnum
 import com.edu.book.domain.area.repository.AreaRepository
+import com.edu.book.domain.area.repository.ClassRepository
+import com.edu.book.domain.area.repository.GardeRepository
+import com.edu.book.domain.area.repository.GardenRepository
+import com.edu.book.domain.area.repository.KindergartenRepository
+import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.util.UUIDUtil
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -21,6 +29,38 @@ class AreaDomainService {
 
     @Autowired
     private lateinit var areaRepository: AreaRepository
+
+    @Autowired
+    private lateinit var kindergartenRepository: KindergartenRepository
+
+    @Autowired
+    private lateinit var gardenRepository: GardenRepository
+
+    @Autowired
+    private lateinit var gardeRepository: GardeRepository
+
+    @Autowired
+    private lateinit var classRepository: ClassRepository
+
+    @Autowired
+    private lateinit var levelRepository: LevelRepository
+
+    /**
+     * 添加层级信息
+     */
+    fun saveLevelInfo(dto: SaveLevelInfoDto) {
+        //添加层级信息
+        val levelPo = LevelPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.levelName = dto.levelName
+            this.levelType = dto.levelType
+            this.parentUid = dto.parentUid ?: ""
+            this.provinceId = dto.provinceCode
+            this.cityId = dto.cityCode
+            this.districtId = dto.districtCode
+        }
+        levelRepository.save(levelPo)
+    }
 
     /**
      * 查询地区信息

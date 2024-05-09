@@ -1,6 +1,7 @@
 package com.edu.book.application.service
 
 import com.edu.book.domain.area.dto.QueryAreaInfoDto
+import com.edu.book.domain.area.dto.SaveLevelInfoDto
 import com.edu.book.domain.area.service.AreaDomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,6 +23,13 @@ class AreaAppService {
      */
     fun queryAreaInfo(areaCode: String?): List<QueryAreaInfoDto> {
         return areaDomainService.queryAreaInfo(areaCode)
+    }
+
+    /**
+     * 添加层级信息
+     */
+    fun saveLevelInfo(dto: SaveLevelInfoDto) {
+        areaDomainService.saveLevelInfo(dto)
     }
 
 }

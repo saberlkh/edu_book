@@ -33,4 +33,22 @@ class GardenPo : BasePo() {
     @TableField("c_kindergarten_uid")
     var kindergartenUid: String? = null
 
+    /**
+     * 省Id
+     */
+    @TableField("c_province_id")
+    var provinceId: String? = null
+
+    /**
+     * 市Id
+     */
+    @TableField("c_city_id")
+    var cityId: String? = null
+
+    /**
+     * 区Id
+     */
+    @TableField("c_district_id")
+    var districtId: String? = null
+
 }

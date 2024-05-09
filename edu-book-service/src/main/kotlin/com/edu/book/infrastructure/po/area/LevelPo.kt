@@ -6,14 +6,14 @@ import com.edu.book.infrastructure.po.BasePo;
 
 /**
  * <p>
- * 班级表
+ * 层级表
  * </p>
  *
  * @author 
- * @since 2024-04-10 23:03:42
+ * @since 2024-05-09 11:10:10
  */
-@TableName("t_class")
-class ClassPo : BasePo() {
+@TableName("t_level")
+class LevelPo : BasePo() {
 
     /**
      * 业务唯一id
@@ -24,14 +24,20 @@ class ClassPo : BasePo() {
     /**
      * 班级名称
      */
-    @TableField("c_class_name")
-    var className: String? = null
+    @TableField("c_level_name")
+    var levelName: String? = null
 
     /**
-     * 年级Uid
+     * 0 幼儿园 1 园区 2 年级 3 班级
      */
-    @TableField("c_garde_uid")
-    var gardeUid: String? = null
+    @TableField("c_level_type")
+    var levelType: Int? = null
+
+    /**
+     * 父级Uid
+     */
+    @TableField("c_parent_uid")
+    var parentUid: String? = null
 
     /**
      * 省Id
