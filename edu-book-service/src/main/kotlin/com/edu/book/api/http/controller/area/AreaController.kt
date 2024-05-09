@@ -1,7 +1,9 @@
 package com.edu.book.api.http.controller.area
 
 import com.edu.book.api.http.service.AreaWebService
+import com.edu.book.api.vo.area.LevelInfoVo
 import com.edu.book.api.vo.area.QueryAreaInfoVo
+import com.edu.book.api.vo.area.QueryLevelInfoVo
 import com.edu.book.api.vo.area.SaveLevelInfoVo
 import com.edu.book.infrastructure.anno.Response
 import javax.validation.Valid
@@ -41,6 +43,14 @@ class AreaController {
     @PostMapping("/v1/level")
     fun saveLevelInfo(@RequestBody @Valid vo: SaveLevelInfoVo) {
         areaWebService.saveLevelInfo(vo)
+    }
+
+    /**
+     * 添加层级信息
+     */
+    @GetMapping("/v1/level")
+    fun queryLevelInfo(vo: QueryLevelInfoVo): List<LevelInfoVo> {
+       return areaWebService.queryLevelInfo(vo)
     }
 
 }

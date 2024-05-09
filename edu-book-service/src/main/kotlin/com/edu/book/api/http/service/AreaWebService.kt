@@ -1,8 +1,11 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.vo.area.LevelInfoVo
 import com.edu.book.api.vo.area.QueryAreaInfoVo
+import com.edu.book.api.vo.area.QueryLevelInfoVo
 import com.edu.book.api.vo.area.SaveLevelInfoVo
 import com.edu.book.application.service.AreaAppService
+import com.edu.book.domain.area.dto.QueryLevelInfoDto
 import com.edu.book.domain.area.dto.SaveLevelInfoDto
 import com.edu.book.infrastructure.util.MapperUtil
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +22,15 @@ class AreaWebService {
 
     @Autowired
     private lateinit var areaAppService: AreaAppService
+
+    /**
+     * 查询层级信息
+     */
+    fun queryLevelInfo(vo: QueryLevelInfoVo): List<LevelInfoVo> {
+        val dto = MapperUtil.map(QueryLevelInfoDto::class.java, vo)
+        val resultDtos = areaAppService.queryLevelInfo(dto)
+        return MapperUtil.mapToList(LevelInfoVo::class.java, resultDtos)
+    }
 
     /**
      * 查询地区列表

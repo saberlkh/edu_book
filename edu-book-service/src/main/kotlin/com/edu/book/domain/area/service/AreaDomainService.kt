@@ -1,13 +1,11 @@
 package com.edu.book.domain.area.service
 
 import com.edu.book.domain.area.dto.QueryAreaInfoDto
+import com.edu.book.domain.area.dto.LevelInfoDto
+import com.edu.book.domain.area.dto.QueryLevelInfoDto
 import com.edu.book.domain.area.dto.SaveLevelInfoDto
 import com.edu.book.domain.area.enums.AreaTypeEnum
 import com.edu.book.domain.area.repository.AreaRepository
-import com.edu.book.domain.area.repository.ClassRepository
-import com.edu.book.domain.area.repository.GardeRepository
-import com.edu.book.domain.area.repository.GardenRepository
-import com.edu.book.domain.area.repository.KindergartenRepository
 import com.edu.book.domain.area.repository.LevelRepository
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.util.MapperUtil
@@ -31,19 +29,20 @@ class AreaDomainService {
     private lateinit var areaRepository: AreaRepository
 
     @Autowired
-    private lateinit var kindergartenRepository: KindergartenRepository
-
-    @Autowired
-    private lateinit var gardenRepository: GardenRepository
-
-    @Autowired
-    private lateinit var gardeRepository: GardeRepository
-
-    @Autowired
-    private lateinit var classRepository: ClassRepository
-
-    @Autowired
     private lateinit var levelRepository: LevelRepository
+
+    /**
+     * 查询层级信息
+     */
+    fun queryLevelInfo(dto: QueryLevelInfoDto): List<LevelInfoDto> {
+        val pos = levelRepository.queryLevelInfos(dto) ?: return emptyList()
+        return pos.map {
+            LevelInfoDto().apply {
+                this.levelUid = it.uid!!
+                this.levelName = it.levelName!!
+            }
+        }
+    }
 
     /**
      * 添加层级信息
