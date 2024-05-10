@@ -80,4 +80,21 @@ class AreaDomainService {
         return MapperUtil.mapToList(QueryAreaInfoDto::class.java, pos)
     }
 
+    /**
+     * 删除层级信息
+     */
+    fun deleteLevelInfo(levelUid: String) {
+        //查询层级信息
+        levelRepository.queryByUid(levelUid) ?: return
+        //删除层级信息
+        levelRepository.deleteByUids(listOf(levelUid))
+        //查询子级列表
+        var childLevels = levelRepository.queryByParentUid(listOf(levelUid))
+        while (!childLevels.isNullOrEmpty()) {
+            val childLevelUids = childLevels.mapNotNull { it.uid }
+            levelRepository.deleteByUids(childLevelUids)
+            childLevels = levelRepository.queryByParentUid(childLevelUids)
+        }
+    }
+
 }

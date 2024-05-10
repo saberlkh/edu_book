@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.area;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.area.dto.QueryLevelInfoDto
 import com.edu.book.domain.area.repository.LevelRepository
@@ -30,6 +31,34 @@ class LevelRepositoryImpl : ServiceImpl<LevelDao, LevelPo>(), LevelRepository {
             .eq(!dto.provinceCode.isNullOrBlank(), LevelPo::provinceId, dto.provinceCode)
             .eq(!dto.cityCode.isNullOrBlank(), LevelPo::cityId, dto.cityCode)
             .eq(!dto.districtCode.isNullOrBlank(), LevelPo::districtId, dto.districtCode)
+            .eq(!dto.parentUid.isNullOrBlank(), LevelPo::parentUid, dto.parentUid)
+        return levelDao.selectList(wrapper)
+    }
+
+    /**
+     * 查询
+     */
+    override fun queryByUid(levelUid: String): LevelPo? {
+        val wrapper = KtQueryWrapper(LevelPo::class.java)
+            .eq(LevelPo::uid, levelUid)
+        return levelDao.selectOne(wrapper)
+    }
+
+    /**
+     * 删除
+     */
+    override fun deleteByUids(levelUids: List<String>) {
+        val wrapper = KtUpdateWrapper(LevelPo::class.java)
+            .`in`(LevelPo::uid, levelUids)
+        remove(wrapper)
+    }
+
+    /**
+     * 根据父级查询
+     */
+    override fun queryByParentUid(parentUids: List<String>): List<LevelPo>? {
+        val wrapper = KtQueryWrapper(LevelPo::class.java)
+            .`in`(LevelPo::parentUid, parentUids)
         return levelDao.selectList(wrapper)
     }
 

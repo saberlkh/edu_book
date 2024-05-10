@@ -41,6 +41,13 @@ class AreaWebService {
     }
 
     /**
+     * 删除
+     */
+    fun deleteLevelInfo(levelUid: String) {
+        areaAppService.deleteLevelInfo(levelUid)
+    }
+
+    /**
      * 添加层级信息
      */
     fun saveLevelInfo(vo: SaveLevelInfoVo) {

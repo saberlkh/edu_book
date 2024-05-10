@@ -35,6 +35,13 @@ class AreaAppService {
     }
 
     /**
+     * 删除
+     */
+    fun deleteLevelInfo(levelUid: String) {
+        areaDomainService.deleteLevelInfo(levelUid)
+    }
+
+    /**
      * 添加层级信息
      */
     fun saveLevelInfo(dto: SaveLevelInfoDto) {

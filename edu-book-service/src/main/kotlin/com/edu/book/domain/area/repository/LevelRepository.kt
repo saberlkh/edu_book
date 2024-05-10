@@ -19,4 +19,19 @@ interface LevelRepository : IService<LevelPo> {
      */
     fun queryLevelInfos(dto: QueryLevelInfoDto): List<LevelPo>?
 
+    /**
+     * 查询
+     */
+    fun queryByUid(levelUid: String): LevelPo?
+
+    /**
+     * 删除
+     */
+    fun deleteByUids(levelUids: List<String>)
+
+    /**
+     * 根据父Uid查询
+     */
+    fun queryByParentUid(parentUids: List<String>): List<LevelPo>?
+
 }

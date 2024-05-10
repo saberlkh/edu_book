@@ -17,4 +17,6 @@ class QueryLevelInfoDto: Serializable {
 
     var districtCode: String? = null
 
+    var parentUid: String? = null
+
 }

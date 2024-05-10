@@ -8,7 +8,9 @@ import com.edu.book.api.vo.area.SaveLevelInfoVo
 import com.edu.book.infrastructure.anno.Response
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -46,7 +48,15 @@ class AreaController {
     }
 
     /**
-     * 添加层级信息
+     * 删除
+     */
+    @DeleteMapping("/v1/{levelUid}/level")
+    fun deleteLevelInfo(@PathVariable levelUid: String) {
+        areaWebService.deleteLevelInfo(levelUid)
+    }
+
+    /**
+     * 查询层级信息
      */
     @GetMapping("/v1/level")
     fun queryLevelInfo(vo: QueryLevelInfoVo): List<LevelInfoVo> {
