@@ -1,16 +1,26 @@
 package com.edu.book.api.http.service
 
+import cn.afterturn.easypoi.excel.ExcelImportUtil
+import cn.afterturn.easypoi.excel.entity.ImportParams
 import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
+import com.edu.book.api.vo.user.CreateAccountRespVo
 import com.edu.book.api.vo.user.RegisterUserVo
 import com.edu.book.api.vo.user.UnbindAccountRespVo
 import com.edu.book.api.vo.user.UnbindAccountVo
+import com.edu.book.api.vo.user.UploadFileCreateAccountVo
 import com.edu.book.application.service.UserAppService
 import com.edu.book.domain.user.dto.BindAccountDto
+import com.edu.book.domain.user.dto.CreateAccountDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
+import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
+import com.edu.book.infrastructure.util.ExcelUtils
 import com.edu.book.infrastructure.util.MapperUtil
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * @Auther: liukaihua
@@ -23,6 +33,26 @@ class UserWebService {
 
     @Autowired
     private lateinit var userAppService: UserAppService
+
+    /**
+     * 生成账号
+     */
+    fun uploadFileCreateAccount(file: MultipartFile, classUid: String): CreateAccountRespVo {
+        val fileDatas = ExcelUtils.importData(file, NumberUtils.INTEGER_ONE, UploadFileCreateAccountVo::class.java)
+        val accountDto = UploadFileCreateAccountDto().apply {
+            this.classUid = classUid
+            this.accountList = fileDatas.map {
+                CreateAccountDto().apply {
+                    this.studentName = it.studentName
+                    this.openBorrowService = StringUtils.equals(it.openBorrowService, "是")
+                    this.parentPhone = it.parentPhone
+                }
+            }
+        }
+        return CreateAccountRespVo().apply {
+            this.downloadUrl = userAppService.uploadFileCreateAccount(accountDto)
+        }
+    }
 
     /**
      * 解绑

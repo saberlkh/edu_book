@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.area.dto.QueryLevelInfoDto
+import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.repositoryImpl.dao.area.LevelDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +44,17 @@ class LevelRepositoryImpl : ServiceImpl<LevelDao, LevelPo>(), LevelRepository {
         val wrapper = KtQueryWrapper(LevelPo::class.java)
             .eq(LevelPo::uid, levelUid)
         return levelDao.selectOne(wrapper)
+    }
+
+    /**
+     * 查询
+     */
+    override fun queryByUid(levelUid: String, levelType: LevelTypeEnum): LevelPo? {
+        val wrapper = KtQueryWrapper(LevelPo::class.java)
+            .eq(LevelPo::uid, levelUid)
+            .eq(LevelPo::levelType, levelType.type)
+            .limitOne()
+        return this.levelDao.selectOne(wrapper)
     }
 
     /**

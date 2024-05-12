@@ -1,13 +1,24 @@
 package com.edu.book.domain.user.service
 
+import cn.afterturn.easypoi.excel.entity.ExportParams
+import com.edu.book.domain.area.enums.AreaTypeEnum
+import com.edu.book.domain.area.enums.LevelTypeEnum
+import com.edu.book.domain.area.repository.AreaRepository
+import com.edu.book.domain.area.repository.LevelRepository
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
+import com.edu.book.domain.user.dto.CreateAccountDto
+import com.edu.book.domain.user.dto.ExportExcelAccountDto
 import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
 import com.edu.book.domain.user.dto.UnbindAccountRespDto
+import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
 import com.edu.book.domain.user.dto.UserDto
+import com.edu.book.domain.user.enums.BookRoleEnum
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
+import com.edu.book.domain.user.exception.AreaInfoNotExistException
+import com.edu.book.domain.user.exception.ClassNotExistException
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.domain.user.exception.UserBindedException
 import com.edu.book.domain.user.exception.UserNotFoundException
@@ -21,20 +32,36 @@ import com.edu.book.domain.user.mapper.UserEntityMapper.registerUserBuildUserPo
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.domain.user.repository.BookAccountRoleRelationRepository
 import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
+import com.edu.book.domain.user.repository.BookRoleBasicRepository
 import com.edu.book.domain.user.repository.BookRolePermissionRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.constants.Constants.hundred
 import com.edu.book.infrastructure.constants.RedisKeyConstant.BIND_UNBIND_USER_ACCOUNT_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
+import com.edu.book.infrastructure.enums.FileTypeEnum
+import com.edu.book.infrastructure.po.area.AreaPo
+import com.edu.book.infrastructure.po.area.LevelPo
+import com.edu.book.infrastructure.po.user.BookAccountPo
+import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
+import com.edu.book.infrastructure.po.user.BookRoleBasicPo
 import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
+import com.edu.book.infrastructure.util.DateUtil
+import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE
+import com.edu.book.infrastructure.util.ExcelUtils
+import com.edu.book.infrastructure.util.GeneratorShortUidUtil
 import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.util.QiNiuUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.sql.Timestamp
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
+import javax.management.relation.RoleNotFoundException
+import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -75,6 +102,130 @@ class UserDomainService {
 
     @Autowired
     private lateinit var bookAccountUserRelationRepository: BookAccountUserRelationRepository
+
+    @Autowired
+    private lateinit var qiNiuUtil: QiNiuUtil
+
+    @Autowired
+    private lateinit var levelRepository: LevelRepository
+
+    @Autowired
+    private lateinit var bookRoleBasicRepository: BookRoleBasicRepository
+
+    @Autowired
+    private lateinit var areaRepository: AreaRepository
+
+    private fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto): BookAccountPo {
+        val openBorrowService = dto.openBorrowService
+        return BookAccountPo().apply {
+            this.uid = uid
+            this.accountUid = GeneratorShortUidUtil.generateShortUUID()
+            this.password = GeneratorShortUidUtil.generateShortUUID()
+            this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
+            this.accountNickName = accountName
+            this.expireTime = if (openBorrowService) {
+                DateUtil.addMonths(Date(), 5)
+            } else {
+                null
+            }
+            this.studentName = dto.studentName
+            this.parentPhone = dto.parentPhone
+            this.openBorrowService = dto.openBorrowService
+            this.cashPledge = if (openBorrowService) {
+                10000
+            } else {
+                null
+            }
+            this.borrowCardId = if (openBorrowService) {
+                GeneratorShortUidUtil.generateShortUUID()
+            } else {
+                null
+            }
+        }
+    }
+
+    /**
+     * 生成账号
+     * 1.查看班级、幼儿园等信息
+     * 2.创建账号并插入数据
+     * 3.导入到文件
+     * 4.上传七牛
+     * 5.获取下载地址
+     */
+    @Transactional
+    fun uploadFileCreateAccount(accountDto: UploadFileCreateAccountDto): String {
+        //查看班级、幼儿园信息
+        val classInfo = levelRepository.queryByUid(accountDto.classUid, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+        //查询年级
+        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Garde) ?: throw ClassNotExistException()
+        //查询园区
+        val gradenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        //查询幼儿园
+        val kindergartenInfo = levelRepository.queryByUid(gradenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+        //查询省市区
+        val areaInfos = areaRepository.batchQueryByAreaCode(listOf(kindergartenInfo.provinceId!!, kindergartenInfo.cityId!!, kindergartenInfo.districtId!!))
+            ?: throw AreaInfoNotExistException()
+        //创建账号 初始化角色 游客
+        val accountRoles = mutableListOf<BookAccountRoleRelationPo>()
+        //查询角色 游客
+        val visitorRoleInfo = bookRoleBasicRepository.queryByRoleCode(BookRoleEnum.visitor.name) ?: throw RoleNotFoundException()
+        val saveAccounts = accountDto.accountList.map {
+            val uid = UUIDUtil.createUUID()
+            val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, it)
+            val accountRole = buildBookAccountRoleRelationPo(uid, visitorRoleInfo)
+            accountRoles.add(accountRole)
+            accountPo
+        }
+        //添加数据
+        bookAccountRepository.saveBatch(saveAccounts)
+        bookAccountRoleRelationRepository.saveBatch(accountRoles)
+        //导出数据到excel文件
+        val exportData = saveAccounts.map {
+            buildExportExcelAccountDto(it, kindergartenInfo, gradenInfo, classInfo, areaInfos)
+        }
+        val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, "导入学生.xlsx", null, ExportParams())
+        val respDto = qiNiuUtil.upload(file.inputStream(), FileTypeEnum.VIDEO.fileType)
+        file.deleteOnExit()
+        return respDto.filePath
+    }
+
+    private fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gradenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
+        val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        return ExportExcelAccountDto().apply {
+            this.borrowCardId = po.borrowCardId
+            this.studentName = po.studentName
+            this.accountUid = po.accountUid
+            this.password = po.password
+            this.cashPledge = if (po.cashPledge == null) {
+                NumberUtils.INTEGER_ZERO
+            } else {
+                po.cashPledge!! / hundred
+            }
+            this.expireTime = if (po.expireTime == null) {
+                ""
+            } else {
+                DateUtil.parse(po.expireTime!!, PATTREN_DATE)
+            }
+            this.parentPhone = po.parentPhone
+            this.provinceName = provinceInfo.areaName
+            this.cityName = cityInfo.areaName
+            this.districtName = districtInfo.areaName
+            this.kindergartenName = kindergartenInfo.levelName
+            this.gradenName = gradenInfo.levelName
+            this.className = classInfo.levelName
+        }
+    }
+
+    private fun buildBookAccountRoleRelationPo(accountUid: String, visitorRoleInfo: BookRoleBasicPo): BookAccountRoleRelationPo {
+        return BookAccountRoleRelationPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.accountUid = accountUid
+            this.roleUid = visitorRoleInfo.uid
+            this.roleCode = visitorRoleInfo.roleCode
+        }
+    }
 
     /**
      * 用户鉴权

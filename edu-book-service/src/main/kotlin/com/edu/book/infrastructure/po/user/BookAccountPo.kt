@@ -52,4 +52,34 @@ class BookAccountPo : BasePo() {
     @TableField("c_expire_time")
     var expireTime: Date? = null
 
+    /**
+     * 学生名称
+     */
+    @TableField("c_student_name")
+    var studentName: String? = null
+
+    /**
+     * 家长手机号
+     */
+    @TableField("c_parent_phone")
+    var parentPhone: String? = null
+
+    /**
+     * 是否开通服务
+     */
+    @TableField("c_open_borrow_service")
+    var openBorrowService: Boolean? = null
+
+    /**
+     * 押金
+     */
+    @TableField("c_cash_pledge")
+    var cashPledge: Int? = null
+
+    /**
+     * 借阅卡id
+     */
+    @TableField("c_borrow_card_id")
+    var borrowCardId: String? = null
+
 }

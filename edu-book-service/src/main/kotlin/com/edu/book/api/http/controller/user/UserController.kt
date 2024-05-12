@@ -3,6 +3,7 @@ package com.edu.book.api.http.controller.user
 import com.edu.book.api.http.service.UserWebService
 import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
+import com.edu.book.api.vo.user.CreateAccountRespVo
 import com.edu.book.api.vo.user.LoginOrRegisterVo
 import com.edu.book.api.vo.user.RegisterUserVo
 import com.edu.book.api.vo.user.UnbindAccountRespVo
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * @Auther: liukaihua
@@ -28,6 +30,14 @@ class UserController {
 
     @Autowired
     private lateinit var userWebService: UserWebService
+
+    /**
+     * 生成账号
+     */
+    @PostMapping("/v1/account")
+    fun uploadFileCreateAccount(file: MultipartFile, classUid: String): CreateAccountRespVo {
+        return userWebService.uploadFileCreateAccount(file, classUid)
+    }
 
     /**
      * 登录

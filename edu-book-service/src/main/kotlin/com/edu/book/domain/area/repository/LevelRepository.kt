@@ -2,6 +2,7 @@ package com.edu.book.domain.area.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.edu.book.domain.area.dto.QueryLevelInfoDto
+import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.infrastructure.po.area.LevelPo
 
 /**
@@ -23,6 +24,11 @@ interface LevelRepository : IService<LevelPo> {
      * 查询
      */
     fun queryByUid(levelUid: String): LevelPo?
+
+    /**
+     * 查询
+     */
+    fun queryByUid(levelUid: String, levelType: LevelTypeEnum): LevelPo?
 
     /**
      * 删除

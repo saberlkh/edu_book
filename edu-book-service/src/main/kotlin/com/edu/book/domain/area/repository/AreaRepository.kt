@@ -23,4 +23,9 @@ interface AreaRepository : IService<AreaPo> {
      */
     fun queryByAreaCode(areaCode: String?): AreaPo?
 
+    /**
+     * 根据地区码查询
+     */
+    fun batchQueryByAreaCode(areaCodes: List<String>): List<AreaPo>?
+
 }

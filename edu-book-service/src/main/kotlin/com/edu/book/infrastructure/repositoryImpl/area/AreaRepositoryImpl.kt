@@ -42,4 +42,14 @@ class AreaRepositoryImpl : ServiceImpl<AreaDao, AreaPo>(), AreaRepository {
         return areaDao.selectOne(wrapper)
     }
 
+    /**
+     * 批量查询
+     */
+    override fun batchQueryByAreaCode(areaCodes: List<String>): List<AreaPo>? {
+        if (areaCodes.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(AreaPo::class.java)
+            .`in`(AreaPo::areaCode, areaCodes)
+        return areaDao.selectList(wrapper)
+    }
+
 }

@@ -58,6 +58,16 @@ class DateUtil: DateUtils() {
             return dateFormat.format(date)
         }
 
+        /**
+         * 日期加月
+         */
+        fun addMonth(month: Int, date: Date): Date {
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.MONTH, month)
+            return calendar.time
+        }
+
         fun getNowTime(withSeconds: Boolean): String {
             val date = Date()
             val dateFormat = SimpleDateFormat(PATTREN_DATE_TIME, Locale.CHINA)

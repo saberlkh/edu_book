@@ -1,9 +1,11 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.repository.BookRoleBasicRepository
 import com.edu.book.infrastructure.po.user.BookRoleBasicPo
 import com.edu.book.infrastructure.repositoryImpl.dao.user.BookRoleBasicDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +16,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookRoleBasicRepositoryImpl : ServiceImpl<BookRoleBasicDao, BookRoleBasicPo>(), BookRoleBasicRepository {
+
+    /**
+     * 查询角色
+     */
+    override fun queryByRoleCode(roleCode: String): BookRoleBasicPo? {
+        val wrapper = KtQueryWrapper(BookRoleBasicPo::class.java)
+            .eq(BookRoleBasicPo::roleCode, roleCode)
+            .limitOne()
+        return this.getOne(wrapper)
+    }
 
 }

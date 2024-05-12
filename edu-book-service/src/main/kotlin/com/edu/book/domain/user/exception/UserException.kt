@@ -54,3 +54,13 @@ class AccountBindedException(): UserException("账号已经被绑定")
  * token失效
  */
 class UserTokenExpiredException: UserException("token失效")
+
+/**
+ * 班级不存在
+ */
+class ClassNotExistException: UserException("班级不存在")
+
+/**
+ * 地区信息不存在
+ */
+class AreaInfoNotExistException: UserException("地区信息不存在")

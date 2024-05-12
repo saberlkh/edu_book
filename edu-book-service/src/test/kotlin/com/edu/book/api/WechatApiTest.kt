@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON
 import com.edu.book.EduBoolServiceApplication
 import com.edu.book.application.client.IsbnApi
 import com.edu.book.application.client.WechatApi
+import com.edu.book.domain.user.dto.CreateAccountDto
+import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
 import com.edu.book.domain.user.service.UserDomainService
 import com.edu.book.infrastructure.config.SystemConfig
 import org.junit.Test
@@ -33,6 +35,22 @@ class WechatApiTest {
 
     @Autowired
     private lateinit var isbnApi: IsbnApi
+
+    @Test
+    fun `创建用户`() {
+        val dto = UploadFileCreateAccountDto().apply {
+            this.classUid = "38d04e85d27e49afb9c930b119ab5f31"
+            this.accountList = listOf(
+                CreateAccountDto().apply {
+                    this.studentName = "菜虚鲲"
+                    this.parentPhone = "13029705528"
+                    this.openBorrowService = true
+                }
+            )
+        }
+        val result = userDomainService.uploadFileCreateAccount(dto)
+        println(result)
+    }
 
     @Test
     fun `查询图书`() {

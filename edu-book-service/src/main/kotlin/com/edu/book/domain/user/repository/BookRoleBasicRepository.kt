@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.user.BookRoleBasicPo
  */
 interface BookRoleBasicRepository : IService<BookRoleBasicPo> {
 
+    /**
+     * 查询角色
+     */
+    fun queryByRoleCode(roleCode: String): BookRoleBasicPo?
+
 }

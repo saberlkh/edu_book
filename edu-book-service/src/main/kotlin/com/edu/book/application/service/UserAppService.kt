@@ -5,6 +5,7 @@ import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
 import com.edu.book.domain.user.dto.UnbindAccountRespDto
+import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
 import com.edu.book.domain.user.dto.UserDto
 import com.edu.book.domain.user.service.UserDomainService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,13 @@ class UserAppService {
 
     @Autowired
     private lateinit var userDomainService: UserDomainService
+
+    /**
+     * 生成账号
+     */
+    fun uploadFileCreateAccount(accountDto: UploadFileCreateAccountDto): String {
+        return userDomainService.uploadFileCreateAccount(accountDto)
+    }
 
     /**
      * 鉴权
