@@ -36,7 +36,11 @@ import com.edu.book.domain.user.repository.BookRoleBasicRepository
 import com.edu.book.domain.user.repository.BookRolePermissionRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.constants.Constants.account_download_file_attname
+import com.edu.book.infrastructure.constants.Constants.account_download_file_name
+import com.edu.book.infrastructure.constants.Constants.account_upload_file_name
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.constants.Constants.ten_thousand
 import com.edu.book.infrastructure.constants.RedisKeyConstant.BIND_UNBIND_USER_ACCOUNT_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
 import com.edu.book.infrastructure.enums.FileTypeEnum
@@ -132,7 +136,7 @@ class UserDomainService {
             this.parentPhone = dto.parentPhone
             this.openBorrowService = dto.openBorrowService
             this.cashPledge = if (openBorrowService) {
-                10000
+                ten_thousand
             } else {
                 null
             }
@@ -183,10 +187,10 @@ class UserDomainService {
         val exportData = saveAccounts.map {
             buildExportExcelAccountDto(it, kindergartenInfo, gradenInfo, classInfo, areaInfos)
         }
-        val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, "导入学生.xlsx", null, ExportParams())
+        val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, account_upload_file_name, null, ExportParams())
         val respDto = qiNiuUtil.upload(file.inputStream(), FileTypeEnum.VIDEO.fileType)
         file.deleteOnExit()
-        return respDto.filePath
+        return respDto.filePath + account_download_file_attname + kindergartenInfo.levelName + classInfo.levelName + account_download_file_name
     }
 
     private fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gradenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
