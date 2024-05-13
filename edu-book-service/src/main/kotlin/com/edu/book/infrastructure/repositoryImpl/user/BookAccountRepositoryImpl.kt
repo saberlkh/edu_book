@@ -1,11 +1,15 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edu.book.domain.user.dto.PageQueryAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.repositoryImpl.dao.user.BookAccountDao
 import com.edu.book.infrastructure.util.limitOne
+import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +41,18 @@ class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), 
         val wrapper = KtQueryWrapper(BookAccountPo::class.java)
             .`in`(BookAccountPo::parentPhone, parentPhones)
         return bookAccountDao.selectList(wrapper)
+    }
+
+    /**
+     * 分页查询
+     */
+    override fun pageQuery(param: PageQueryAccountParamDto): Page<BookAccountPo> {
+        val totalCount = bookAccountDao.getPageTotal(param)
+        if (totalCount <= NumberUtils.INTEGER_ZERO) return Page()
+        val result = bookAccountDao.getPage(param)
+        val page = Page<BookAccountPo>(param.page.toLong(), param.pageSize.toLong(), totalCount.toLong())
+        page.records = result
+        return page
     }
 
 }

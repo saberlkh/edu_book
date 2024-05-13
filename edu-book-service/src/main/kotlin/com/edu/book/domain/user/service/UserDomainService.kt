@@ -28,6 +28,7 @@ import com.edu.book.domain.user.mapper.UserEntityMapper.bindBindAccountRespDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildBindAccountUserRelationPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildBookAccountRoleRelationPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildExportExcelAccountDto
+import com.edu.book.domain.user.mapper.UserEntityMapper.buildPageQueryAccountDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildUpdateUserPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildUploadBookAccountPo
@@ -116,9 +117,25 @@ class UserDomainService {
     /**
      * 分页查询
      */
-    fun queryAccountListByClass(param: PageQueryAccountParamDto): Page<PageQueryAccountDto> {
-
-        return Page<PageQueryAccountDto>()
+    fun pageQueryAccountListByClass(param: PageQueryAccountParamDto): Page<PageQueryAccountDto> {
+        val pageQuery = bookAccountRepository.pageQuery(param)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        //查看班级、幼儿园信息
+        val classInfo = levelRepository.queryByUid(param.classUid, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+        //查询年级
+        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+        //查询园区
+        val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        //查询幼儿园
+        val kindergartenInfo = levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+        //查询省市区
+        val areaInfos = areaRepository.batchQueryByAreaCode(listOf(kindergartenInfo.provinceId!!, kindergartenInfo.cityId!!, kindergartenInfo.districtId!!))
+            ?: throw AreaInfoNotExistException()
+        //参数组装
+        val finalResult = pageQuery.records.map { po ->
+            buildPageQueryAccountDto(areaInfos, po, kindergartenInfo, gardenInfo, classInfo)
+        }
+        return Page(param.page, param.pageSize, pageQuery.total.toInt(), finalResult)
     }
 
     /**
@@ -134,11 +151,11 @@ class UserDomainService {
         //查看班级、幼儿园信息
         val classInfo = levelRepository.queryByUid(accountDto.classUid, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
         //查询年级
-        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Garde) ?: throw ClassNotExistException()
+        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
         //查询园区
-        val gradenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
         //查询幼儿园
-        val kindergartenInfo = levelRepository.queryByUid(gradenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+        val kindergartenInfo = levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
         //查询省市区
         val areaInfos = areaRepository.batchQueryByAreaCode(listOf(kindergartenInfo.provinceId!!, kindergartenInfo.cityId!!, kindergartenInfo.districtId!!))
             ?: throw AreaInfoNotExistException()
@@ -167,7 +184,7 @@ class UserDomainService {
         bookAccountRoleRelationRepository.saveBatch(accountRoles)
         //导出数据到excel文件
         val exportData = (saveAccounts + existToUploadAccountPos).map {
-            buildExportExcelAccountDto(it, kindergartenInfo, gradenInfo, classInfo, areaInfos)
+            buildExportExcelAccountDto(it, kindergartenInfo, gardenInfo, classInfo, areaInfos)
         }
         val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, account_upload_file_name, null, ExportParams())
         val respDto = qiNiuUtil.upload(file.inputStream(), FileTypeEnum.VIDEO.fileType)

@@ -5,9 +5,11 @@ import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.CreateAccountDto
 import com.edu.book.domain.user.dto.ExportExcelAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountDto
 import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.domain.user.exception.AreaInfoNotExistException
 import com.edu.book.infrastructure.constants.Constants
+import com.edu.book.infrastructure.constants.Constants.number_five
 import com.edu.book.infrastructure.po.area.AreaPo
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.user.BookAccountPo
@@ -27,6 +29,38 @@ import org.apache.commons.lang3.math.NumberUtils
 
 object UserEntityMapper {
 
+    /**
+     * 构建
+     */
+    fun buildPageQueryAccountDto(areaInfos: List<AreaPo>, po: BookAccountPo, kindergartenInfo: LevelPo, gardenInfo: LevelPo, classInfo: LevelPo): PageQueryAccountDto {
+        val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        return PageQueryAccountDto().apply {
+            this.borrowCardId = po.borrowCardId
+            this.studentName = po.studentName
+            this.accountUid = po.accountUid
+            this.password = po.password
+            this.cashPledge = if (po.cashPledge == null) {
+                NumberUtils.INTEGER_ZERO
+            } else {
+                po.cashPledge!! / Constants.hundred
+            }
+            this.expireTime = if (po.expireTime == null) {
+                null
+            } else {
+                DateUtil.parse(po.expireTime!!, DateUtil.PATTREN_DATE)
+            }
+            this.parentPhone = po.parentPhone
+            this.provinceName = provinceInfo.areaName
+            this.cityName = cityInfo.areaName
+            this.districtName = districtInfo.areaName
+            this.kindergartenName = kindergartenInfo.levelName
+            this.gardenName = gardenInfo.levelName
+            this.className = classInfo.levelName
+        }
+    }
+
     fun buildBookAccountRoleRelationPo(accountUid: String, visitorRoleInfo: BookRoleBasicPo): BookAccountRoleRelationPo {
         return BookAccountRoleRelationPo().apply {
             this.uid = UUIDUtil.createUUID()
@@ -36,7 +70,7 @@ object UserEntityMapper {
         }
     }
 
-    fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gradenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
+    fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gardenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
         val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
         val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
         val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
@@ -60,7 +94,7 @@ object UserEntityMapper {
             this.cityName = cityInfo.areaName
             this.districtName = districtInfo.areaName
             this.kindergartenName = kindergartenInfo.levelName
-            this.gradenName = gradenInfo.levelName
+            this.gardenName = gardenInfo.levelName
             this.className = classInfo.levelName
         }
     }
@@ -77,7 +111,7 @@ object UserEntityMapper {
             this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
             this.accountNickName = accountName
             this.expireTime = if (openBorrowService) {
-                DateUtil.addMonths(Date(), 5)
+                DateUtil.addMonths(Date(), number_five)
             } else {
                 null
             }

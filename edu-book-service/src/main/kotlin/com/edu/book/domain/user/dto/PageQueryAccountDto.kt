@@ -67,11 +67,16 @@ class PageQueryAccountDto: Serializable {
     /**
      * 园区
      */
-    var gradenName: String? = null
+    var gardenName: String? = null
 
     /**
      * 班级名称
      */
     var className: String? = null
+
+    /**
+     * 班级Uid
+     */
+    var classUid: String? = null
 
 }

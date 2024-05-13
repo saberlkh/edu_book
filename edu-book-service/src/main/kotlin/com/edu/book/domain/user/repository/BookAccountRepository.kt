@@ -1,6 +1,9 @@
 package com.edu.book.domain.user.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edu.book.domain.user.dto.PageQueryAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.infrastructure.po.user.BookAccountPo
 
 /**
@@ -22,5 +25,10 @@ interface BookAccountRepository : IService<BookAccountPo> {
      * 通过家长手机号查询
      */
     fun findByParentPhone(parentPhones: List<String>): List<BookAccountPo>?
+
+    /**
+     * 分页查询
+     */
+    fun pageQuery(param: PageQueryAccountParamDto): Page<BookAccountPo>
 
 }

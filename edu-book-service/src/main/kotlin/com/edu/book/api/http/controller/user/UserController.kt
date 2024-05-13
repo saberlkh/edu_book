@@ -5,12 +5,17 @@ import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
 import com.edu.book.api.vo.user.CreateAccountRespVo
 import com.edu.book.api.vo.user.LoginOrRegisterVo
+import com.edu.book.api.vo.user.PageQueryAccountParamVo
+import com.edu.book.api.vo.user.PageQueryAccountVo
 import com.edu.book.api.vo.user.RegisterUserVo
 import com.edu.book.api.vo.user.UnbindAccountRespVo
 import com.edu.book.api.vo.user.UnbindAccountVo
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.response.ResponseVo
+import com.edu.book.infrastructure.util.page.Page
+import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,6 +42,14 @@ class UserController {
     @PostMapping("/v1/account")
     fun uploadFileCreateAccount(file: MultipartFile, classUid: String): CreateAccountRespVo {
         return userWebService.uploadFileCreateAccount(file, classUid)
+    }
+
+    /**
+     * 分页查询
+     */
+    @GetMapping("/v1/account/page")
+    fun pageQueryAccountListByClass(@Valid vo: PageQueryAccountParamVo): Page<PageQueryAccountVo> {
+        return userWebService.pageQueryAccountListByClass(vo)
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.edu.book.api.http.service
 
-import cn.afterturn.easypoi.excel.ExcelImportUtil
-import cn.afterturn.easypoi.excel.entity.ImportParams
 import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
 import com.edu.book.api.vo.user.CreateAccountRespVo
+import com.edu.book.api.vo.user.PageQueryAccountParamVo
+import com.edu.book.api.vo.user.PageQueryAccountVo
 import com.edu.book.api.vo.user.RegisterUserVo
 import com.edu.book.api.vo.user.UnbindAccountRespVo
 import com.edu.book.api.vo.user.UnbindAccountVo
@@ -12,10 +12,12 @@ import com.edu.book.api.vo.user.UploadFileCreateAccountVo
 import com.edu.book.application.service.UserAppService
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.CreateAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
 import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
 import com.edu.book.infrastructure.util.ExcelUtils
 import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.util.page.Page
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,6 +35,16 @@ class UserWebService {
 
     @Autowired
     private lateinit var userAppService: UserAppService
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryAccountListByClass(param: PageQueryAccountParamVo): Page<PageQueryAccountVo> {
+        val paramDto = MapperUtil.map(PageQueryAccountParamDto::class.java, param)
+        val pageQuery = userAppService.pageQueryAccountListByClass(paramDto)
+        if (pageQuery.result.isNullOrEmpty()) return Page()
+        return Page(param.page, param.pageSize, pageQuery.totalCount, MapperUtil.mapToList(PageQueryAccountVo::class.java, pageQuery.result!!))
+    }
 
     /**
      * 生成账号

@@ -20,4 +20,6 @@ object Constants {
 
     const val account_download_file_name = "学生账号.xlsx"
 
+    const val number_five = 5
+
 }

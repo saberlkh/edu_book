@@ -2,4 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.user.BookAccountDao">
 
+    <sql id="accountBaseFileds">
+        c_account_uid AS accountUid,
+        c_borrow_card_id AS borrowCardId,
+        c_student_name AS studentName,
+        c_password AS password,
+        c_cash_pledge AS cashPledge,
+        c_expire_time AS expireTime,
+        c_parent_phone AS parentPhone,
+        c_class_uid AS classUid
+    </sql>
+
+    <!--fun getPageTotal(param: PageQueryAccountParamDto): Int-->
+    <select id="getPageTotal" resultType="int" parameterType="com.edu.book.domain.user.dto.PageQueryAccountParamDto">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_account
+        WHERE
+            c_is_deleted = 0
+        <if test="classUid != null and classUid != ''">
+            AND c_class_uid = #{classUid}
+        </if>
+    </select>
+
+    <!--fun getPage(param: PageQueryAccountParamDto): List<PageQueryAccountDto>-->
+    <select id="getPage" parameterType="com.edu.book.domain.user.dto.PageQueryAccountParamDto"
+        resultType="com.edu.book.infrastructure.po.user.BookAccountPo">
+        SELECT
+        <include refid="accountBaseFileds"/>
+        FROM
+            t_book_account
+        WHERE
+            c_is_deleted = 0
+        <if test="classUid != null and classUid != ''">
+            AND c_class_uid = #{classUid}
+        </if>
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
+
 </mapper>

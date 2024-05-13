@@ -7,12 +7,24 @@ package com.edu.book.domain.area.enums
  */
 enum class LevelTypeEnum(val type: Int) {
 
+    /**
+     * 幼儿园
+     */
     Kindergarten(0),
 
+    /**
+     * 园区
+     */
     Garden(1),
 
-    Garde(2),
+    /**
+     * 年级
+     */
+    Grade(2),
 
+    /**
+     * 教室
+     */
     Classroom(3),
 
     ;
