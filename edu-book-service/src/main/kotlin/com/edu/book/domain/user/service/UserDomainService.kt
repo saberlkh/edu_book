@@ -140,11 +140,7 @@ class UserDomainService {
             } else {
                 null
             }
-            this.borrowCardId = if (openBorrowService) {
-                GeneratorShortUidUtil.generateShortUUID()
-            } else {
-                null
-            }
+            this.borrowCardId = GeneratorShortUidUtil.generateShortUUID()
         }
     }
 
