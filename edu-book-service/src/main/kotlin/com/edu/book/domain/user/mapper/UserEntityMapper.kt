@@ -1,19 +1,98 @@
 package com.edu.book.domain.user.mapper
 
+import com.edu.book.domain.area.enums.AreaTypeEnum
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
+import com.edu.book.domain.user.dto.CreateAccountDto
+import com.edu.book.domain.user.dto.ExportExcelAccountDto
 import com.edu.book.domain.user.dto.RegisterUserDto
+import com.edu.book.domain.user.exception.AreaInfoNotExistException
+import com.edu.book.infrastructure.constants.Constants
+import com.edu.book.infrastructure.po.area.AreaPo
+import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
 import com.edu.book.infrastructure.po.user.BookAccountUserRelationPo
+import com.edu.book.infrastructure.po.user.BookRoleBasicPo
 import com.edu.book.infrastructure.po.user.BookRolePermissionRelationPo
 import com.edu.book.infrastructure.po.user.BookUserPo
+import com.edu.book.infrastructure.util.DateUtil
+import com.edu.book.infrastructure.util.GeneratorShortUidUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import java.util.*
 import org.apache.commons.lang3.BooleanUtils
+import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 
 object UserEntityMapper {
+
+    fun buildBookAccountRoleRelationPo(accountUid: String, visitorRoleInfo: BookRoleBasicPo): BookAccountRoleRelationPo {
+        return BookAccountRoleRelationPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.accountUid = accountUid
+            this.roleUid = visitorRoleInfo.uid
+            this.roleCode = visitorRoleInfo.roleCode
+        }
+    }
+
+    fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gradenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
+        val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        return ExportExcelAccountDto().apply {
+            this.borrowCardId = po.borrowCardId
+            this.studentName = po.studentName
+            this.accountUid = po.accountUid
+            this.password = po.password
+            this.cashPledge = if (po.cashPledge == null) {
+                NumberUtils.INTEGER_ZERO
+            } else {
+                po.cashPledge!! / Constants.hundred
+            }
+            this.expireTime = if (po.expireTime == null) {
+                ""
+            } else {
+                DateUtil.parse(po.expireTime!!, DateUtil.PATTREN_DATE)
+            }
+            this.parentPhone = po.parentPhone
+            this.provinceName = provinceInfo.areaName
+            this.cityName = cityInfo.areaName
+            this.districtName = districtInfo.areaName
+            this.kindergartenName = kindergartenInfo.levelName
+            this.gradenName = gradenInfo.levelName
+            this.className = classInfo.levelName
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
+    fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto): BookAccountPo {
+        val openBorrowService = dto.openBorrowService
+        return BookAccountPo().apply {
+            this.uid = uid
+            this.accountUid = GeneratorShortUidUtil.generateShortUUID()
+            this.password = GeneratorShortUidUtil.generateShortUUID()
+            this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
+            this.accountNickName = accountName
+            this.expireTime = if (openBorrowService) {
+                DateUtil.addMonths(Date(), 5)
+            } else {
+                null
+            }
+            this.studentName = dto.studentName
+            this.parentPhone = dto.parentPhone
+            this.openBorrowService = dto.openBorrowService
+            this.cashPledge = if (openBorrowService) {
+                Constants.ten_thousand
+            } else {
+                null
+            }
+            this.borrowCardId = GeneratorShortUidUtil.generateShortUUID()
+            this.classUid = classInfo.uid!!
+        }
+    }
 
     /**
      * 构建实体类

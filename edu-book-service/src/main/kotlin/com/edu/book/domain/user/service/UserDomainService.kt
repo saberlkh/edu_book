@@ -26,8 +26,11 @@ import com.edu.book.domain.user.exception.UserTokenExpiredException
 import com.edu.book.domain.user.exception.UserUnBindedException
 import com.edu.book.domain.user.mapper.UserEntityMapper.bindBindAccountRespDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildBindAccountUserRelationPo
+import com.edu.book.domain.user.mapper.UserEntityMapper.buildBookAccountRoleRelationPo
+import com.edu.book.domain.user.mapper.UserEntityMapper.buildExportExcelAccountDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildRegisterUserDto
 import com.edu.book.domain.user.mapper.UserEntityMapper.buildUpdateUserPo
+import com.edu.book.domain.user.mapper.UserEntityMapper.buildUploadBookAccountPo
 import com.edu.book.domain.user.mapper.UserEntityMapper.registerUserBuildUserPo
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.domain.user.repository.BookAccountRoleRelationRepository
@@ -119,31 +122,6 @@ class UserDomainService {
     @Autowired
     private lateinit var areaRepository: AreaRepository
 
-    private fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto): BookAccountPo {
-        val openBorrowService = dto.openBorrowService
-        return BookAccountPo().apply {
-            this.uid = uid
-            this.accountUid = GeneratorShortUidUtil.generateShortUUID()
-            this.password = GeneratorShortUidUtil.generateShortUUID()
-            this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
-            this.accountNickName = accountName
-            this.expireTime = if (openBorrowService) {
-                DateUtil.addMonths(Date(), 5)
-            } else {
-                null
-            }
-            this.studentName = dto.studentName
-            this.parentPhone = dto.parentPhone
-            this.openBorrowService = dto.openBorrowService
-            this.cashPledge = if (openBorrowService) {
-                ten_thousand
-            } else {
-                null
-            }
-            this.borrowCardId = GeneratorShortUidUtil.generateShortUUID()
-        }
-    }
-
     /**
      * 生成账号
      * 1.查看班级、幼儿园等信息
@@ -187,44 +165,6 @@ class UserDomainService {
         val respDto = qiNiuUtil.upload(file.inputStream(), FileTypeEnum.VIDEO.fileType)
         file.deleteOnExit()
         return respDto.filePath + account_download_file_attname + kindergartenInfo.levelName + classInfo.levelName + account_download_file_name
-    }
-
-    private fun buildExportExcelAccountDto(po: BookAccountPo, kindergartenInfo: LevelPo, gradenInfo: LevelPo, classInfo: LevelPo, areaInfos: List<AreaPo>): ExportExcelAccountDto {
-        val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
-        val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
-        val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
-        return ExportExcelAccountDto().apply {
-            this.borrowCardId = po.borrowCardId
-            this.studentName = po.studentName
-            this.accountUid = po.accountUid
-            this.password = po.password
-            this.cashPledge = if (po.cashPledge == null) {
-                NumberUtils.INTEGER_ZERO
-            } else {
-                po.cashPledge!! / hundred
-            }
-            this.expireTime = if (po.expireTime == null) {
-                ""
-            } else {
-                DateUtil.parse(po.expireTime!!, PATTREN_DATE)
-            }
-            this.parentPhone = po.parentPhone
-            this.provinceName = provinceInfo.areaName
-            this.cityName = cityInfo.areaName
-            this.districtName = districtInfo.areaName
-            this.kindergartenName = kindergartenInfo.levelName
-            this.gradenName = gradenInfo.levelName
-            this.className = classInfo.levelName
-        }
-    }
-
-    private fun buildBookAccountRoleRelationPo(accountUid: String, visitorRoleInfo: BookRoleBasicPo): BookAccountRoleRelationPo {
-        return BookAccountRoleRelationPo().apply {
-            this.uid = UUIDUtil.createUUID()
-            this.accountUid = accountUid
-            this.roleUid = visitorRoleInfo.uid
-            this.roleCode = visitorRoleInfo.roleCode
-        }
     }
 
     /**

@@ -82,4 +82,10 @@ class BookAccountPo : BasePo() {
     @TableField("c_borrow_card_id")
     var borrowCardId: String? = null
 
+    /**
+     * 班级Uid
+     */
+    @TableField("c_class_uid")
+    var classUid: String? = null
+
 }
