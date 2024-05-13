@@ -188,7 +188,7 @@ class UserDomainService {
         }
         val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, account_upload_file_name, null, ExportParams())
         val respDto = qiNiuUtil.upload(file.inputStream(), FileTypeEnum.VIDEO.fileType)
-        file.deleteOnExit()
+        file.delete()
         return respDto.filePath + account_download_file_attname + kindergartenInfo.levelName + classInfo.levelName + account_download_file_name
     }
 

@@ -81,7 +81,7 @@ public class ExcelUtils {
     public static File exportToFile(List<?> list, Class<?> pojoClass, String fileName, HttpServletResponse response, ExportParams exportParams) throws IOException {
         //把数据添加到excel表格中
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
-        String resourcesPath = ExcelUtils.class.getClassLoader().getResource("").getPath();
+        String resourcesPath  = System.getProperty("user.dir");
         String outPath = resourcesPath + File.separatorChar + fileName;
         if (!FileUtil.exist(resourcesPath)) {
             FileUtil.mkdir(resourcesPath);
