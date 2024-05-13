@@ -1,14 +1,14 @@
 package com.edu.book.domain.user.service
 
 import cn.afterturn.easypoi.excel.entity.ExportParams
-import com.edu.book.domain.area.enums.AreaTypeEnum
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.AreaRepository
 import com.edu.book.domain.area.repository.LevelRepository
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
-import com.edu.book.domain.user.dto.CreateAccountDto
 import com.edu.book.domain.user.dto.ExportExcelAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountDto
+import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
 import com.edu.book.domain.user.dto.UnbindAccountRespDto
@@ -42,33 +42,24 @@ import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants.account_download_file_attname
 import com.edu.book.infrastructure.constants.Constants.account_download_file_name
 import com.edu.book.infrastructure.constants.Constants.account_upload_file_name
-import com.edu.book.infrastructure.constants.Constants.hundred
-import com.edu.book.infrastructure.constants.Constants.ten_thousand
 import com.edu.book.infrastructure.constants.RedisKeyConstant.BIND_UNBIND_USER_ACCOUNT_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
 import com.edu.book.infrastructure.enums.FileTypeEnum
-import com.edu.book.infrastructure.po.area.AreaPo
-import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
-import com.edu.book.infrastructure.po.user.BookRoleBasicPo
 import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
-import com.edu.book.infrastructure.util.DateUtil
-import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE
 import com.edu.book.infrastructure.util.ExcelUtils
-import com.edu.book.infrastructure.util.GeneratorShortUidUtil
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import com.edu.book.infrastructure.util.page.Page
 import java.sql.Timestamp
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import javax.management.relation.RoleNotFoundException
-import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -123,6 +114,14 @@ class UserDomainService {
     private lateinit var areaRepository: AreaRepository
 
     /**
+     * 分页查询
+     */
+    fun queryAccountListByClass(param: PageQueryAccountParamDto): Page<PageQueryAccountDto> {
+
+        return Page<PageQueryAccountDto>()
+    }
+
+    /**
      * 生成账号
      * 1.查看班级、幼儿园等信息
      * 2.创建账号并插入数据
@@ -147,18 +146,27 @@ class UserDomainService {
         val accountRoles = mutableListOf<BookAccountRoleRelationPo>()
         //查询角色 游客
         val visitorRoleInfo = bookRoleBasicRepository.queryByRoleCode(BookRoleEnum.visitor.name) ?: throw RoleNotFoundException()
-        val saveAccounts = accountDto.accountList.map {
-            val uid = UUIDUtil.createUUID()
-            val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, it)
-            val accountRole = buildBookAccountRoleRelationPo(uid, visitorRoleInfo)
-            accountRoles.add(accountRole)
-            accountPo
+        //查询当前存在的账号信息
+        val existAccountPos = bookAccountRepository.findByParentPhone(accountDto.accountList.mapNotNull { it.parentPhone }) ?: emptyList()
+        val existToUploadAccountPos = mutableListOf<BookAccountPo>()
+        val saveAccounts = accountDto.accountList.mapNotNull { accountDto ->
+            val existAccountPo = existAccountPos.filter { StringUtils.equals(it.parentPhone, accountDto.parentPhone) && StringUtils.equals(it.studentName, accountDto.studentName) }.firstOrNull()
+            if (existAccountPo == null) {
+                val uid = UUIDUtil.createUUID()
+                val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, accountDto)
+                val accountRole = buildBookAccountRoleRelationPo(uid, visitorRoleInfo)
+                accountRoles.add(accountRole)
+                accountPo
+            } else {
+                existToUploadAccountPos.add(existAccountPo)
+                null
+            }
         }
         //添加数据
         bookAccountRepository.saveBatch(saveAccounts)
         bookAccountRoleRelationRepository.saveBatch(accountRoles)
         //导出数据到excel文件
-        val exportData = saveAccounts.map {
+        val exportData = (saveAccounts + existToUploadAccountPos).map {
             buildExportExcelAccountDto(it, kindergartenInfo, gradenInfo, classInfo, areaInfos)
         }
         val file = ExcelUtils.exportToFile(exportData, ExportExcelAccountDto::class.java, account_upload_file_name, null, ExportParams())

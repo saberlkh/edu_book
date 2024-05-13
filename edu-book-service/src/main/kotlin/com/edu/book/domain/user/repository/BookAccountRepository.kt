@@ -18,4 +18,9 @@ interface BookAccountRepository : IService<BookAccountPo> {
      */
     fun findByUid(accountUid: String?): BookAccountPo?
 
+    /**
+     * 通过家长手机号查询
+     */
+    fun findByParentPhone(parentPhones: List<String>): List<BookAccountPo>?
+
 }

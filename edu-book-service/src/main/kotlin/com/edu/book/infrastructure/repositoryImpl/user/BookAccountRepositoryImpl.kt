@@ -29,4 +29,14 @@ class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), 
         return getOne(wrapper)
     }
 
+    /**
+     * 通过家长手机号查询
+     */
+    override fun findByParentPhone(parentPhones: List<String>): List<BookAccountPo>? {
+        if (parentPhones.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookAccountPo::class.java)
+            .`in`(BookAccountPo::parentPhone, parentPhones)
+        return bookAccountDao.selectList(wrapper)
+    }
+
 }
