@@ -43,6 +43,7 @@ import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants.account_download_file_attname
 import com.edu.book.infrastructure.constants.Constants.account_download_file_name
 import com.edu.book.infrastructure.constants.Constants.account_upload_file_name
+import com.edu.book.infrastructure.constants.Constants.eight
 import com.edu.book.infrastructure.constants.RedisKeyConstant.BIND_UNBIND_USER_ACCOUNT_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.REGISTER_USER_LOCK_KEY
 import com.edu.book.infrastructure.enums.FileTypeEnum
@@ -53,6 +54,7 @@ import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.util.ExcelUtils
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
+import com.edu.book.infrastructure.util.RandomUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import com.edu.book.infrastructure.util.page.Page
 import java.sql.Timestamp
@@ -61,6 +63,7 @@ import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import javax.management.relation.RoleNotFoundException
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -139,6 +142,24 @@ class UserDomainService {
     }
 
     /**
+     * 生成借阅卡Id
+     */
+    fun generatorBorrwoCardId(): String {
+        var newCardId = RandomUtil.getRandomNum(eight)
+        var forEachCount = NumberUtils.INTEGER_ZERO
+        //判断当前卡是否存在
+        var currentAccountPo = bookAccountRepository.findByBorrwoCardId(newCardId) ?: return newCardId
+        while (currentAccountPo != null) {
+            if (forEachCount >= NumberUtils.INTEGER_TWO) break
+            //在生成一个新的账号
+            newCardId = RandomUtil.getRandomNum(eight)
+            currentAccountPo = bookAccountRepository.findByBorrwoCardId(newCardId) ?: break
+            forEachCount += NumberUtils.INTEGER_ONE
+        }
+        return newCardId
+    }
+
+    /**
      * 生成账号
      * 1.查看班级、幼儿园等信息
      * 2.创建账号并插入数据
@@ -170,7 +191,9 @@ class UserDomainService {
             val existAccountPo = existAccountPos.filter { StringUtils.equals(it.parentPhone, accountDto.parentPhone) && StringUtils.equals(it.studentName, accountDto.studentName) }.firstOrNull()
             if (existAccountPo == null) {
                 val uid = UUIDUtil.createUUID()
-                val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, accountDto)
+                //生成借阅卡Id
+                val borrowCardId = generatorBorrwoCardId()
+                val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, accountDto, borrowCardId)
                 val accountRole = buildBookAccountRoleRelationPo(uid, visitorRoleInfo)
                 accountRoles.add(accountRole)
                 accountPo

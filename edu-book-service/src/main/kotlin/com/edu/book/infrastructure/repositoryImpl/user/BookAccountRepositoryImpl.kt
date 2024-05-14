@@ -44,6 +44,16 @@ class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), 
     }
 
     /**
+     * 通过借阅卡Id查询
+     */
+    override fun findByBorrwoCardId(borrowCardId: String): BookAccountPo? {
+        val wrapper = KtQueryWrapper(BookAccountPo::class.java)
+            .eq(BookAccountPo::borrowCardId, borrowCardId)
+            .limitOne()
+        return bookAccountDao.selectOne(wrapper)
+    }
+
+    /**
      * 分页查询
      */
     override fun pageQuery(param: PageQueryAccountParamDto): Page<BookAccountPo> {

@@ -31,4 +31,9 @@ interface BookAccountRepository : IService<BookAccountPo> {
      */
     fun pageQuery(param: PageQueryAccountParamDto): Page<BookAccountPo>
 
+    /**
+     * 通过借阅卡Id查询
+     */
+    fun findByBorrwoCardId(borrowCardId: String): BookAccountPo?
+
 }

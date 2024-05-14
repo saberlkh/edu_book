@@ -102,7 +102,7 @@ object UserEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto): BookAccountPo {
+    fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto, borrowCardId: String): BookAccountPo {
         val openBorrowService = dto.openBorrowService
         return BookAccountPo().apply {
             this.uid = uid
@@ -123,7 +123,7 @@ object UserEntityMapper {
             } else {
                 null
             }
-            this.borrowCardId = GeneratorShortUidUtil.generateShortUUID()
+            this.borrowCardId = borrowCardId
             this.classUid = classInfo.uid!!
         }
     }
