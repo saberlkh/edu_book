@@ -12,6 +12,7 @@ import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.Constants.number_five
 import com.edu.book.infrastructure.po.area.AreaPo
 import com.edu.book.infrastructure.po.area.LevelPo
+import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
 import com.edu.book.infrastructure.po.user.BookAccountUserRelationPo
@@ -32,10 +33,11 @@ object UserEntityMapper {
     /**
      * 构建
      */
-    fun buildPageQueryAccountDto(areaInfos: List<AreaPo>, po: BookAccountPo, kindergartenInfo: LevelPo, gardenInfo: LevelPo, classInfo: LevelPo): PageQueryAccountDto {
+    fun buildPageQueryAccountDto(areaInfos: List<AreaPo>, po: BookAccountPo, kindergartenInfo: LevelPo, gardenInfo: LevelPo, classInfo: LevelPo, bookBorrowFlowMap: Map<String, List<BookBorrowFlowPo>>): PageQueryAccountDto {
         val provinceInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.PROVINCE.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
         val cityInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.CITY.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
         val districtInfo = areaInfos.filter { ObjectUtils.equals(it.areaType, AreaTypeEnum.DISTRICT.type) }.firstOrNull() ?: throw AreaInfoNotExistException()
+        val bookBorrowFlows = bookBorrowFlowMap.get(po.borrowCardId) ?: emptyList()
         return PageQueryAccountDto().apply {
             this.borrowCardId = po.borrowCardId
             this.studentName = po.studentName
@@ -58,6 +60,8 @@ object UserEntityMapper {
             this.kindergartenName = kindergartenInfo.levelName
             this.gardenName = gardenInfo.levelName
             this.className = classInfo.levelName
+            this.borrowBoookCount = bookBorrowFlows.filter { (it.returnTime?.time ?: NumberUtils.LONG_ZERO) >= Date().time }.size
+            this.overTimeBookCount = bookBorrowFlows.filter { (it.returnTime?.time ?: NumberUtils.LONG_ZERO) < Date().time }.size
         }
     }
 

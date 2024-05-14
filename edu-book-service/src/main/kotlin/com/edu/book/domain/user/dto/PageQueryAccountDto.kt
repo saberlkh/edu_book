@@ -1,6 +1,7 @@
 package com.edu.book.domain.user.dto
 
 import java.io.Serializable
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -78,5 +79,15 @@ class PageQueryAccountDto: Serializable {
      * 班级Uid
      */
     var classUid: String? = null
+
+    /**
+     * 在借书籍数量
+     */
+    var borrowBoookCount: Int = NumberUtils.INTEGER_ZERO
+
+    /**
+     * 超时未归还数量
+     */
+    var overTimeBookCount: Int = NumberUtils.INTEGER_ZERO
 
 }

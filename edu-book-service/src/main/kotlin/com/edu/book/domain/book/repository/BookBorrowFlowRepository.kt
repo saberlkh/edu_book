@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
  */
 interface BookBorrowFlowRepository : IService<BookBorrowFlowPo> {
 
+    /**
+     * 批量查询
+     */
+    fun batchQueryByBorrowCardIds(borrowCardIds: List<String>, borrowStatus: Int): List<BookBorrowFlowPo>?
+
 }

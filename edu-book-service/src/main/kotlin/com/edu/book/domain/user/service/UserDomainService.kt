@@ -4,6 +4,8 @@ import cn.afterturn.easypoi.excel.entity.ExportParams
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.AreaRepository
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.book.enums.BookBorrowStatusEnum
+import com.edu.book.domain.book.repository.BookBorrowFlowRepository
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.ExportExcelAccountDto
@@ -117,6 +119,9 @@ class UserDomainService {
     @Autowired
     private lateinit var areaRepository: AreaRepository
 
+    @Autowired
+    private lateinit var bookBorrowFlowRepository: BookBorrowFlowRepository
+
     /**
      * 分页查询
      */
@@ -134,9 +139,12 @@ class UserDomainService {
         //查询省市区
         val areaInfos = areaRepository.batchQueryByAreaCode(listOf(kindergartenInfo.provinceId!!, kindergartenInfo.cityId!!, kindergartenInfo.districtId!!))
             ?: throw AreaInfoNotExistException()
+        //根据借阅卡Id查询借阅记录
+        val bookBorrowFlows = bookBorrowFlowRepository.batchQueryByBorrowCardIds(pageQuery.records.mapNotNull { it.borrowCardId }, BookBorrowStatusEnum.BORROWER.status) ?: emptyList()
+        val bookBorrowFlowMap = bookBorrowFlows.groupBy { it.borrowCardId!! }
         //参数组装
         val finalResult = pageQuery.records.map { po ->
-            buildPageQueryAccountDto(areaInfos, po, kindergartenInfo, gardenInfo, classInfo)
+            buildPageQueryAccountDto(areaInfos, po, kindergartenInfo, gardenInfo, classInfo, bookBorrowFlowMap)
         }
         return Page(param.page, param.pageSize, pageQuery.total.toInt(), finalResult)
     }

@@ -46,4 +46,28 @@ class BookBorrowFlowPo : BasePo() {
     @TableField("c_borrow_time")
     var borrowTime: Date? = null
 
+    /**
+     * 借阅卡Id
+     */
+    @TableField("c_borrow_card_id")
+    var borrowCardId: String? = null
+
+    /**
+     * 账号uid
+     */
+    @TableField("c_account_uid")
+    var accountUid: String? = null
+
+    /**
+     * 借阅状态
+     */
+    @TableField("c_borrow_status")
+    var borrowStatus: Int? = null
+
+    /**
+     * 归还时间
+     */
+    @TableField("c_return_time")
+    var returnTime: Date? = null
+
 }
