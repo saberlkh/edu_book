@@ -23,18 +23,6 @@ class ExportExcelAccountDto: Serializable {
     var studentName: String? = null
 
     /**
-     * 账号Uid
-     */
-    @Excel(name = "账号Uid", needMerge = true)
-    var accountUid: String? = null
-
-    /**
-     * 密码
-     */
-    @Excel(name = "密码", needMerge = true)
-    var password: String? = null
-
-    /**
      * 押金
      */
     @Excel(name = "押金", needMerge = true)

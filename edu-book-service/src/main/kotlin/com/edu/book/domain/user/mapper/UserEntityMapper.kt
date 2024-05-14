@@ -77,8 +77,6 @@ object UserEntityMapper {
         return ExportExcelAccountDto().apply {
             this.borrowCardId = po.borrowCardId
             this.studentName = po.studentName
-            this.accountUid = po.accountUid
-            this.password = po.password
             this.cashPledge = if (po.cashPledge == null) {
                 NumberUtils.INTEGER_ZERO
             } else {
