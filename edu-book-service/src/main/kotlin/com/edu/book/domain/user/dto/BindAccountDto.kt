@@ -20,9 +20,9 @@ class BindAccountDto: Serializable {
     var phone: String = ""
 
     /**
-     * 账户Uid
+     * 借阅卡Id
      */
-    var accountUid: String = ""
+    var borrowCardId: String = ""
 
     /**
      * unionid

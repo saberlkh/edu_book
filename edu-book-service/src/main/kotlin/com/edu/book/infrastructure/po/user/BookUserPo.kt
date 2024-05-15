@@ -57,4 +57,10 @@ class BookUserPo : BasePo() {
     @TableField("c_union_id")
     var unionId: String? = null
 
+    /**
+     * 借阅卡Id
+     */
+    @TableField("c_borrow_card_id")
+    var borrowCardId: String? = null
+
 }

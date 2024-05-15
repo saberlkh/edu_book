@@ -169,6 +169,7 @@ object UserEntityMapper {
             this.associateAccount = accountPo.accountUid
             this.phone = dto.phone
             this.unionId = dto.unionId
+            this.borrowCardId = dto.borrowCardId
         }
     }
 

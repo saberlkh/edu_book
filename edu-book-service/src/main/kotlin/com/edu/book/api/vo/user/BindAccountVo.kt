@@ -23,10 +23,10 @@ class BindAccountVo: Serializable {
     var phone: String = ""
 
     /**
-     * 账户Uid
+     * 借阅卡Id
      */
     @NotBlank
-    var accountUid: String = ""
+    var borrowCardId: String = ""
 
     /**
      * unionid
