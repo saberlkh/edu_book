@@ -74,6 +74,10 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     UPLOAD_MAX_NUM(600013, "上传个数超过最大限制"),
 
+    BOOK_BORROWER(600014, "书籍已经借阅中"),
+
+    GARDEN_ILLDEGA_CAN_NOT_BORROW(600015, "书籍和账号归属不同园区无法进行借阅"),
+
     ;
 
 }

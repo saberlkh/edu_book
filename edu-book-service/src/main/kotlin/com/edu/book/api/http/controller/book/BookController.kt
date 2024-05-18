@@ -4,11 +4,14 @@ import com.edu.book.api.http.service.BookWebService
 import com.edu.book.api.vo.book.BookAgeVo
 import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookDetailVo
+import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
+import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.infrastructure.anno.Response
+import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.page.Page
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +37,14 @@ class BookController {
 
     @Autowired
     private lateinit var bookWebService: BookWebService
+
+    /**
+     * 借书
+     */
+    @PostMapping("/v1/borrow")
+    fun borrowBook(@RequestBody @Valid vo: BorrowBookVo) {
+        bookWebService.borrowBook(vo)
+    }
 
     /**
      * 查询分类

@@ -3,6 +3,7 @@ package com.edu.book.application.service
 import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
+import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
@@ -43,6 +44,13 @@ class BookAppService {
 
     @Autowired
     private lateinit var systemConfig: SystemConfig
+
+    /**
+     * 借书
+     */
+    fun borrowBook(dto: BorrowBookDto) {
+        bookDomainService.borrowBook(dto)
+    }
 
     /**
      * 图书扫码入库

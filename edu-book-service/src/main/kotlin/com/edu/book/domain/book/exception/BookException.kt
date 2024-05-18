@@ -34,3 +34,13 @@ class BookDetailNotExistException: BookException("图书不存在")
  * 不存在
  */
 class BookInfoNotExistException: BookException("图书不存在")
+
+/**
+ * 书籍已经借阅中
+ */
+class BookBorrowedException: BookException("书籍已经借阅中")
+
+/**
+ * 不同园区无法进行借阅
+ */
+class GardenIllegalException: BookException("不同园区无法进行借阅")

@@ -104,11 +104,11 @@ object UserEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto, borrowCardId: String): BookAccountPo {
+    fun buildUploadBookAccountPo(uid: String, kindergartenInfo: LevelPo, classInfo: LevelPo, dto: CreateAccountDto, borrowCardId: String, accountUid: String): BookAccountPo {
         val openBorrowService = dto.openBorrowService
         return BookAccountPo().apply {
             this.uid = uid
-            this.accountUid = GeneratorShortUidUtil.generateShortUUID()
+            this.accountUid = accountUid
             this.password = GeneratorShortUidUtil.generateShortUUID()
             this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
             this.accountNickName = accountName
@@ -139,8 +139,8 @@ object UserEntityMapper {
             this.phone = userPo.phone ?: ""
             this.userUid = userPo.uid!!
             this.openId = userPo.wechatUid!!
-            this.username = userPo.name ?: accountPo.accountName ?: ""
-            this.nickname = userPo.nickName ?: accountPo.accountNickName ?: ""
+            this.username = accountPo.accountName ?: ""
+            this.nickname = accountPo.accountNickName ?: ""
             this.permissionList = rolePermissionRelations.mapNotNull { it.permissionCode }.distinct()
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""
             this.accountUid = accountPo.accountUid!!
@@ -182,8 +182,8 @@ object UserEntityMapper {
             this.phone = finalUserPo.phone ?: ""
             this.userUid = finalUserPo.uid!!
             this.openId = finalUserPo.wechatUid!!
-            this.username = finalUserPo.name ?: ""
-            this.nickname = finalUserPo.nickName ?: ""
+            this.username = accountPo?.accountName ?: ""
+            this.nickname = accountPo?.accountNickName ?: ""
             this.token = token
             this.permissionList = rolePermissionRelations.mapNotNull { it.permissionCode }.distinct()
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""

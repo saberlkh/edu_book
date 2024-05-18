@@ -3,11 +3,13 @@ package com.edu.book.api.http.service
 import com.edu.book.api.vo.book.BookAgeVo
 import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookDetailVo
+import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
+import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.enums.AgeGroupEnum
@@ -28,6 +30,14 @@ class BookWebService {
 
     @Autowired
     private lateinit var bookAppService: BookAppService
+
+    /**
+     * 借书
+     */
+    fun borrowBook(vo: BorrowBookVo) {
+        val dto = MapperUtil.map(BorrowBookDto::class.java, vo)
+        bookAppService.borrowBook(dto)
+    }
 
     /**
      * 查询年龄段

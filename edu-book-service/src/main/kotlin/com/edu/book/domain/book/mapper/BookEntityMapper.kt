@@ -5,21 +5,27 @@ import com.edu.book.api.vo.isbn.IsbnBookInfoRespDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
+import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
+import com.edu.book.domain.book.enums.BookBorrowStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
 import com.edu.book.infrastructure.po.area.LevelPo
+import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailAgePo
 import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
+import com.edu.book.infrastructure.po.user.BookAccountPo
+import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.DateUtil.Companion.PATTREN_DATE3
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.sql.Timestamp
 import java.util.Date
+import org.apache.commons.lang3.math.NumberUtils
 
 object BookEntityMapper {
 
@@ -120,6 +126,23 @@ object BookEntityMapper {
             this.inStorageTime = Timestamp(Date().time)
             this.garden = gardenInfo.levelName
             this.gardenUid = gardenInfo.uid
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
+    fun buildBookBorrowFlowPo(bookInfo: BookPo, bookDetailInfo: BookDetailPo, userInfoPo: BookUserPo, dto: BorrowBookDto, accountInfo: BookAccountPo): BookBorrowFlowPo {
+        return BookBorrowFlowPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.isbnCode = bookInfo.isbnCode
+            this.bookUid = bookDetailInfo.bookUid
+            this.borrowUserUid = userInfoPo.uid
+            this.borrowTime = Date()
+            this.borrowCardId = dto.borrowCardId
+            this.accountUid = accountInfo.accountUid
+            this.borrowStatus = BookBorrowStatusEnum.BORROWER.status
+            this.returnTime = DateUtil.addMonths(Date(), NumberUtils.INTEGER_ONE)
         }
     }
 

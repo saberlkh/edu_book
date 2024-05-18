@@ -54,6 +54,7 @@ import com.edu.book.infrastructure.po.user.BookAccountRoleRelationPo
 import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.UserCacheRepo
 import com.edu.book.infrastructure.util.ExcelUtils
+import com.edu.book.infrastructure.util.GeneratorShortUidUtil
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.QiNiuUtil
 import com.edu.book.infrastructure.util.RandomUtil
@@ -199,10 +200,11 @@ class UserDomainService {
             val existAccountPo = existAccountPos.filter { StringUtils.equals(it.parentPhone, accountDto.parentPhone) && StringUtils.equals(it.studentName, accountDto.studentName) }.firstOrNull()
             if (existAccountPo == null) {
                 val uid = UUIDUtil.createUUID()
+                val accountUid = GeneratorShortUidUtil.generateShortUUID()
                 //生成借阅卡Id
                 val borrowCardId = generatorBorrwoCardId()
-                val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, accountDto, borrowCardId)
-                val accountRole = buildBookAccountRoleRelationPo(uid, visitorRoleInfo)
+                val accountPo = buildUploadBookAccountPo(uid, kindergartenInfo, classInfo, accountDto, borrowCardId, accountUid)
+                val accountRole = buildBookAccountRoleRelationPo(accountUid, visitorRoleInfo)
                 accountRoles.add(accountRole)
                 accountPo
             } else {

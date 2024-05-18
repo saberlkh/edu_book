@@ -28,4 +28,9 @@ interface BookDetailRepository : IService<BookDetailPo> {
      */
     fun findByGardenUid(gardenUid: String): List<BookDetailPo>?
 
+    /**
+     * 更新
+     */
+    fun updateByBookUid(po: BookDetailPo, bookUid: String)
+
 }
