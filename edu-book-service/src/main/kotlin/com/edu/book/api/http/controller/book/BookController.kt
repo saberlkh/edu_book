@@ -1,6 +1,8 @@
 package com.edu.book.api.http.controller.book
 
 import com.edu.book.api.http.service.BookWebService
+import com.edu.book.api.vo.book.BookAgeVo
+import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
@@ -34,6 +36,22 @@ class BookController {
     private lateinit var bookWebService: BookWebService
 
     /**
+     * 查询分类
+     */
+    @GetMapping("/v1/classify")
+    fun queryBookClassifyByGarden(): List<BookClassifyVo> {
+        return bookWebService.queryBookClassifyByGarden()
+    }
+
+    /**
+     * 查询年龄段
+     */
+    @GetMapping("/v1/age")
+    fun queryBookAgeGroup(): List<BookAgeVo> {
+        return bookWebService.queryBookAgeGroup()
+    }
+
+    /**
      * 扫码
      */
     @PostMapping("/v1/{isbn}/scan")
@@ -45,7 +63,7 @@ class BookController {
      * 扫码
      */
     @PostMapping("/v1/storage")
-    fun scanIsbnCode(@RequestBody @Valid vo: ScanBookCodeInStorageVo) {
+    fun scanBookCodeInStorage(@RequestBody @Valid vo: ScanBookCodeInStorageVo) {
         bookWebService.scanBookCodeInStorage(vo)
     }
 

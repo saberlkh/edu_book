@@ -1,5 +1,7 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.vo.book.BookAgeVo
+import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
@@ -8,6 +10,8 @@ import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.enums.AgeGroupEnum
+import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.page.Page
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +28,30 @@ class BookWebService {
 
     @Autowired
     private lateinit var bookAppService: BookAppService
+
+    /**
+     * 查询年龄段
+     */
+    fun queryBookAgeGroup(): List<BookAgeVo> {
+        return AgeGroupEnum.values().toList().map {
+            BookAgeVo().apply {
+                this.ageGroupCode = it.age
+                this.ageGroupName = it.desc
+            }
+        }
+    }
+
+    /**
+     * 查询分类
+     */
+    fun queryBookClassifyByGarden(): List<BookClassifyVo> {
+        return BookClassifyEnum.values().toList().map {
+            BookClassifyVo().apply {
+                this.classifyName = it.desc
+                this.classifyCode = it.code
+            }
+        }
+    }
 
     /**
      * 图书扫码入库

@@ -1,6 +1,9 @@
 package com.edu.book.domain.book.service
 
 import com.alibaba.fastjson.JSON
+import com.edu.book.domain.area.enums.LevelTypeEnum
+import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
@@ -20,6 +23,7 @@ import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.domain.book.repository.BookSellRepository
+import com.edu.book.domain.user.exception.AreaInfoNotExistException
 import com.edu.book.domain.user.exception.ConcurrentCreateInteractRoomException
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
@@ -66,6 +70,9 @@ class BookDomainService {
 
     @Autowired
     private lateinit var bookDetailAgeRepository: BookDetailAgeRepository
+
+    @Autowired
+    private lateinit var levelRepository: LevelRepository
 
     /**
      * 根据isbn查询书
@@ -119,6 +126,8 @@ class BookDomainService {
             if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
                 throw ConcurrentCreateInteractRoomException(dto.bookUid)
             }
+            //查询园区信息
+            val gardenInfo = levelRepository.queryByUid(dto.gardenUid, LevelTypeEnum.Garden) ?: throw AreaInfoNotExistException()
             //查询图书是否已经存在
             val currentBookDetailPo = bookDetailRepository.findByBookUid(dto.bookUid)
             if (currentBookDetailPo != null) throw BookDetailAlreadyExistException()
@@ -126,7 +135,7 @@ class BookDomainService {
             val bookPo = bookRepository.findByIsbnCode(dto.isbn)
             if (bookPo != null) {
                 //修改属性
-                val updateBookPo = buildScanBookCodeUpdateBookPo(dto, bookPo)
+                val updateBookPo = buildScanBookCodeUpdateBookPo(dto, bookPo, gardenInfo)
                 bookRepository.updateByUid(updateBookPo)
             } else {
                 //新增po
@@ -134,7 +143,7 @@ class BookDomainService {
                 bookRepository.save(insertBookPo)
             }
             //新增图书详情
-            val bookDetailPo = buildBookDetailPo(dto)
+            val bookDetailPo = buildBookDetailPo(dto, gardenInfo)
             bookDetailRepository.save(bookDetailPo)
             //添加分类
             val classifyPos = buildBookDetailClassifyPos(dto)

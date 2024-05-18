@@ -1,6 +1,7 @@
 package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
+import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto

@@ -118,7 +118,7 @@ class ScanBookCodeInStorageDto: Serializable {
     /**
      * 园区
      */
-    var garden: String = ""
+    var gardenUid: String = ""
 
     /**
      * 分类

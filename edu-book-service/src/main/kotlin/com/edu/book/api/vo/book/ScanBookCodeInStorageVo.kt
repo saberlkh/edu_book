@@ -122,7 +122,7 @@ class ScanBookCodeInStorageVo: Serializable {
      * 园区
      */
     @NotBlank(message = "园区不能为空")
-    var garden: String = ""
+    var gardenUid: String = ""
 
     /**
      * 分类

@@ -64,4 +64,10 @@ class BookDetailPo : BasePo() {
     @TableField("c_garden")
     var garden: String? = null
 
+    /**
+     * 园区uid
+     */
+    @TableField("c_garden_uid")
+    var gardenUid: String? = null
+
 }

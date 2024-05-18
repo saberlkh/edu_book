@@ -23,4 +23,9 @@ interface BookDetailRepository : IService<BookDetailPo> {
      */
     fun deleteByBookUid(bookUid: String)
 
+    /**
+     * 通过园区查询
+     */
+    fun findByGardenUid(gardenUid: String): List<BookDetailPo>?
+
 }

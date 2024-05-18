@@ -9,6 +9,7 @@ import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.book.BookDetailAgePo
 import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
@@ -47,7 +48,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageDto, bookPo: BookPo): BookPo {
+    fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageDto, bookPo: BookPo, gardenInfo: LevelPo): BookPo {
         return bookPo.apply {
             this.isbnCode = dto.isbn
             this.title = dto.title ?: bookPo.title
@@ -85,7 +86,8 @@ object BookEntityMapper {
             this.language = dto.language ?: bookPo.language
             this.format = dto.format ?: bookPo.format
             this.bookClass = dto.`class` ?: bookPo.bookClass
-            this.garden = dto.garden
+            this.garden = gardenInfo.levelName
+            this.gardenUid = gardenInfo.uid
         }
     }
 
@@ -109,14 +111,15 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookDetailPo(dto: ScanBookCodeInStorageDto): BookDetailPo {
+    fun buildBookDetailPo(dto: ScanBookCodeInStorageDto, gardenInfo: LevelPo): BookDetailPo {
         return BookDetailPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.isbnCode = dto.isbn
             this.bookUid = dto.bookUid
             this.status = BookDetailStatusEnum.IN_STORAGE.status
             this.inStorageTime = Timestamp(Date().time)
-            this.garden = dto.garden
+            this.garden = gardenInfo.levelName
+            this.gardenUid = gardenInfo.uid
         }
     }
 
