@@ -1,7 +1,6 @@
 package com.edu.book.domain.book.service
 
 import com.alibaba.fastjson.JSON
-import com.edu.book.api.http.common.CurrentHolder
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
 import com.edu.book.domain.book.dto.BookDetailDto
@@ -10,7 +9,6 @@ import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
-import com.edu.book.domain.book.enums.BookBorrowStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
@@ -54,7 +52,6 @@ import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

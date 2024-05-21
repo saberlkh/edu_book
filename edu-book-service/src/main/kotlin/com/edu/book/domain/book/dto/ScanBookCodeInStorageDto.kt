@@ -123,7 +123,7 @@ class ScanBookCodeInStorageDto: Serializable {
     /**
      * 分类
      */
-    var classify: List<String> = emptyList()
+    var classifyList: List<String> = emptyList()
 
     /**
      * 年龄段

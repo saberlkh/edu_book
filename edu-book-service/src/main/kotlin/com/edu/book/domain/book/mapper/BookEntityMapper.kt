@@ -164,7 +164,7 @@ object BookEntityMapper {
      * 构建列表
      */
     fun buildBookDetailClassifyPos(dto: ScanBookCodeInStorageDto): List<BookDetailClassifyPo> {
-        return dto.classify.map {
+        return dto.classifyList.map {
             BookDetailClassifyPo().apply {
                 this.uid = UUIDUtil.createUUID()
                 this.isbnCode = dto.isbn
