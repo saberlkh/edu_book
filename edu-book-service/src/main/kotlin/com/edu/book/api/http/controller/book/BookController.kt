@@ -89,8 +89,8 @@ class BookController {
     /**
      * 查询图书详情
      */
-    @GetMapping("/v1/page")
-    fun pageQuery(vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
+    @PostMapping("/v1/page")
+    fun pageQuery(@RequestBody vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
         return bookWebService.pageQueryBooks(vo)
     }
 

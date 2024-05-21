@@ -3,12 +3,16 @@ package com.edu.book.domain.book.service
 import com.alibaba.fastjson.JSON
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.book.dto.BookAgeGroupDto
+import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.enums.AgeGroupEnum
+import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
@@ -173,7 +177,7 @@ class BookDomainService {
         //查询分类信息
         val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
         //查询年龄段
-        val ageGroups = bookDetailAgeRepository.findByBookUid(bookUid, detailPo.isbnCode!!)
+        val ageGroups = bookDetailAgeRepository.findByBookUid(detailPo.isbnCode!!, bookUid)
         //参数组装
         return buildBookDetailDto(detailPo, bookPo, classifyList, ageGroups)
     }
@@ -254,15 +258,19 @@ class BookDomainService {
         val ageGroups = bookDetailAgeRepository.batchQueryBookAgeGroups(bookUids)
         val ageGroupMap = ageGroups.groupBy { it.bookUid!! }
         //参数组装
-        val bookDtos = pageQuery.records.map {
-            val result = MapperUtil.map(PageQueryBookResultDto::class.java, it, excludes = listOf("price", "page", "pubdate", "ageGroups", "classify")).apply {
-                this.price = it.price?.toDouble()?.div(Constants.hundred)?.toString()
-                this.page = it.page?.toString()
-                this.pubdate = if (it.pubdate != null) DateUtil.format(it.pubdate!!, DateUtil.PATTREN_DATE3) else ""
-                val bookClassifyPos = classifyPoMap.get(it.bookUid)
-                this.classify = bookClassifyPos?.mapNotNull { it.classify } ?: emptyList()
-                val bookAgeGroups = ageGroupMap.get(it.bookUid)
-                this.ageGroups = bookAgeGroups?.mapNotNull { it.ageGroup } ?: emptyList()
+        val bookDtos = pageQuery.records.map { entity ->
+            val result = MapperUtil.map(PageQueryBookResultDto::class.java, entity, excludes = listOf("price", "page", "pubdate", "ageGroups", "classify")).apply {
+                this.price = entity.price?.toDouble()?.div(Constants.hundred)?.toString()
+                this.page = entity.page?.toString()
+                this.pubdate = if (entity.pubdate != null) DateUtil.format(entity.pubdate!!, DateUtil.PATTREN_DATE3) else ""
+                val bookClassifyPos = classifyPoMap.get(entity.bookUid)?.mapNotNull { it.classify }
+                this.classifyList = bookClassifyPos?.mapNotNull {
+                    BookClassifyDto.buildBookClassifyDto(BookClassifyEnum.getDescByCode(it), it)
+                } ?: emptyList()
+                val bookAgeGroups = ageGroupMap.get(entity.bookUid)?.mapNotNull { it.ageGroup }
+                this.ageGroups = bookAgeGroups?.mapNotNull {
+                    BookAgeGroupDto.buildBookAgeGroupDto(AgeGroupEnum.getDescByCode(it), it)
+                } ?: emptyList()
             }
             result
         }

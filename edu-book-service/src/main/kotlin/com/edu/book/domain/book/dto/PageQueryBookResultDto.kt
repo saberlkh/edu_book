@@ -122,7 +122,7 @@ class PageQueryBookResultDto: Serializable {
     /**
      * 分类
      */
-    var classify: List<String> = emptyList()
+    var classifyList: List<BookClassifyDto> = emptyList()
 
     /**
      * 状态
@@ -132,6 +132,6 @@ class PageQueryBookResultDto: Serializable {
     /**
      * 年龄段
      */
-    var ageGroups: List<Int> = emptyList()
+    var ageGroups: List<BookAgeGroupDto> = emptyList()
 
 }

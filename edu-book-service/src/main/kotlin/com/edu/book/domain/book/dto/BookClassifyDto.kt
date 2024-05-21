@@ -17,14 +17,14 @@ class BookClassifyDto: Serializable {
     /**
      * uid
      */
-    var classifyUid: String = ""
+    var classifyCode: String = ""
 
     companion object {
 
-        fun buildBookClassifyDto(classifyName: String, classifyUid: String): BookClassifyDto {
+        fun buildBookClassifyDto(classifyName: String, classifyCode: String): BookClassifyDto {
             return BookClassifyDto().apply {
                 this.classifyName = classifyName
-                this.classifyUid = classifyUid
+                this.classifyCode = classifyCode
             }
         }
 

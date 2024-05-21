@@ -1,5 +1,7 @@
 package com.edu.book.domain.book.enums
 
+import org.apache.commons.lang3.StringUtils
+
 /**
  * @Auther: liukaihua
  * @Date: 2024/3/27 20:28
@@ -28,5 +30,13 @@ enum class BookClassifyEnum(val code: String, val desc: String) {
     Winning_Picture_Book("Winning_Picture_Book", "获奖绘本"),
 
     ;
+
+    companion object {
+
+        fun getDescByCode(code: String): String {
+            return BookClassifyEnum.values().toList().filter { StringUtils.equals(it.code, code) }.firstOrNull()?.desc ?: ""
+        }
+
+    }
 
 }

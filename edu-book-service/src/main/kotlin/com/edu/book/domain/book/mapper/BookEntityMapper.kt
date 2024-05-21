@@ -2,13 +2,17 @@ package com.edu.book.domain.book.mapper
 
 import com.alibaba.fastjson.JSON
 import com.edu.book.api.vo.isbn.IsbnBookInfoRespDto
+import com.edu.book.domain.book.dto.BookAgeGroupDto
+import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
+import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookBorrowStatusEnum
+import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
 import com.edu.book.infrastructure.po.area.LevelPo
@@ -46,8 +50,12 @@ object BookEntityMapper {
             this.bookUid = detailPo.bookUid!!
             this.garden = detailPo.garden ?: ""
             this.bookStatus = detailPo.status
-            this.classify = classifyList.mapNotNull { it.classify }
-            this.ageGroups = ageGroups.mapNotNull { it.ageGroup }
+            this.classifyList = classifyList.mapNotNull { it.classify }.map {
+                BookClassifyDto.buildBookClassifyDto(BookClassifyEnum.getDescByCode(it), it)
+            }
+            this.ageGroups = ageGroups.mapNotNull { it.ageGroup }.map {
+                BookAgeGroupDto.buildBookAgeGroupDto(AgeGroupEnum.getDescByCode(it), it)
+            }
         }
     }
 
