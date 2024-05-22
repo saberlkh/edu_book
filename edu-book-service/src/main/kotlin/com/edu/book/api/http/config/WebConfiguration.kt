@@ -24,7 +24,7 @@ class WebConfiguration: WebMvcConfigurer {
 
     private final val openPath = listOf(
         "/wechat/**", "/user/v1/login", "/test/**", "/verification.html", "/hair/v1/admin/login", "/hair/v1/classify",
-        "/hair/v1/classify/detail", "/book/v1/page", "/book/v1/**/detail"
+        "/hair/v1/classify/detail", "/book/v1/page", "/book/v1/**/detail", "/book//v1/classify", "/book/v1/age"
     )
 
     @Bean
