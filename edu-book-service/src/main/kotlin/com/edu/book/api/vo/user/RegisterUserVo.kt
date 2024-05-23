@@ -70,4 +70,14 @@ class RegisterUserVo: Serializable {
      */
     var unionId: String = ""
 
+    /**
+     * 园区Uid
+     */
+    var gardenUid: String = ""
+
+    /**
+     * 园区Uid
+     */
+    var gardenName: String = ""
+
 }

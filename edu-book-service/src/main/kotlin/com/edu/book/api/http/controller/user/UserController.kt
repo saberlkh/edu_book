@@ -56,8 +56,8 @@ class UserController {
      * 登录
      */
     @PostMapping("/v1/login")
-    fun registerUser(@RequestBody vo: LoginOrRegisterVo): ResponseVo<RegisterUserVo> {
-        return ResponseVo(userWebService.registerUser(vo.openId))
+    fun registerUser(@RequestBody @Valid vo: LoginOrRegisterVo): ResponseVo<RegisterUserVo> {
+        return ResponseVo(userWebService.registerUser(vo.openId, vo.phone))
     }
 
     /**

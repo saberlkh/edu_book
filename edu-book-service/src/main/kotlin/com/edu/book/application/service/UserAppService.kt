@@ -57,8 +57,8 @@ class UserAppService {
     /**
      * 注册用户
      */
-    fun registerUser(openId: String): RegisterUserDto {
-        return userDomainService.registerUser(openId)
+    fun registerUser(openId: String, phone: String): RegisterUserDto {
+        return userDomainService.registerUser(openId, phone)
     }
 
     /**

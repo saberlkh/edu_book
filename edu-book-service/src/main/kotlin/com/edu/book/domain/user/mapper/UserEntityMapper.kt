@@ -176,7 +176,7 @@ object UserEntityMapper {
     /**
      * 构建实体
      */
-    fun buildRegisterUserDto(finalUserPo: BookUserPo, rolePermissionRelations: List<BookRolePermissionRelationPo>, accountRoleRelationPo: BookAccountRoleRelationPo?, accountPo: BookAccountPo?, token: String): RegisterUserDto {
+    fun buildRegisterUserDto(finalUserPo: BookUserPo, rolePermissionRelations: List<BookRolePermissionRelationPo>, accountRoleRelationPo: BookAccountRoleRelationPo?, accountPo: BookAccountPo?, token: String, gardenInfo: LevelPo?): RegisterUserDto {
         return RegisterUserDto().apply {
             this.bind = BooleanUtils.toInteger(StringUtils.isNotBlank(finalUserPo.associateAccount))
             this.phone = finalUserPo.phone ?: ""
@@ -190,19 +190,21 @@ object UserEntityMapper {
             this.accountUid = finalUserPo.associateAccount ?: ""
             this.accountExpireTime = accountPo?.expireTime?.time ?: NumberUtils.LONG_ZERO
             this.unionId = finalUserPo.unionId ?: ""
+            this.gardenUid = gardenInfo?.uid ?: ""
+            this.gardenName = gardenInfo?.levelName ?: ""
         }
     }
 
     /**
      * 构建实体
      */
-    fun registerUserBuildUserPo(openId: String): BookUserPo {
+    fun registerUserBuildUserPo(openId: String, phone: String): BookUserPo {
         return BookUserPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.name = StringUtils.EMPTY
             this.nickName = StringUtils.EMPTY
             this.wechatUid = openId
-            this.phone = ""
+            this.phone = phone
             this.associateAccount = StringUtils.EMPTY
         }
     }

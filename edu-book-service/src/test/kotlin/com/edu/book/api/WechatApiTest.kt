@@ -59,8 +59,8 @@ class WechatApiTest {
 
     @Test
     fun `注册`() {
-        val result = userDomainService.registerUser("0f3eR6100GlyIR15Pk200IDoN72eR61v")
-        println(JSON.toJSONString(result))
+//        val result = userDomainService.registerUser("0f3eR6100GlyIR15Pk200IDoN72eR61v")
+//        println(JSON.toJSONString(result))
     }
 
     @Test

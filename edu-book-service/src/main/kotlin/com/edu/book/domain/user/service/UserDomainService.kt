@@ -319,7 +319,7 @@ class UserDomainService {
      * 并获取最新token
      */
     @Transactional(rollbackFor = [Exception::class])
-    fun registerUser(openId: String): RegisterUserDto {
+    fun registerUser(openId: String, phone: String): RegisterUserDto {
         val registerLockKey = REGISTER_USER_LOCK_KEY + openId
         val lock = redissonClient.getLock(registerLockKey)
         try {
@@ -330,9 +330,14 @@ class UserDomainService {
             val userPo = bookUserRepository.findUserByOpenId(openId)
             //如果用户为空，创建一个新用户
             val finalUserPo = if (userPo != null) {
+                bookUserRepository.updateUserPoByUid(BookUserPo().apply {
+                    this.phone = phone
+                    this.uid = userPo.uid
+                })
+                userPo.phone = phone
                 userPo
             } else {
-                val newUserPo = registerUserBuildUserPo(openId)
+                val newUserPo = registerUserBuildUserPo(openId, phone)
                 bookUserRepository.save(newUserPo)
                 newUserPo
             }
@@ -341,11 +346,22 @@ class UserDomainService {
             //获取角色和权限信息
             val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo?.accountUid)
             val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
+            //查看班级、幼儿园信息
+            val gardenInfo = if (accountPo != null && !accountPo.classUid.isNullOrBlank()) {
+                val classInfo = levelRepository.queryByUid(accountPo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+                //查询年级
+                val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+                //查询园区
+                val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+                gardenInfo
+            } else {
+                null
+            }
             //获取并设置token
             val token = UUIDUtil.createUUID()
             userCacheRepo.setUserToken(finalUserPo.uid!!, token)
             //组装数据
-            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo, token)
+            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo, token, gardenInfo)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()

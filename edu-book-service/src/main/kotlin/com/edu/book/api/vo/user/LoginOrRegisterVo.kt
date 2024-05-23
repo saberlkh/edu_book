@@ -16,4 +16,10 @@ class LoginOrRegisterVo: Serializable {
     @NotBlank(message = "openId不能为空")
     var openId: String = ""
 
+    /**
+     * 手机号
+     */
+    @NotBlank(message = "手机号不能为空")
+    var phone: String = ""
+
 }

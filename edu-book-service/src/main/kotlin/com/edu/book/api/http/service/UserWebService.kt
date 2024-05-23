@@ -77,8 +77,8 @@ class UserWebService {
     /**
      * 注册用户
      */
-    fun registerUser(openId: String): RegisterUserVo {
-        val dto = userAppService.registerUser(openId)
+    fun registerUser(openId: String, phone: String): RegisterUserVo {
+        val dto = userAppService.registerUser(openId, phone)
         return MapperUtil.map(RegisterUserVo::class.java, dto)
     }
 
