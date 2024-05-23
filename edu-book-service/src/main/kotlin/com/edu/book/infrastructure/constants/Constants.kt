@@ -24,4 +24,6 @@ object Constants {
 
     const val number_five = 5
 
+    const val number_three = 3
+
 }

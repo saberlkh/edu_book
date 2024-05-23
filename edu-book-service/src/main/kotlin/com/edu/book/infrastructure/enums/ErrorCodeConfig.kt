@@ -78,6 +78,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     GARDEN_ILLDEGA_CAN_NOT_BORROW(600015, "书籍和账号归属不同园区无法进行借阅"),
 
+    GARDEN_UID_NOT_NULL(600016, "园区Id不能为空"),
+
     ;
 
 }

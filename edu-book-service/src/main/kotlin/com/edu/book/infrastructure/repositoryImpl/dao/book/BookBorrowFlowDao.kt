@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.dao.book;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,15 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 interface BookBorrowFlowDao : BaseMapper<BookBorrowFlowPo> {
+
+    /**
+     * 查询个数
+     */
+    fun getBorrowFlowTotal(dto: PageQueryBorrowBookDto): Int
+
+    /**
+     * 分页查询
+     */
+    fun getPageBorrowFlow(dto: PageQueryBorrowBookDto): List<BookBorrowFlowPo>
 
 }

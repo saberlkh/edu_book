@@ -48,6 +48,16 @@ class BookRepositoryImpl : ServiceImpl<BookDao, BookPo>(), BookRepository {
     }
 
     /**
+     * 批量查询
+     */
+    override fun findByIsbnCodes(isbnCodes: List<String>?): List<BookPo>? {
+        if (isbnCodes.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookPo::class.java)
+            .`in`(BookPo::isbnCode, isbnCodes)
+        return bookDao.selectList(wrapper)
+    }
+
+    /**
      * 更新
      */
     override fun updateByUid(po: BookPo) {

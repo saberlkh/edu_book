@@ -51,6 +51,16 @@ class BookDetailRepositoryImpl : ServiceImpl<BookDetailDao, BookDetailPo>(), Boo
     }
 
     /**
+     * 批量查询
+     */
+    override fun findByBookUids(bookUids: List<String>): List<BookDetailPo>? {
+        if (bookUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookDetailPo::class.java)
+            .`in`(BookDetailPo::bookUid, bookUids)
+        return bookDetailDao.selectList(wrapper)
+    }
+
+    /**
      * 删除
      */
     override fun deleteByBookUid(bookUid: String) {

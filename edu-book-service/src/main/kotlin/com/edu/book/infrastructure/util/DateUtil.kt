@@ -20,6 +20,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -542,6 +543,15 @@ class DateUtil: DateUtils() {
                 list.add(formatDateStr(startDate, PATTREN_DATE2)!!)
             }
             return list
+        }
+
+        /**
+         * 计算相差天数
+         */
+        fun calDateDay(date: Date?): Int {
+            if (date == null) return NumberUtils.INTEGER_ZERO
+            val day = (date.time - Date().time) / (1000 * 3600 * 24)
+            return day.toInt()
         }
 
         /**

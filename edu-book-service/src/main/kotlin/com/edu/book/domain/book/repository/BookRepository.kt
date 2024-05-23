@@ -27,6 +27,11 @@ interface BookRepository : IService<BookPo> {
     fun findByIsbnCode(isbnCode: String?): BookPo?
 
     /**
+     * 批量查询
+     */
+    fun findByIsbnCodes(isbnCodes: List<String>?): List<BookPo>?
+
+    /**
      * 更新
      */
     fun updateByUid(po: BookPo)

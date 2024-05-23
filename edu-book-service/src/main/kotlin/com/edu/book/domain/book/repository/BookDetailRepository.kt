@@ -19,6 +19,11 @@ interface BookDetailRepository : IService<BookDetailPo> {
     fun findByBookUid(bookUid: String): BookDetailPo?
 
     /**
+     * 批量查询
+     */
+    fun findByBookUids(bookUids: List<String>): List<BookDetailPo>?
+
+    /**
      * 删除
      */
     fun deleteByBookUid(bookUid: String)

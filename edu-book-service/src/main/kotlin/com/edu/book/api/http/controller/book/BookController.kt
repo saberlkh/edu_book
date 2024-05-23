@@ -7,11 +7,13 @@ import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
+import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
+import com.edu.book.api.vo.book.PageQueryBorrowBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
-import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.infrastructure.anno.Response
-import com.edu.book.infrastructure.util.MapperUtil
+import com.edu.book.infrastructure.enums.ErrorCodeConfig
+import com.edu.book.infrastructure.exception.WebAppException
 import com.edu.book.infrastructure.util.page.Page
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
@@ -92,6 +94,15 @@ class BookController {
     @PostMapping("/v1/page")
     fun pageQuery(@RequestBody vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
         return bookWebService.pageQueryBooks(vo)
+    }
+
+    /**
+     * 查询已借列表
+     */
+    @GetMapping("/v1/borrow/page")
+    fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
+        if (vo.gardenUid.isNullOrBlank()) throw WebAppException(ErrorCodeConfig.GARDEN_UID_NOT_NULL)
+        return bookWebService.pageQueryBorrowFlow(vo)
     }
 
     /**

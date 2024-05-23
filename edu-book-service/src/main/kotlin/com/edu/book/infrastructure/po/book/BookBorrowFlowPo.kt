@@ -70,4 +70,10 @@ class BookBorrowFlowPo : BasePo() {
     @TableField("c_return_time")
     var returnTime: Date? = null
 
+    /**
+     * 园区uid
+     */
+    @TableField("c_garden_uid")
+    var gardenUid: String? = null
+
 }

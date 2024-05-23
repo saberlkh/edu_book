@@ -6,12 +6,15 @@ import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
+import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
+import com.edu.book.api.vo.book.PageQueryBorrowBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
-import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.infrastructure.util.MapperUtil
@@ -67,7 +70,7 @@ class BookWebService {
      * 图书扫码入库
      */
     fun scanBookCodeInStorage(vo: ScanBookCodeInStorageVo) {
-        val dto = MapperUtil.map(ScanBookCodeInStorageDto::class.java, vo)
+        val dto = MapperUtil.map(ScanBookCodeInStorageParam::class.java, vo)
         bookAppService.scanBookCodeInStorage(dto)
     }
 
@@ -94,6 +97,21 @@ class BookWebService {
         return MapperUtil.map(ScanIsbnCodeBookVo::class.java, dto).apply {
             this.`class` = dto.`class`
         }
+    }
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
+        val paramDto = MapperUtil.map(PageQueryBorrowBookDto::class.java, vo)
+        val pageResult = bookAppService.pageQueryBorrowFlow(paramDto)
+        if (pageResult.result.isNullOrEmpty()) return Page()
+        val finalResult = pageResult.result!!.map {
+            MapperUtil.map(PageQueryBorrowBookResultVo::class.java, it).apply {
+                this.pic = it.picUrl
+            }
+        }
+        return Page(vo.page, vo.pageSize, pageResult.totalCount, finalResult)
     }
 
     /**

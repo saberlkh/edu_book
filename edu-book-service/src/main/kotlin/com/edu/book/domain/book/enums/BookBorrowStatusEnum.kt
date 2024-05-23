@@ -17,6 +17,11 @@ enum class BookBorrowStatusEnum(val status: Int) {
      */
     RETURN(1),
 
+    /**
+     * 即将到期
+     */
+    ABOUT_TO_EXPIRE(2),
+
     ;
 
 }

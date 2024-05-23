@@ -8,13 +8,15 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
-import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookBorrowStatusEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.constants.Constants.hundred
+import com.edu.book.infrastructure.constants.Constants.number_three
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailAgePo
@@ -62,7 +64,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageDto, bookPo: BookPo, gardenInfo: LevelPo): BookPo {
+    fun buildScanBookCodeUpdateBookPo(dto: ScanBookCodeInStorageParam, bookPo: BookPo, gardenInfo: LevelPo): BookPo {
         return bookPo.apply {
             this.isbnCode = dto.isbn
             this.title = dto.title ?: bookPo.title
@@ -125,7 +127,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookDetailPo(dto: ScanBookCodeInStorageDto, gardenInfo: LevelPo): BookDetailPo {
+    fun buildBookDetailPo(dto: ScanBookCodeInStorageParam, gardenInfo: LevelPo): BookDetailPo {
         return BookDetailPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.isbnCode = dto.isbn
@@ -140,7 +142,31 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookBorrowFlowPo(bookInfo: BookPo, bookDetailInfo: BookDetailPo, userInfoPo: BookUserPo, dto: BorrowBookDto, accountInfo: BookAccountPo): BookBorrowFlowPo {
+    fun buildPageQueryBorrowBookResultDto(borrowFlowPo: BookBorrowFlowPo, bookPo: BookPo?): PageQueryBorrowBookResultDto {
+        return PageQueryBorrowBookResultDto().apply {
+            this.bookUid = borrowFlowPo.bookUid!!
+            this.picUrl = bookPo?.picUrl
+            this.title = bookPo?.title
+            this.author = bookPo?.author
+            this.borrowTime = borrowFlowPo.borrowTime?.time
+            this.returnTime = borrowFlowPo.returnTime?.time
+            this.returnDay = if (borrowFlowPo.returnTime != null && borrowFlowPo.returnTime!!.time > Date().time) {
+                DateUtil.calDateDay(borrowFlowPo.returnTime)
+            } else {
+                NumberUtils.INTEGER_ZERO
+            }
+            this.borrowStatus = if (this.returnDay > NumberUtils.INTEGER_ZERO && this.returnDay <= number_three) {
+                BookBorrowStatusEnum.ABOUT_TO_EXPIRE.status
+            } else {
+                borrowFlowPo.borrowStatus
+            }
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
+    fun buildBookBorrowFlowPo(bookInfo: BookPo, bookDetailInfo: BookDetailPo, userInfoPo: BookUserPo, dto: BorrowBookDto, accountInfo: BookAccountPo, gardenInfo: LevelPo): BookBorrowFlowPo {
         return BookBorrowFlowPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.isbnCode = bookInfo.isbnCode
@@ -151,13 +177,14 @@ object BookEntityMapper {
             this.accountUid = accountInfo.accountUid
             this.borrowStatus = BookBorrowStatusEnum.BORROWER.status
             this.returnTime = DateUtil.addMonths(Date(), NumberUtils.INTEGER_ONE)
+            this.gardenUid = gardenInfo.uid
         }
     }
 
     /**
      * 构建实体
      */
-    fun buildBookDetailAgeGroupPos(dto: ScanBookCodeInStorageDto): List<BookDetailAgePo> {
+    fun buildBookDetailAgeGroupPos(dto: ScanBookCodeInStorageParam): List<BookDetailAgePo> {
         return dto.ageGroups.map {
             BookDetailAgePo().apply {
                 this.uid = UUIDUtil.createUUID()
@@ -171,7 +198,7 @@ object BookEntityMapper {
     /**
      * 构建列表
      */
-    fun buildBookDetailClassifyPos(dto: ScanBookCodeInStorageDto): List<BookDetailClassifyPo> {
+    fun buildBookDetailClassifyPos(dto: ScanBookCodeInStorageParam): List<BookDetailClassifyPo> {
         return dto.classifyList.map {
             BookDetailClassifyPo().apply {
                 this.uid = UUIDUtil.createUUID()
@@ -185,7 +212,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildScanBookCodeInsertBookPo(dto: ScanBookCodeInStorageDto): BookPo {
+    fun buildScanBookCodeInsertBookPo(dto: ScanBookCodeInStorageParam): BookPo {
         return MapperUtil.map(BookPo::class.java, dto, excludes = listOf("price")).apply {
             this.uid = UUIDUtil.createUUID()
             this.subTitle = dto.subtitle

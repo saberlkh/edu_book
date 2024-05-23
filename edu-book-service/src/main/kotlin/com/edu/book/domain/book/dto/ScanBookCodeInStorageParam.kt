@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty
  * @Date: 2024/3/25 17:05
  * @Description:
  */
-class ScanBookCodeInStorageDto: Serializable {
+class ScanBookCodeInStorageParam: Serializable {
 
     /**
      * title

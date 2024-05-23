@@ -2,4 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.book.BookBorrowFlowDao">
 
+    <sql id="baseFields">
+        c_uid AS uid,
+        c_isbn_code AS isbnCode,
+        c_book_uid AS bookUid,
+        c_borrow_user_uid AS borrowUserUid,
+        c_borrow_time AS borrowTime,
+        c_create_time AS createTime,
+        c_update_time AS updateTime,
+        c_is_deleted AS deleted,
+        c_account_uid AS accountUid,
+        c_borrow_status AS borrowStatus,
+        c_borrow_card_id AS borrowCardId,
+        c_return_time AS returnTime,
+        c_garden_uid AS gardenUid
+    </sql>
+
+    <!--fun getBorrowFlowTotal(dto: PageQueryBorrowBookDto): Int-->
+    <select id="getBorrowFlowTotal" parameterType="com.edu.book.domain.book.dto.PageQueryBorrowBookDto"
+        resultType="int">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_borrow_flow
+        WHERE
+            c_is_deleted = 0
+        <if test="userUid != null and userUid != ''">
+            AND c_borrow_user_uid = #{userUid}
+        </if>
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+        <if test="bookStatus != null">
+            AND c_borrow_status = #{bookStatus}
+        </if>
+    </select>
+
+    <!--fun getPageBorrowFlow(dto: PageQueryBorrowBookDto): List<BookBorrowFlowPo>-->
+    <select id="getPageBorrowFlow" parameterType="com.edu.book.domain.book.dto.PageQueryBorrowBookDto"
+        resultType="com.edu.book.infrastructure.po.book.BookBorrowFlowPo">
+        SELECT
+        <include refid="baseFields"/>
+        FROM
+            t_book_borrow_flow
+        WHERE
+            c_is_deleted = 0
+        <if test="userUid != null and userUid != ''">
+            AND c_borrow_user_uid = #{userUid}
+        </if>
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+        <if test="bookStatus != null">
+            AND c_borrow_status = #{bookStatus}
+        </if>
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
+
 </mapper>

@@ -1,12 +1,13 @@
 package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
-import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
-import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDto
@@ -46,6 +47,13 @@ class BookAppService {
     private lateinit var systemConfig: SystemConfig
 
     /**
+     * 分页查询
+     */
+    fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
+        return bookDomainService.pageQueryBorrowFlow(dto)
+    }
+
+    /**
      * 借书
      */
     fun borrowBook(dto: BorrowBookDto) {
@@ -55,7 +63,7 @@ class BookAppService {
     /**
      * 图书扫码入库
      */
-    fun scanBookCodeInStorage(dto: ScanBookCodeInStorageDto) {
+    fun scanBookCodeInStorage(dto: ScanBookCodeInStorageParam) {
         bookDomainService.scanBookCodeInStorage(dto)
     }
 

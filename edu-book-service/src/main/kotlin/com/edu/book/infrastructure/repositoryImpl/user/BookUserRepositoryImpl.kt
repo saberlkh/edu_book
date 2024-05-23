@@ -51,4 +51,15 @@ class BookUserRepositoryImpl : ServiceImpl<BookUserDao, BookUserPo>(), BookUserR
         return getOne(wrapper)
     }
 
+    /**
+     * 通过手机号查询
+     */
+    override fun findByPhone(phone: String?): BookUserPo? {
+        if (phone.isNullOrBlank()) return null
+        val wrapper = KtQueryWrapper(BookUserPo::class.java)
+            .eq(BookUserPo::phone, phone)
+            .limitOne()
+        return getOne(wrapper)
+    }
+
 }

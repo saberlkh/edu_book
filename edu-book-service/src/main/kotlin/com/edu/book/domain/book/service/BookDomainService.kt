@@ -10,7 +10,9 @@ import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
-import com.edu.book.domain.book.dto.ScanBookCodeInStorageDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
+import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
+import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
@@ -24,6 +26,7 @@ import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailAgeGroupP
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBorrowBookResultDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
 import com.edu.book.domain.book.repository.BookBorrowFlowRepository
@@ -43,7 +46,6 @@ import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
-import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.po.book.BookSellPo
@@ -107,6 +109,30 @@ class BookDomainService {
     private lateinit var bookUserRepository: BookUserRepository
 
     /**
+     * 分页查询借阅列表
+     */
+    fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
+        //获取用户信息
+        val userPo = bookUserRepository.findByPhone(dto.phone)
+        dto.userUid = userPo?.uid ?: ""
+        val pageQuery = bookBorrowFlowRepository.pageQueryBorrowFlow(dto)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        //查询图书信息
+        val isbnCodes = pageQuery.records.mapNotNull { it.isbnCode }
+        val bookPos = bookRepository.findByIsbnCodes(isbnCodes) ?: emptyList()
+        val bookPoMap = bookPos.associateBy { it.isbnCode!! }
+        //查询图书详情信息
+        val bookUids = pageQuery.records.mapNotNull { it.bookUid }
+        val bookDetailPos = bookDetailRepository.findByBookUids(bookUids) ?: emptyList()
+        val bookDetailPoMap = bookDetailPos.associateBy { it.bookUid!! }
+        val result = pageQuery.records.mapNotNull {
+            val bookPo = bookPoMap.get(it.isbnCode)
+            buildPageQueryBorrowBookResultDto(it, bookPo)
+        }
+        return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
+    }
+
+    /**
      * 借书
      * 1.查询账户
      * 2.查询书籍
@@ -134,7 +160,7 @@ class BookDomainService {
         //查询书籍信息
         val bookInfo = bookRepository.findByIsbnCode(bookDetailInfo.isbnCode) ?: throw BookInfoNotExistException()
         //添加书籍借阅流水
-        val borrowFlowPo = buildBookBorrowFlowPo(bookInfo, bookDetailInfo, userInfoPo, dto, accountInfo)
+        val borrowFlowPo = buildBookBorrowFlowPo(bookInfo, bookDetailInfo, userInfoPo, dto, accountInfo, gardenInfo)
         bookBorrowFlowRepository.save(borrowFlowPo)
         //更新书籍状态
         val updateBookDetailPo = BookDetailPo().apply {
@@ -189,7 +215,7 @@ class BookDomainService {
      * 3.修改图书基础信息
      */
     @Transactional(rollbackFor = [Exception::class])
-    fun scanBookCodeInStorage(dto: ScanBookCodeInStorageDto) {
+    fun scanBookCodeInStorage(dto: ScanBookCodeInStorageParam) {
         val lockKey = SCAN_BOOK_CODE_KEY + dto.bookUid
         val lock = redissonClient.getLock(lockKey)
         try {
