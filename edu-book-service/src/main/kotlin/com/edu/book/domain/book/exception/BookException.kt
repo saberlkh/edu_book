@@ -44,3 +44,8 @@ class BookBorrowedException: BookException("书籍已经借阅中")
  * 不同园区无法进行借阅
  */
 class GardenIllegalException: BookException("不同园区无法进行借阅")
+
+/**
+ * 图书还没收藏
+ */
+class BookNotCollectException: BookException("图书还没收藏")

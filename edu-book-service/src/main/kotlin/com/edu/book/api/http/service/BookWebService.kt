@@ -1,7 +1,9 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.http.common.CurrentHolder
 import com.edu.book.api.vo.book.BookAgeVo
 import com.edu.book.api.vo.book.BookClassifyVo
+import com.edu.book.api.vo.book.BookCollectVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
@@ -12,6 +14,7 @@ import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
@@ -97,6 +100,16 @@ class BookWebService {
         return MapperUtil.map(ScanIsbnCodeBookVo::class.java, dto).apply {
             this.`class` = dto.`class`
         }
+    }
+
+    /**
+     * 收藏
+     */
+    fun collectBook(vo: BookCollectVo) {
+        val dto = MapperUtil.map(CollectBookDto::class.java, vo).apply {
+            this.userUid = CurrentHolder.userDto!!.uid!!
+        }
+        bookAppService.collectBook(dto)
     }
 
     /**

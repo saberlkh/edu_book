@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
@@ -15,13 +16,16 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
+import com.edu.book.domain.book.enums.BookCollectStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
+import com.edu.book.domain.book.exception.BookNotCollectException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookBorrowFlowPo
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookCollectPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailAgeGroupPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
@@ -30,6 +34,7 @@ import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBorrowBook
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
 import com.edu.book.domain.book.repository.BookBorrowFlowRepository
+import com.edu.book.domain.book.repository.BookCollectFlowRepository
 import com.edu.book.domain.book.repository.BookDetailAgeRepository
 import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
@@ -45,7 +50,9 @@ import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
+import com.edu.book.infrastructure.constants.RedisKeyConstant.COLLECT_BOOK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
+import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.po.book.BookSellPo
@@ -56,6 +63,7 @@ import com.edu.book.infrastructure.util.page.Page
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
+import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
 import org.redisson.api.RedissonClient
@@ -107,6 +115,62 @@ class BookDomainService {
 
     @Autowired
     private lateinit var bookUserRepository: BookUserRepository
+
+    @Autowired
+    private lateinit var bookCollectFlowRepository: BookCollectFlowRepository
+
+    /**
+     * 收藏图书
+     */
+    fun collectBook(dto: CollectBookDto) {
+        val lockKey = COLLECT_BOOK_KEY + dto.bookUid + dto.userUid
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.bookUid)
+            }
+            //查询用户和账户信息
+            val userPo = bookUserRepository.findByUserUid(dto.userUid) ?: throw UserNotFoundException(dto.userUid)
+            val accountPo = bookAccountRepository.findByUid(userPo.associateAccount)
+            //查询图书信息
+            val bookPo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+            when(dto.collectStatus) {
+
+                /**
+                 * 收藏
+                 */
+                BookCollectStatusEnum.COLLECTED.status -> {
+                    //查询收藏流水
+                    val bookCollectFlow = bookCollectFlowRepository.findUserCollectFlowByBookUid(dto.userUid, dto.bookUid)
+                    if (bookCollectFlow == null) {
+                        val collectPo = buildBookCollectPo(bookPo, userPo, accountPo)
+                        bookCollectFlowRepository.save(collectPo)
+                    } else {
+                        bookCollectFlow.collectStatus = BooleanUtils.toBoolean(BookCollectStatusEnum.COLLECTED.status)
+                        bookCollectFlowRepository.updateBookCollectFlow(bookCollectFlow)
+                    }
+                }
+
+                /**
+                 * 取消收藏
+                 */
+                BookCollectStatusEnum.UN_COLLECTED.status -> {
+                    //查询收藏流水
+                    val bookCollectFlow = bookCollectFlowRepository.findUserCollectFlowByBookUid(dto.userUid, dto.bookUid) ?: throw BookNotCollectException()
+                    val updatedBookCollectFlow = BookCollectFlowPo().apply {
+                        this.uid = bookCollectFlow.uid
+                        this.collectStatus = BooleanUtils.toBoolean(BookCollectStatusEnum.UN_COLLECTED.status)
+                    }
+                    bookCollectFlowRepository.updateBookCollectFlow(updatedBookCollectFlow)
+                }
+
+            }
+        } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
+        }
+    }
 
     /**
      * 分页查询借阅列表

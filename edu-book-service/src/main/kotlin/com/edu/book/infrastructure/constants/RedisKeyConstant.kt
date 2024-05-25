@@ -42,4 +42,9 @@ object RedisKeyConstant {
      */
     const val UPLOAD_FILE_KEY = "UPLOAD:FILE:KEY:"
 
+    /**
+     * 收藏图书
+     */
+    const val COLLECT_BOOK_KEY = "COLLECT:BOOK:KEY"
+
 }

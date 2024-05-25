@@ -80,6 +80,10 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     GARDEN_UID_NOT_NULL(600016, "园区Id不能为空"),
 
+    BOOK_NOT_COLLECT(600017, "图书还未收藏"),
+
+    BOOK_DETAIL_NOT_EXIST(600018, "图书不存在"),
+
     ;
 
 }

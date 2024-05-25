@@ -3,6 +3,7 @@ package com.edu.book.api.http.controller.book
 import com.edu.book.api.http.service.BookWebService
 import com.edu.book.api.vo.book.BookAgeVo
 import com.edu.book.api.vo.book.BookClassifyVo
+import com.edu.book.api.vo.book.BookCollectVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
@@ -103,6 +104,14 @@ class BookController {
     fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
         if (vo.gardenUid.isNullOrBlank()) throw WebAppException(ErrorCodeConfig.GARDEN_UID_NOT_NULL)
         return bookWebService.pageQueryBorrowFlow(vo)
+    }
+
+    /**
+     * 收藏
+     */
+    @PostMapping("/v1/collect")
+    fun collectBook(@RequestBody @Valid vo: BookCollectVo) {
+        bookWebService.collectBook(vo)
     }
 
     /**

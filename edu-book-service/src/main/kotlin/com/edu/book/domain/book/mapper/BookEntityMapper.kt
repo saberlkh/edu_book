@@ -19,6 +19,7 @@ import com.edu.book.infrastructure.constants.Constants.hundred
 import com.edu.book.infrastructure.constants.Constants.number_three
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
+import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailAgePo
 import com.edu.book.infrastructure.po.book.BookDetailClassifyPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
@@ -34,6 +35,19 @@ import java.util.Date
 import org.apache.commons.lang3.math.NumberUtils
 
 object BookEntityMapper {
+
+    /**
+     * 构建实体类
+     */
+    fun buildBookCollectPo(bookPo: BookDetailPo, userPo: BookUserPo, accountPo: BookAccountPo?): BookCollectFlowPo {
+        return BookCollectFlowPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.isbnCode = bookPo.isbnCode
+            this.bookUid = bookPo.bookUid
+            this.userUid = userPo.uid
+            this.accountUid = accountPo?.accountUid
+        }
+    }
 
     /**
      * 构建实体类

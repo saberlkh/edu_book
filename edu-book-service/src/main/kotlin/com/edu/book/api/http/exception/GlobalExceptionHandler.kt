@@ -3,7 +3,9 @@ package com.edu.book.api.http.exception
 import com.edu.book.api.vo.exception.ErrorResponse
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
+import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookException
+import com.edu.book.domain.book.exception.BookNotCollectException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.user.exception.AccountBindedException
@@ -129,6 +131,12 @@ class GlobalExceptionHandler {
             }
             is GardenIllegalException -> {
                 ErrorCodeConfig.GARDEN_ILLDEGA_CAN_NOT_BORROW
+            }
+            is BookNotCollectException -> {
+                ErrorCodeConfig.BOOK_NOT_COLLECT
+            }
+            is BookDetailNotExistException -> {
+                ErrorCodeConfig.BOOK_DETAIL_NOT_EXIST
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

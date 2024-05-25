@@ -45,6 +45,7 @@ class BookUserRepositoryImpl : ServiceImpl<BookUserDao, BookUserPo>(), BookUserR
      * 根据用户uid查询用户
      */
     override fun findByUserUid(userUid: String): BookUserPo? {
+        if (userUid.isNullOrBlank()) return null
         val wrapper = KtQueryWrapper(BookUserPo::class.java)
             .eq(BookUserPo::uid, userUid)
             .limitOne()

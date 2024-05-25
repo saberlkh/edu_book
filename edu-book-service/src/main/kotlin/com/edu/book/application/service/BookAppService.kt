@@ -3,6 +3,7 @@ package com.edu.book.application.service
 import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
@@ -51,6 +52,13 @@ class BookAppService {
      */
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
         return bookDomainService.pageQueryBorrowFlow(dto)
+    }
+
+    /**
+     * 收藏
+     */
+    fun collectBook(dto: CollectBookDto) {
+        bookDomainService.collectBook(dto)
     }
 
     /**
