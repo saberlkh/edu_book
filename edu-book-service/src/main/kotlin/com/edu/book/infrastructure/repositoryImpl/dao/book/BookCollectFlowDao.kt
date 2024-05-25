@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.dao.book;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,15 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 interface BookCollectFlowDao : BaseMapper<BookCollectFlowPo> {
+
+    /**
+     * 查询总数
+     */
+    fun getBookCollectTotal(param: PageQueryUserBookCollectParam): Int
+
+    /**
+     * 查询列表
+     */
+    fun getPageListBookCollect(param: PageQueryUserBookCollectParam): List<BookCollectFlowPo>
 
 }

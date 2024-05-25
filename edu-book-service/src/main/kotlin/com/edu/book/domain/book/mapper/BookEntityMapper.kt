@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
@@ -150,6 +151,20 @@ object BookEntityMapper {
             this.inStorageTime = Timestamp(Date().time)
             this.garden = gardenInfo.levelName
             this.gardenUid = gardenInfo.uid
+        }
+    }
+
+    /**
+     * 构建实体
+     */
+    fun buildPageQueryBookCollectDto(collectPo: BookCollectFlowPo, bookPo: BookPo?, userPo: BookUserPo): PageQueryBookCollectDto {
+        return PageQueryBookCollectDto().apply {
+            this.bookUid = collectPo.bookUid!!
+            this.picUrl = bookPo?.picUrl
+            this.title = bookPo?.title
+            this.author = bookPo?.author
+            this.userUid = userPo.uid
+            this.summary = bookPo?.summary
         }
     }
 

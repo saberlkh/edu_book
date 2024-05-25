@@ -1,6 +1,8 @@
 package com.edu.book.domain.book.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 
 /**
@@ -22,5 +24,10 @@ interface BookCollectFlowRepository : IService<BookCollectFlowPo> {
      * 更新
      */
     fun updateBookCollectFlow(po: BookCollectFlowPo)
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryBookCollect(param: PageQueryUserBookCollectParam): Page<BookCollectFlowPo>
 
 }

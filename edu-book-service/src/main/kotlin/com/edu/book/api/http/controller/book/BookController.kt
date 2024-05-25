@@ -6,10 +6,12 @@ import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookCollectVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
+import com.edu.book.api.vo.book.PageQueryBookCollectVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookVo
+import com.edu.book.api.vo.book.PageQueryUserBookCollectParamVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.infrastructure.anno.Response
@@ -104,6 +106,14 @@ class BookController {
     fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
         if (vo.gardenUid.isNullOrBlank()) throw WebAppException(ErrorCodeConfig.GARDEN_UID_NOT_NULL)
         return bookWebService.pageQueryBorrowFlow(vo)
+    }
+
+    /**
+     * 查询收藏
+     */
+    @GetMapping("/v1/collect/page")
+    fun pageQueryCollectList(vo: PageQueryUserBookCollectParamVo): Page<PageQueryBookCollectVo> {
+        return bookWebService.pageQueryCollectList(vo)
     }
 
     /**

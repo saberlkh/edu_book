@@ -4,10 +4,12 @@ import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
+import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
@@ -52,6 +54,13 @@ class BookAppService {
      */
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
         return bookDomainService.pageQueryBorrowFlow(dto)
+    }
+
+    /**
+     * 分页查询收藏列表
+     */
+    fun pageQueryCollectList(param: PageQueryUserBookCollectParam): Page<PageQueryBookCollectDto> {
+        return bookDomainService.pageQueryCollectList(param)
     }
 
     /**

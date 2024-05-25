@@ -9,10 +9,12 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
+import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
@@ -30,6 +32,7 @@ import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailAgeGroupP
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBookCollectDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBorrowBookResultDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeInsertBookPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildScanBookCodeUpdateBookPo
@@ -170,6 +173,25 @@ class BookDomainService {
                 lock.unlock()
             }
         }
+    }
+
+    /**
+     * 分页查询收藏列表
+     */
+    fun pageQueryCollectList(param: PageQueryUserBookCollectParam): Page<PageQueryBookCollectDto> {
+        //获取用户信息
+        val userPo = bookUserRepository.findByUserUid(param.userUid) ?: throw UserNotFoundException(param.userUid)
+        val pageQuery = bookCollectFlowRepository.pageQueryBookCollect(param)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        //查询图书信息
+        val isbnCodes = pageQuery.records.mapNotNull { it.isbnCode }
+        val bookPos = bookRepository.findByIsbnCodes(isbnCodes) ?: emptyList()
+        val bookPoMap = bookPos.associateBy { it.isbnCode!! }
+        val result = pageQuery.records.mapNotNull {
+            val bookPo = bookPoMap.get(it.isbnCode)
+            buildPageQueryBookCollectDto(it, bookPo, userPo)
+        }
+        return Page(param.page, param.pageSize, pageQuery.total.toInt(), result)
     }
 
     /**

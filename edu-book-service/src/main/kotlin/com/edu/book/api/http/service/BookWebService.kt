@@ -6,17 +6,21 @@ import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookCollectVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
+import com.edu.book.api.vo.book.PageQueryBookCollectVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookVo
+import com.edu.book.api.vo.book.PageQueryUserBookCollectParamVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
+import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
@@ -110,6 +114,27 @@ class BookWebService {
             this.userUid = CurrentHolder.userDto!!.uid!!
         }
         bookAppService.collectBook(dto)
+    }
+
+    /**
+     * 分页查询收藏列表哦
+     */
+    fun pageQueryCollectList(vo: PageQueryUserBookCollectParamVo): Page<PageQueryBookCollectVo> {
+        val param = MapperUtil.map(PageQueryUserBookCollectParam::class.java, vo).apply {
+            this.userUid = if (vo.userUid.isNullOrBlank()) {
+                CurrentHolder.userDto!!.uid!!
+            } else {
+                vo.userUid
+            }
+        }
+        val pageResult = bookAppService.pageQueryCollectList(param)
+        if (pageResult.result.isNullOrEmpty()) return Page()
+        val finalResult = pageResult.result!!.map {
+            MapperUtil.map(PageQueryBookCollectVo::class.java, it).apply {
+                this.pic = it.picUrl
+            }
+        }
+        return Page(vo.page, vo.pageSize, pageResult.totalCount, finalResult)
     }
 
     /**

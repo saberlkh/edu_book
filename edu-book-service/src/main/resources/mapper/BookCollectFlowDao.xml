@@ -2,4 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.book.BookCollectFlowDao">
 
+    <sql id="baseFields">
+        c_uid AS uid,
+        c_isbn_code AS isbnCode,
+        c_book_uid AS bookUid,
+        c_user_uid AS userUid,
+        c_account_uid AS accountUid,
+        c_create_time AS createTime,
+        c_update_time AS updateTime,
+        c_is_deleted AS deleted,
+        c_collect_status AS collectStatus
+    </sql>
+
+    <!--fun getBookCollectTotal(param: PageQueryUserBookCollectParam): Int-->
+    <select id="getBookCollectTotal" resultType="int"
+        parameterType="com.edu.book.domain.book.dto.PageQueryUserBookCollectParam">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_collect_flow
+        WHERE
+            c_is_deleted = 0
+        AND c_collect_status = 1
+        <if test="userUid != null and userUid != ''">
+            AND c_user_uid = #{userUid}
+        </if>
+    </select>
+
+    <!--fun getPageListBookCollect(param: PageQueryUserBookCollectParam): List<BookCollectFlowPo>-->
+    <select id="getPageListBookCollect" parameterType="com.edu.book.domain.book.dto.PageQueryUserBookCollectParam"
+        resultType="com.edu.book.infrastructure.po.book.BookCollectFlowPo">
+        SELECT
+        <include refid="baseFields"></include>
+        FROM
+            t_book_collect_flow
+        WHERE
+            c_is_deleted = 0
+        AND c_collect_status = 1
+        <if test="userUid != null and userUid != ''">
+            AND c_user_uid = #{userUid}
+        </if>
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
+
 </mapper>
