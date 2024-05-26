@@ -19,9 +19,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.sql.Connection
 import java.sql.SQLException
-import javax.annotation.Resource
 import javax.sql.DataSource
-import org.redisson.api.RedissonClient
 
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration::class)
