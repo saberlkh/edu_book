@@ -33,6 +33,7 @@ import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.UUIDUtil
 import java.sql.Timestamp
 import java.util.Date
+import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.math.NumberUtils
 
 object BookEntityMapper {
@@ -53,7 +54,7 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>, ageGroups: List<BookDetailAgePo>): BookDetailDto {
+    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>, ageGroups: List<BookDetailAgePo>, collectFlowPo: BookCollectFlowPo?): BookDetailDto {
         return MapperUtil.map(BookDetailDto::class.java, bookPo, excludes = listOf("price")).apply {
             this.pic = bookPo.picUrl
             this.pubplace = bookPo.publicPlace
@@ -73,6 +74,8 @@ object BookEntityMapper {
             this.ageGroups = ageGroups.mapNotNull { it.ageGroup }.map {
                 BookAgeGroupDto.buildBookAgeGroupDto(AgeGroupEnum.getDescByCode(it), it)
             }
+            val booleanCollectStatus = collectFlowPo?.collectStatus ?: false
+            this.collectStatus = BooleanUtils.toInteger(booleanCollectStatus)
         }
     }
 

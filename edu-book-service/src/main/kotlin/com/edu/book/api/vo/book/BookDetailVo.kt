@@ -134,4 +134,9 @@ class BookDetailVo: Serializable {
      */
     var ageGroups: List<BookAgeVo> = emptyList()
 
+    /**
+     * 收藏装填
+     */
+    var collectStatus: Int? = null
+
 }

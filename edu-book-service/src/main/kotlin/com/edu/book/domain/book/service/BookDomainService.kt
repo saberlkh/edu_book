@@ -281,7 +281,7 @@ class BookDomainService {
     /**
      * 查询图书详情
      */
-    fun findBookDetail(bookUid: String): BookDetailDto {
+    fun findBookDetail(bookUid: String, userUid: String?): BookDetailDto {
         //查询图书详情信息
         val detailPo = bookDetailRepository.findByBookUid(bookUid) ?: throw BookDetailNotExistException()
         //查询isbn信息
@@ -290,8 +290,14 @@ class BookDomainService {
         val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
         //查询年龄段
         val ageGroups = bookDetailAgeRepository.findByBookUid(detailPo.isbnCode!!, bookUid)
+        //查询收藏状态
+        val collectFlowPo = if (userUid.isNullOrBlank()) {
+            null
+        } else {
+            bookCollectFlowRepository.findUserCollectFlowByBookUid(userUid, bookUid)
+        }
         //参数组装
-        return buildBookDetailDto(detailPo, bookPo, classifyList, ageGroups)
+        return buildBookDetailDto(detailPo, bookPo, classifyList, ageGroups, collectFlowPo)
     }
 
     /**

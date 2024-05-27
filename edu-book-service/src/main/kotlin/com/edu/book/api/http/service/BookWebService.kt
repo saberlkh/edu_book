@@ -85,7 +85,8 @@ class BookWebService {
      * 查询图书详情
      */
     fun findBookDetail(bookUid: String): BookDetailVo {
-        val dto = bookAppService.findBookDetail(bookUid)
+        val userUid = CurrentHolder.userDto?.uid
+        val dto = bookAppService.findBookDetail(bookUid, userUid)
         return MapperUtil.map(BookDetailVo::class.java, dto)
     }
 

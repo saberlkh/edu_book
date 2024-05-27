@@ -87,8 +87,8 @@ class BookAppService {
     /**
      * 查询图书详情
      */
-    fun findBookDetail(bookUid: String): BookDetailDto {
-        return bookDomainService.findBookDetail(bookUid)
+    fun findBookDetail(bookUid: String, userUid: String?): BookDetailDto {
+        return bookDomainService.findBookDetail(bookUid, userUid)
     }
 
     /**

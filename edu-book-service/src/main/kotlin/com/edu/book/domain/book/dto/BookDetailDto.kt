@@ -134,4 +134,9 @@ class BookDetailDto: Serializable {
      */
     var ageGroups: List<BookAgeGroupDto> = emptyList()
 
+    /**
+     * 收藏装填
+     */
+    var collectStatus: Int? = null
+
 }
