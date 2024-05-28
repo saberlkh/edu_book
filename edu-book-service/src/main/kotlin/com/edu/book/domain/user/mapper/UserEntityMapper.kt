@@ -10,6 +10,8 @@ import com.edu.book.domain.user.dto.RegisterUserDto
 import com.edu.book.domain.user.exception.AreaInfoNotExistException
 import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.Constants.number_five
+import com.edu.book.infrastructure.constants.Constants.seven
+import com.edu.book.infrastructure.constants.Constants.user_phone
 import com.edu.book.infrastructure.po.area.AreaPo
 import com.edu.book.infrastructure.po.area.LevelPo
 import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
@@ -183,7 +185,13 @@ object UserEntityMapper {
             this.userUid = finalUserPo.uid!!
             this.openId = finalUserPo.wechatUid!!
             this.username = accountPo?.accountName ?: ""
+            if (this.username.isNullOrBlank()) {
+                this.username = user_phone + finalUserPo.phone?.substring(seven)
+            }
             this.nickname = accountPo?.accountNickName ?: ""
+            if (this.nickname.isNullOrBlank()) {
+                this.nickname = user_phone + finalUserPo.phone?.substring(seven )
+            }
             this.token = token
             this.permissionList = rolePermissionRelations.mapNotNull { it.permissionCode }.distinct()
             this.roleCode = accountRoleRelationPo?.roleCode ?: ""

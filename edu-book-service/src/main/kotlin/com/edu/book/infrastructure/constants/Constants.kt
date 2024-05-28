@@ -26,4 +26,8 @@ object Constants {
 
     const val number_three = 3
 
+    const val user_phone = "手机用户_"
+
+    const val seven = 7
+
 }

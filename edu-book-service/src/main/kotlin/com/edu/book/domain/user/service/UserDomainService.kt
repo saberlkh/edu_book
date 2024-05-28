@@ -256,6 +256,7 @@ class UserDomainService {
             val updateUserPo = MapperUtil.map(BookUserPo::class.java, userPo).apply {
                 this.associateAccount = ""
                 this.updateTime = Timestamp(Date().time)
+                this.borrowCardId = ""
             }
             bookUserRepository.updateUserPoByUid(updateUserPo)
             //删除账号用户绑定记录关联数据
