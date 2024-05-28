@@ -13,11 +13,6 @@ class PageQueryBorrowBookDto: Serializable {
     /**
      * 用户
      */
-    var phone: String? = null
-
-    /**
-     * 用户
-     */
     var userUid: String? = null
 
     /**

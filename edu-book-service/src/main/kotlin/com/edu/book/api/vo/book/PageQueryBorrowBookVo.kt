@@ -13,7 +13,7 @@ class PageQueryBorrowBookVo: Serializable {
     /**
      * 用户
      */
-    var phone: String? = null
+    var userUid: String? = null
 
     /**
      * 园区

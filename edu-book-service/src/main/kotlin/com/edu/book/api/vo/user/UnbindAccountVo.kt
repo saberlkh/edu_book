@@ -13,13 +13,13 @@ class UnbindAccountVo: Serializable {
     /**
      * openid
      */
-    @NotBlank
+    @NotBlank(message = "openid不能为空")
     var openId: String = ""
 
     /**
      * 手机号
      */
-    @NotBlank
+    @NotBlank(message = "手机号不能为空")
     var phone: String = ""
 
 }

@@ -249,7 +249,7 @@ class UserDomainService {
                 throw ConcurrentCreateInteractRoomException(dto.openId)
             }
             //查询用户信息
-            val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            val userPo = bookUserRepository.findByPhone(dto.phone) ?: throw UserNotFoundException(dto.openId)
             //如果用户已经解绑，进行提示
             if (StringUtils.isBlank(userPo.associateAccount)) throw UserUnBindedException()
             //修改用户信息
@@ -287,7 +287,7 @@ class UserDomainService {
                 throw ConcurrentCreateInteractRoomException(dto.openId)
             }
             //查询用户信息
-            val userPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            val userPo = bookUserRepository.findByPhone(dto.phone) ?: throw UserNotFoundException(dto.openId)
             //如果用户已经绑定账号，进行提示
             if (StringUtils.isNotBlank(userPo.associateAccount)) throw UserBindedException(userPo.uid!!)
             //查询账号信息
@@ -303,7 +303,7 @@ class UserDomainService {
             //获取角色和权限信息
             val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo.accountUid)
             val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
-            val finalUserPo = bookUserRepository.findUserByOpenId(dto.openId) ?: throw UserNotFoundException(dto.openId)
+            val finalUserPo = bookUserRepository.findByPhone(dto.phone) ?: throw UserNotFoundException(dto.phone)
             return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo)
         } finally {
             if (lock.isHeldByCurrentThread) {
@@ -327,12 +327,13 @@ class UserDomainService {
                 throw ConcurrentCreateInteractRoomException(openId)
             }
             //根据openid查询用户
-            val userPo = bookUserRepository.findUserByOpenId(openId)
+            val userPo = bookUserRepository.findByPhone(phone)
             //如果用户为空，创建一个新用户
             val finalUserPo = if (userPo != null) {
                 bookUserRepository.updateUserPoByUid(BookUserPo().apply {
                     this.phone = phone
                     this.uid = userPo.uid
+                    this.wechatUid = openId
                 })
                 userPo.phone = phone
                 userPo

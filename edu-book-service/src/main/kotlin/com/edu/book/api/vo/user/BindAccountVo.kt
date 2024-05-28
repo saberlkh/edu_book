@@ -13,19 +13,19 @@ class BindAccountVo: Serializable {
     /**
      * openid
      */
-    @NotBlank
+    @NotBlank(message = "openId不能为空")
     var openId: String = ""
 
     /**
      * 手机号
      */
-    @NotBlank
+    @NotBlank(message = "手机号不能为空")
     var phone: String = ""
 
     /**
      * 借阅卡Id
      */
-    @NotBlank
+    @NotBlank(message = "借书卡Id不能为空")
     var borrowCardId: String = ""
 
     /**

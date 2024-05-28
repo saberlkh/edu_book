@@ -198,9 +198,6 @@ class BookDomainService {
      * 分页查询借阅列表
      */
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
-        //获取用户信息
-        val userPo = bookUserRepository.findByPhone(dto.phone)
-        dto.userUid = userPo?.uid ?: ""
         val pageQuery = bookBorrowFlowRepository.pageQueryBorrowFlow(dto)
         if (pageQuery.records.isNullOrEmpty()) return Page()
         //查询图书信息
