@@ -34,4 +34,9 @@ class PageQueryBookCollectVo: Serializable {
      */
     var summary: String? = null
 
+    /**
+     * subtitle
+     */
+    var subtitle: String? = null
+
 }

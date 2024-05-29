@@ -58,4 +58,13 @@ class BookCollectFlowRepositoryImpl : ServiceImpl<BookCollectFlowDao, BookCollec
         return page
     }
 
+    /**
+     * 删除
+     */
+    override fun deleteByBookUid(bookUid: String) {
+        val wrapper = KtUpdateWrapper(BookCollectFlowPo::class.java)
+            .eq(BookCollectFlowPo::bookUid, bookUid)
+        remove(wrapper)
+    }
+
 }

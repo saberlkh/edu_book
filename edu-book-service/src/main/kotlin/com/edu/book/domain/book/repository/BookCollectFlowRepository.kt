@@ -30,4 +30,9 @@ interface BookCollectFlowRepository : IService<BookCollectFlowPo> {
      */
     fun pageQueryBookCollect(param: PageQueryUserBookCollectParam): Page<BookCollectFlowPo>
 
+    /**
+     * 删除
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }

@@ -133,6 +133,7 @@ class BookWebService {
         val finalResult = pageResult.result!!.map {
             MapperUtil.map(PageQueryBookCollectVo::class.java, it).apply {
                 this.pic = it.picUrl
+                this.subtitle = it.subTitle
             }
         }
         return Page(vo.page, vo.pageSize, pageResult.totalCount, finalResult)
@@ -148,6 +149,7 @@ class BookWebService {
         val finalResult = pageResult.result!!.map {
             MapperUtil.map(PageQueryBorrowBookResultVo::class.java, it).apply {
                 this.pic = it.picUrl
+                this.subtitle = it.subTitle
             }
         }
         return Page(vo.page, vo.pageSize, pageResult.totalCount, finalResult)

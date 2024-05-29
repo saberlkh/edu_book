@@ -25,4 +25,9 @@ interface BookBorrowFlowRepository : IService<BookBorrowFlowPo> {
      */
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<BookBorrowFlowPo>
 
+    /**
+     * 删除
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }

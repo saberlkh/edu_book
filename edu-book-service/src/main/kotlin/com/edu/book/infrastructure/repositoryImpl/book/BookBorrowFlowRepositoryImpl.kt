@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
@@ -43,6 +44,15 @@ class BookBorrowFlowRepositoryImpl : ServiceImpl<BookBorrowFlowDao, BookBorrowFl
         val page = Page<BookBorrowFlowPo>(dto.page.toLong(), dto.pageSize.toLong(), totalCount.toLong())
         page.records = result
         return page
+    }
+
+    /**
+     * 删除
+     */
+    override fun deleteByBookUid(bookUid: String) {
+        val wrapper = KtUpdateWrapper(BookBorrowFlowPo::class.java)
+            .eq(BookBorrowFlowPo::bookUid, bookUid)
+        remove(wrapper)
     }
 
 }

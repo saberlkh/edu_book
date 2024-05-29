@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
@@ -41,30 +42,31 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildBookCollectPo(bookPo: BookDetailPo, userPo: BookUserPo, accountPo: BookAccountPo?): BookCollectFlowPo {
+    fun buildBookCollectPo(bookPo: BookDetailPo, userPo: BookUserPo, accountPo: BookAccountPo?, dto: CollectBookDto): BookCollectFlowPo {
         return BookCollectFlowPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.isbnCode = bookPo.isbnCode
             this.bookUid = bookPo.bookUid
             this.userUid = userPo.uid
             this.accountUid = accountPo?.accountUid
+            this.collectStatus = BooleanUtils.toBoolean(dto.collectStatus!!)
         }
     }
 
     /**
      * 构建实体类
      */
-    fun buildBookDetailDto(detailPo: BookDetailPo, bookPo: BookPo, classifyList: List<BookDetailClassifyPo>, ageGroups: List<BookDetailAgePo>, collectFlowPo: BookCollectFlowPo?): BookDetailDto {
-        return MapperUtil.map(BookDetailDto::class.java, bookPo, excludes = listOf("price")).apply {
-            this.pic = bookPo.picUrl
-            this.pubplace = bookPo.publicPlace
-            this.pubdate = if (bookPo.publicDate != null) DateUtil.format(bookPo.publicDate!!, PATTREN_DATE3) else ""
-            this.isbn = bookPo.isbnCode!!
-            this.isbn10 = bookPo.isbn10Code
-            this.`class` = bookPo.bookClass
-            this.subtitle = bookPo.subTitle
-            this.price = bookPo.price?.toDouble()?.div(hundred)?.toString()
-            this.`class` = bookPo.bookClass
+    fun buildBookDetailDto(detailPo: BookDetailPo, classifyList: List<BookDetailClassifyPo>, ageGroups: List<BookDetailAgePo>, collectFlowPo: BookCollectFlowPo?): BookDetailDto {
+        return MapperUtil.map(BookDetailDto::class.java, detailPo, excludes = listOf("price")).apply {
+            this.pic = detailPo.picUrl
+            this.pubplace = detailPo.publicPlace
+            this.pubdate = if (detailPo.publicDate != null) DateUtil.format(detailPo.publicDate!!, PATTREN_DATE3) else ""
+            this.isbn = detailPo.isbnCode!!
+            this.isbn10 = detailPo.isbn10Code
+            this.`class` = detailPo.bookClass
+            this.subtitle = detailPo.subTitle
+            this.price = detailPo.price?.toDouble()?.div(hundred)?.toString()
+            this.`class` = detailPo.bookClass
             this.bookUid = detailPo.bookUid!!
             this.garden = detailPo.garden ?: ""
             this.bookStatus = detailPo.status
@@ -146,40 +148,53 @@ object BookEntityMapper {
      * 构建实体类
      */
     fun buildBookDetailPo(dto: ScanBookCodeInStorageParam, gardenInfo: LevelPo): BookDetailPo {
-        return BookDetailPo().apply {
+        return MapperUtil.map(BookDetailPo::class.java, dto, excludes = listOf("price")).apply {
             this.uid = UUIDUtil.createUUID()
-            this.isbnCode = dto.isbn
             this.bookUid = dto.bookUid
             this.status = BookDetailStatusEnum.IN_STORAGE.status
             this.inStorageTime = Timestamp(Date().time)
             this.garden = gardenInfo.levelName
             this.gardenUid = gardenInfo.uid
+            this.subTitle = dto.subtitle
+            this.picUrl = dto.pic
+            this.publicPlace = dto.pubplace
+            this.publicDate = if (dto.pubdate.isNullOrBlank()) {
+                null
+            } else {
+                DateUtil.convertToDate(dto.pubdate, PATTREN_DATE3)
+            }
+            this.price = dto.price?.toDouble()?.times(hundred)?.toInt()
+            this.isbn10Code = dto.isbn10
+            this.isbnCode = dto.isbn
+            this.bookClass = dto.`class`
+            this.summary = JSON.toJSONString(dto.summary)
         }
     }
 
     /**
      * 构建实体
      */
-    fun buildPageQueryBookCollectDto(collectPo: BookCollectFlowPo, bookPo: BookPo?, userPo: BookUserPo): PageQueryBookCollectDto {
+    fun buildPageQueryBookCollectDto(collectPo: BookCollectFlowPo, bookDetailPo: BookDetailPo?, userPo: BookUserPo): PageQueryBookCollectDto {
         return PageQueryBookCollectDto().apply {
             this.bookUid = collectPo.bookUid!!
-            this.picUrl = bookPo?.picUrl
-            this.title = bookPo?.title
-            this.author = bookPo?.author
+            this.picUrl = bookDetailPo?.picUrl
+            this.title = bookDetailPo?.title
+            this.author = bookDetailPo?.author
             this.userUid = userPo.uid
-            this.summary = bookPo?.summary
+            this.summary = bookDetailPo?.summary
+            this.subTitle = bookDetailPo?.subTitle
         }
     }
 
     /**
      * 构建实体类
      */
-    fun buildPageQueryBorrowBookResultDto(borrowFlowPo: BookBorrowFlowPo, bookPo: BookPo?): PageQueryBorrowBookResultDto {
+    fun buildPageQueryBorrowBookResultDto(borrowFlowPo: BookBorrowFlowPo, bookDetailPo: BookDetailPo?): PageQueryBorrowBookResultDto {
         return PageQueryBorrowBookResultDto().apply {
             this.bookUid = borrowFlowPo.bookUid!!
-            this.picUrl = bookPo?.picUrl
-            this.title = bookPo?.title
-            this.author = bookPo?.author
+            this.picUrl = bookDetailPo?.picUrl
+            this.title = bookDetailPo?.title
+            this.author = bookDetailPo?.author
             this.borrowTime = borrowFlowPo.borrowTime?.time
             this.returnTime = borrowFlowPo.returnTime?.time
             this.returnDay = if (borrowFlowPo.returnTime != null && borrowFlowPo.returnTime!!.time > Date().time) {
@@ -192,6 +207,7 @@ object BookEntityMapper {
             } else {
                 borrowFlowPo.borrowStatus
             }
+            this.subTitle = bookDetailPo?.subTitle
         }
     }
 

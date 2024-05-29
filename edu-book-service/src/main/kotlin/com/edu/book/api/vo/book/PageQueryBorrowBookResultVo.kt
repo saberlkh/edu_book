@@ -50,4 +50,9 @@ class PageQueryBorrowBookResultVo: Serializable {
      */
     var returnDay: Int = NumberUtils.INTEGER_ZERO
 
+    /**
+     * subtitle
+     */
+    var subtitle: String? = null
+
 }

@@ -146,7 +146,7 @@ class BookDomainService {
                     //查询收藏流水
                     val bookCollectFlow = bookCollectFlowRepository.findUserCollectFlowByBookUid(dto.userUid, dto.bookUid)
                     if (bookCollectFlow == null) {
-                        val collectPo = buildBookCollectPo(bookPo, userPo, accountPo)
+                        val collectPo = buildBookCollectPo(bookPo, userPo, accountPo, dto)
                         bookCollectFlowRepository.save(collectPo)
                     } else {
                         bookCollectFlow.collectStatus = BooleanUtils.toBoolean(BookCollectStatusEnum.COLLECTED.status)
@@ -184,12 +184,12 @@ class BookDomainService {
         val pageQuery = bookCollectFlowRepository.pageQueryBookCollect(param)
         if (pageQuery.records.isNullOrEmpty()) return Page()
         //查询图书信息
-        val isbnCodes = pageQuery.records.mapNotNull { it.isbnCode }
-        val bookPos = bookRepository.findByIsbnCodes(isbnCodes) ?: emptyList()
-        val bookPoMap = bookPos.associateBy { it.isbnCode!! }
+        val bookUids = pageQuery.records.mapNotNull { it.bookUid }
+        val bookDetailPos = bookDetailRepository.findByBookUids(bookUids) ?: emptyList()
+        val bookDetailPoMap = bookDetailPos.associateBy { it.bookUid!! }
         val result = pageQuery.records.mapNotNull {
-            val bookPo = bookPoMap.get(it.isbnCode)
-            buildPageQueryBookCollectDto(it, bookPo, userPo)
+            val bookDetailPo = bookDetailPoMap.get(it.bookUid)
+            buildPageQueryBookCollectDto(it, bookDetailPo, userPo)
         }
         return Page(param.page, param.pageSize, pageQuery.total.toInt(), result)
     }
@@ -200,17 +200,13 @@ class BookDomainService {
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<PageQueryBorrowBookResultDto> {
         val pageQuery = bookBorrowFlowRepository.pageQueryBorrowFlow(dto)
         if (pageQuery.records.isNullOrEmpty()) return Page()
-        //查询图书信息
-        val isbnCodes = pageQuery.records.mapNotNull { it.isbnCode }
-        val bookPos = bookRepository.findByIsbnCodes(isbnCodes) ?: emptyList()
-        val bookPoMap = bookPos.associateBy { it.isbnCode!! }
         //查询图书详情信息
         val bookUids = pageQuery.records.mapNotNull { it.bookUid }
         val bookDetailPos = bookDetailRepository.findByBookUids(bookUids) ?: emptyList()
         val bookDetailPoMap = bookDetailPos.associateBy { it.bookUid!! }
         val result = pageQuery.records.mapNotNull {
-            val bookPo = bookPoMap.get(it.isbnCode)
-            buildPageQueryBorrowBookResultDto(it, bookPo)
+            val bookDetailPo = bookDetailPoMap.get(it.bookUid)
+            buildPageQueryBorrowBookResultDto(it, bookDetailPo)
         }
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
     }
@@ -273,6 +269,10 @@ class BookDomainService {
         bookDetailRepository.deleteByBookUid(bookUid)
         bookDetailClassifyRepository.deleteByBookUid(bookUid)
         bookDetailAgeRepository.deleteByBookUid(bookUid)
+        //删除借阅记录
+        bookBorrowFlowRepository.deleteByBookUid(bookUid)
+        //删除收藏记录
+        bookCollectFlowRepository.deleteByBookUid(bookUid)
     }
 
     /**
@@ -294,7 +294,7 @@ class BookDomainService {
             bookCollectFlowRepository.findUserCollectFlowByBookUid(userUid, bookUid)
         }
         //参数组装
-        return buildBookDetailDto(detailPo, bookPo, classifyList, ageGroups, collectFlowPo)
+        return buildBookDetailDto(detailPo, classifyList, ageGroups, collectFlowPo)
     }
 
     /**
@@ -318,11 +318,7 @@ class BookDomainService {
             if (currentBookDetailPo != null) throw BookDetailAlreadyExistException()
             //根据isbn查询图书信息
             val bookPo = bookRepository.findByIsbnCode(dto.isbn)
-            if (bookPo != null) {
-                //修改属性
-                val updateBookPo = buildScanBookCodeUpdateBookPo(dto, bookPo, gardenInfo)
-                bookRepository.updateByUid(updateBookPo)
-            } else {
+            if (bookPo == null) {
                 //新增po
                 val insertBookPo = buildScanBookCodeInsertBookPo(dto)
                 bookRepository.save(insertBookPo)

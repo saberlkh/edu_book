@@ -26,6 +26,11 @@ class PageQueryBorrowBookResultDto: Serializable {
     var title: String? = null
 
     /**
+     * 子标题
+     */
+    var subTitle: String? = null
+
+    /**
      * 作者
      */
     var author: String? = null
