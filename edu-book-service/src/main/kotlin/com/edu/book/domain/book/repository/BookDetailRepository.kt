@@ -38,4 +38,9 @@ interface BookDetailRepository : IService<BookDetailPo> {
      */
     fun updateByBookUid(po: BookDetailPo, bookUid: String)
 
+    /**
+     * 修改图书状态
+     */
+    fun updateBookStatus(bookUid: String, bookStatus: Int)
+
 }

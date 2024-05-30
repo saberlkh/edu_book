@@ -42,6 +42,17 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
+    fun buildReturnBookBorrowFlowPo(bookBorrowFlow: BookBorrowFlowPo): BookBorrowFlowPo {
+        return BookBorrowFlowPo().apply {
+            this.uid = bookBorrowFlow.uid
+            this.realityReturnTime = Date()
+            this.borrowStatus = BookBorrowStatusEnum.RETURN.status
+        }
+    }
+
+    /**
+     * 构建实体类
+     */
     fun buildBookCollectPo(bookPo: BookDetailPo, userPo: BookUserPo, accountPo: BookAccountPo?, dto: CollectBookDto): BookCollectFlowPo {
         return BookCollectFlowPo().apply {
             this.uid = UUIDUtil.createUUID()

@@ -41,6 +41,16 @@ class BookDetailRepositoryImpl : ServiceImpl<BookDetailDao, BookDetailPo>(), Boo
     }
 
     /**
+     * 修改图书装填
+     */
+    override fun updateBookStatus(bookUid: String, bookStatus: Int) {
+        val wrapper = KtUpdateWrapper(BookDetailPo::class.java)
+            .set(BookDetailPo::status, bookStatus)
+            .eq(BookDetailPo::bookUid, bookUid)
+        update(wrapper)
+    }
+
+    /**
      * 查询
      */
     override fun findByBookUid(bookUid: String): BookDetailPo? {

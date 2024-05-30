@@ -27,6 +27,7 @@
             t_book_borrow_flow
         WHERE
             c_is_deleted = 0
+        AND c_borrow_status IN (0, 2)
         <if test="userUid != null and userUid != ''">
             AND c_borrow_user_uid = #{userUid}
         </if>
@@ -47,6 +48,7 @@
             t_book_borrow_flow
         WHERE
             c_is_deleted = 0
+        AND c_borrow_status IN (0, 2)
         <if test="userUid != null and userUid != ''">
             AND c_borrow_user_uid = #{userUid}
         </if>

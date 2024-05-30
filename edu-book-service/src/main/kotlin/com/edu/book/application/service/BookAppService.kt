@@ -10,6 +10,7 @@ import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
+import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
@@ -68,6 +69,13 @@ class BookAppService {
      */
     fun collectBook(dto: CollectBookDto) {
         bookDomainService.collectBook(dto)
+    }
+
+    /**
+     * 还书
+     */
+    fun returnBook(dto: ReturnBookDto) {
+        return bookDomainService.returnBook(dto)
     }
 
     /**

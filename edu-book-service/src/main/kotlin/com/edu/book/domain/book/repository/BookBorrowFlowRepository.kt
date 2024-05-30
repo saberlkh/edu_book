@@ -16,6 +16,11 @@ import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 interface BookBorrowFlowRepository : IService<BookBorrowFlowPo> {
 
     /**
+     * 更新流水
+     */
+    fun updateByUid(po: BookBorrowFlowPo)
+
+    /**
      * 批量查询
      */
     fun batchQueryByBorrowCardIds(borrowCardIds: List<String>, borrowStatus: Int): List<BookBorrowFlowPo>?
@@ -24,6 +29,11 @@ interface BookBorrowFlowRepository : IService<BookBorrowFlowPo> {
      * 分页查询
      */
     fun pageQueryBorrowFlow(dto: PageQueryBorrowBookDto): Page<BookBorrowFlowPo>
+
+    /**
+     * 查询借阅记录
+     */
+    fun findByBookUid(bookUid: String): BookBorrowFlowPo?
 
     /**
      * 删除

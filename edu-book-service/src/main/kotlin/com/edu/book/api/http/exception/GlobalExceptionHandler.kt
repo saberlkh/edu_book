@@ -3,6 +3,7 @@ package com.edu.book.api.http.exception
 import com.edu.book.api.vo.exception.ErrorResponse
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
+import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookException
 import com.edu.book.domain.book.exception.BookNotCollectException
@@ -137,6 +138,9 @@ class GlobalExceptionHandler {
             }
             is BookDetailNotExistException -> {
                 ErrorCodeConfig.BOOK_DETAIL_NOT_EXIST
+            }
+            is BookDetailNotBorrowingException -> {
+                ErrorCodeConfig.BOOK_NOT_BORROWING
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.repository.BookBorrowFlowRepository
 import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.repositoryImpl.dao.book.BookBorrowFlowDao
+import com.edu.book.infrastructure.util.limitOne
 import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,15 @@ class BookBorrowFlowRepositoryImpl : ServiceImpl<BookBorrowFlowDao, BookBorrowFl
 
     @Autowired
     private lateinit var bookBorrowFlowDao: BookBorrowFlowDao
+
+    /**
+     * 更新流水
+     */
+    override fun updateByUid(po: BookBorrowFlowPo) {
+        val wrapper = KtUpdateWrapper(BookBorrowFlowPo::class.java)
+            .eq(BookBorrowFlowPo::uid, po.uid)
+        update(po, wrapper)
+    }
 
     /**
      * 批量查询
@@ -44,6 +54,16 @@ class BookBorrowFlowRepositoryImpl : ServiceImpl<BookBorrowFlowDao, BookBorrowFl
         val page = Page<BookBorrowFlowPo>(dto.page.toLong(), dto.pageSize.toLong(), totalCount.toLong())
         page.records = result
         return page
+    }
+
+    /**
+     * 查询借阅记录
+     */
+    override fun findByBookUid(bookUid: String): BookBorrowFlowPo? {
+        val wrapper = KtQueryWrapper(BookBorrowFlowPo::class.java)
+            .eq(BookBorrowFlowPo::bookUid, bookUid)
+            .limitOne()
+        return getOne(wrapper)
     }
 
     /**

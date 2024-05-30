@@ -12,18 +12,20 @@ import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookVo
 import com.edu.book.api.vo.book.PageQueryUserBookCollectParamVo
+import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
-import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
+import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
+import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.page.Page
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,6 +49,21 @@ class BookWebService {
     fun borrowBook(vo: BorrowBookVo) {
         val dto = MapperUtil.map(BorrowBookDto::class.java, vo)
         bookAppService.borrowBook(dto)
+    }
+
+    /**
+     * 还书
+     */
+    fun returnBook(vo: ReturnBookVo) {
+        val dto = MapperUtil.map(ReturnBookDto::class.java, vo).apply {
+            this.userUid = CurrentHolder.userDto!!.uid!!
+            this.bookStatus = if (vo.loss) {
+                BookDetailStatusEnum.LOSS.status
+            } else {
+                BookDetailStatusEnum.IN_STORAGE.status
+            }
+        }
+        return bookAppService.returnBook(dto)
     }
 
     /**

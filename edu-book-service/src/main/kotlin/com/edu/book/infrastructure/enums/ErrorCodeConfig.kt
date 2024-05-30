@@ -84,6 +84,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     BOOK_DETAIL_NOT_EXIST(600018, "图书不存在"),
 
+    BOOK_NOT_BORROWING(600019, "图书没有借阅中"),
+
     ;
 
 }

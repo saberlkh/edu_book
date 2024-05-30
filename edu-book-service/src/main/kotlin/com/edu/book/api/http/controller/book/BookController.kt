@@ -12,6 +12,7 @@ import com.edu.book.api.vo.book.PageQueryBookVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookResultVo
 import com.edu.book.api.vo.book.PageQueryBorrowBookVo
 import com.edu.book.api.vo.book.PageQueryUserBookCollectParamVo
+import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.infrastructure.anno.Response
@@ -49,6 +50,14 @@ class BookController {
     @PostMapping("/v1/borrow")
     fun borrowBook(@RequestBody @Valid vo: BorrowBookVo) {
         bookWebService.borrowBook(vo)
+    }
+
+    /**
+     * 还书
+     */
+    @PostMapping("/v1/return")
+    fun returnBook(@RequestBody @Valid vo: ReturnBookVo) {
+        bookWebService.returnBook(vo)
     }
 
     /**
