@@ -28,6 +28,12 @@
         WHERE
             c_is_deleted = 0
         AND c_borrow_status IN (0, 2)
+        <if test="bookStatusList != null and bookStatusList.size > 0">
+            AND c_borrow_status in
+            <foreach collection="bookStatusList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="userUid != null and userUid != ''">
             AND c_borrow_user_uid = #{userUid}
         </if>
@@ -49,6 +55,12 @@
         WHERE
             c_is_deleted = 0
         AND c_borrow_status IN (0, 2)
+        <if test="bookStatusList != null and bookStatusList.size > 0">
+            AND c_borrow_status in
+            <foreach collection="bookStatusList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         <if test="userUid != null and userUid != ''">
             AND c_borrow_user_uid = #{userUid}
         </if>

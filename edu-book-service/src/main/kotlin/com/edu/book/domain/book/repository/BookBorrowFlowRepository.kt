@@ -40,4 +40,9 @@ interface BookBorrowFlowRepository : IService<BookBorrowFlowPo> {
      */
     fun deleteByBookUid(bookUid: String)
 
+    /**
+     * 批量更新
+     */
+    fun batchUpdateStatusByUid(uids: List<String>, borrowStatus: Int)
+
 }

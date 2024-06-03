@@ -75,4 +75,15 @@ class BookBorrowFlowRepositoryImpl : ServiceImpl<BookBorrowFlowDao, BookBorrowFl
         remove(wrapper)
     }
 
+    /**
+     * 批量更新
+     */
+    override fun batchUpdateStatusByUid(uids: List<String>, borrowStatus: Int) {
+        if (uids.isNullOrEmpty()) return
+        val wrapper = KtUpdateWrapper(BookBorrowFlowPo::class.java)
+            .`in`(BookBorrowFlowPo::uid, uids)
+            .set(BookBorrowFlowPo::borrowStatus, borrowStatus)
+        update(wrapper)
+    }
+
 }

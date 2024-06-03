@@ -26,6 +26,11 @@ class PageQueryBorrowBookDto: Serializable {
     var bookStatus: Int? = null
 
     /**
+     * 书籍状态
+     */
+    var bookStatusList: List<Int> = emptyList()
+
+    /**
      * page
      */
     var page: Int = NumberUtils.INTEGER_ONE
