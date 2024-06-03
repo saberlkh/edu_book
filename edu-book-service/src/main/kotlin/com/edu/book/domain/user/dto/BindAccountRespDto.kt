@@ -70,4 +70,14 @@ class BindAccountRespDto: Serializable {
      */
     var unionId: String = ""
 
+    /**
+     * 园区uid
+     */
+    var gardenUid: String = ""
+
+    /**
+     * 名称
+     */
+    var gardenName: String = ""
+
 }

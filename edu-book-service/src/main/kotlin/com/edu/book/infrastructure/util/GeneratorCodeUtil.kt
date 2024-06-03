@@ -22,7 +22,8 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_book_collect_flow"))
+//    GeneratorCodeUtils().execute(listOf("t_book_read_circle", "t_book_read_circle_attachment",
+//        "t_book_read_circle_like_flow", "t_book_read_circle_comment_flow"))
 //}
 //
 //@Component

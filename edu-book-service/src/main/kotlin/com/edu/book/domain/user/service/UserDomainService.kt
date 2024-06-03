@@ -301,11 +301,22 @@ class UserDomainService {
             bookUserRepository.updateUserPoByUid(updateUserPo)
             val userAccountRelationPo = buildBindAccountUserRelationPo(userPo.uid!!, accountPo.accountUid!!, UUIDUtil.createUUID())
             bookAccountUserRelationRepository.save(userAccountRelationPo)
+            //查看班级、幼儿园信息
+            val gardenInfo = if (!accountPo.classUid.isNullOrBlank()) {
+                val classInfo = levelRepository.queryByUid(accountPo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+                //查询年级
+                val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+                //查询园区
+                val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+                gardenInfo
+            } else {
+                null
+            }
             //获取角色和权限信息
             val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo.accountUid)
             val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
             val finalUserPo = bookUserRepository.findByPhone(dto.phone) ?: throw UserNotFoundException(dto.phone)
-            return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo)
+            return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo, gardenInfo)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()
