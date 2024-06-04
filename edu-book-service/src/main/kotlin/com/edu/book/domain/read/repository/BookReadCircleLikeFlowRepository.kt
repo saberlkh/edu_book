@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.read.BookReadCircleLikeFlowPo
  */
 interface BookReadCircleLikeFlowRepository : IService<BookReadCircleLikeFlowPo> {
 
+    /**
+     * 批量查询
+     */
+    fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleLikeFlowPo>?
+
 }

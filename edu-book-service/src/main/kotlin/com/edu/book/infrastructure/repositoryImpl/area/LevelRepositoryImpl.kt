@@ -58,6 +58,17 @@ class LevelRepositoryImpl : ServiceImpl<LevelDao, LevelPo>(), LevelRepository {
     }
 
     /**
+     * 批量查询
+     */
+    override fun batchQueryByUids(levelUids: List<String>, levelType: LevelTypeEnum): List<LevelPo>? {
+        if (levelUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(LevelPo::class.java)
+            .`in`(LevelPo::uid, levelUids)
+            .eq(LevelPo::levelType, levelType.type)
+        return levelDao.selectList(wrapper)
+    }
+
+    /**
      * 删除
      */
     override fun deleteByUids(levelUids: List<String>) {

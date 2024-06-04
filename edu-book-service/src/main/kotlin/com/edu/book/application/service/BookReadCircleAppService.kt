@@ -1,7 +1,10 @@
 package com.edu.book.application.service
 
+import com.edu.book.domain.read.dto.PageQueryReadCircleParam
+import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.domain.read.service.BookReadCircleDomainService
+import com.edu.book.infrastructure.util.page.Page
 import java.io.Serializable
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +29,13 @@ class BookReadCircleAppService: Serializable {
      */
     fun publishReadCircle(dto: PublishReadCircleDto) {
         bookReadCircleDomainService.publishReadCircle(dto)
+    }
+
+    /**
+     * 分页查询阅读圈
+     */
+    fun pageQueryReadCircle(param: PageQueryReadCircleParam): Page<PageReadCircleDto> {
+        return bookReadCircleDomainService.pageQueryReadCircle(param)
     }
 
 }

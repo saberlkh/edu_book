@@ -19,6 +19,11 @@ interface BookUserRepository : IService<BookUserPo> {
     fun findUserByOpenId(openId: String): BookUserPo?
 
     /**
+     * 批量查询
+     */
+    fun batchQueryByUserUids(userUids: List<String>): List<BookUserPo>?
+
+    /**
      * 修改用户信息
      */
     fun updateUserPoByUid(po: BookUserPo)

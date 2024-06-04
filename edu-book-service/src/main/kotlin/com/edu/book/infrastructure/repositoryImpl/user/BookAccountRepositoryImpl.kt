@@ -34,6 +34,16 @@ class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), 
     }
 
     /**
+     * 批量查询
+     */
+    override fun batchQueryByAccountUids(accountUids: List<String>): List<BookAccountPo>? {
+        if (accountUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookAccountPo::class.java)
+            .`in`(BookAccountPo::accountUid, accountUids)
+        return bookAccountDao.selectList(wrapper)
+    }
+
+    /**
      * 通过家长手机号查询
      */
     override fun findByParentPhone(parentPhones: List<String>): List<BookAccountPo>? {

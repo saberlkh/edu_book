@@ -33,6 +33,16 @@ class BookUserRepositoryImpl : ServiceImpl<BookUserDao, BookUserPo>(), BookUserR
     }
 
     /**
+     * 批量查询
+     */
+    override fun batchQueryByUserUids(userUids: List<String>): List<BookUserPo>? {
+        if (userUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookUserPo::class.java)
+            .`in`(BookUserPo::uid, userUids)
+        return bookUserDao.selectList(wrapper)
+    }
+
+    /**
      * 修改用户信息
      */
     override fun updateUserPoByUid(po: BookUserPo) {

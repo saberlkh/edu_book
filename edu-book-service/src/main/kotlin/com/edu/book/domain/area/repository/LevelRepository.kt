@@ -31,6 +31,11 @@ interface LevelRepository : IService<LevelPo> {
     fun queryByUid(levelUid: String, levelType: LevelTypeEnum): LevelPo?
 
     /**
+     * 批量查询
+     */
+    fun batchQueryByUids(levelUids: List<String>, levelType: LevelTypeEnum): List<LevelPo>?
+
+    /**
      * 删除
      */
     fun deleteByUids(levelUids: List<String>)

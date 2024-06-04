@@ -1,9 +1,11 @@
 package com.edu.book.infrastructure.repositoryImpl.read;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.read.repository.BookReadCircleAttachmentRepository
 import com.edu.book.infrastructure.po.read.BookReadCircleAttachmentPo
 import com.edu.book.infrastructure.repositoryImpl.dao.read.BookReadCircleAttachmentDao
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +16,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookReadCircleAttachmentRepositoryImpl : ServiceImpl<BookReadCircleAttachmentDao, BookReadCircleAttachmentPo>(), BookReadCircleAttachmentRepository {
+
+    @Autowired
+    private lateinit var bookReadCircleAttachmentDao: BookReadCircleAttachmentDao
+
+    /**
+     * 批量查询
+     */
+    override fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleAttachmentPo>? {
+        if (circleUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookReadCircleAttachmentPo::class.java)
+            .`in`(BookReadCircleAttachmentPo::readCircleUid, circleUids)
+        return bookReadCircleAttachmentDao.selectList(wrapper)
+    }
 
 }

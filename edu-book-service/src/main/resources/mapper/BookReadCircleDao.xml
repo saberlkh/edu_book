@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kindlink.repositoryImpl.dao.BookReadCircleDao">
+<mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.read.BookReadCircleDao">
+
+    <sql id="baseFileds">
+        c_uid AS uid,
+        c_read_text AS readText,
+        c_user_uid AS userUid,
+        c_account_uid AS accountUid,
+        c_garden_uid AS gardenUid,
+        c_create_time AS createTime,
+        c_update_time AS updateTime,
+        c_is_deleted AS deleted
+    </sql>
+
+    <!--fun getReadCircleTotalCount(param: PageQueryReadCircleParam): Int-->
+    <select id="getReadCircleTotalCount" resultType="int"
+        parameterType="com.edu.book.domain.read.dto.PageQueryReadCircleParam">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_read_circle
+        WHERE c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+    </select>
+
+    <!--fun pageQueryReadCircles(param: PageQueryReadCircleParam): List<BookReadCirclePo>-->
+    <select id="pageQueryReadCircles" parameterType="com.edu.book.domain.read.dto.PageQueryReadCircleParam"
+        resultType="com.edu.book.infrastructure.po.read.BookReadCirclePo">
+        SELECT
+        <include refid="baseFileds"></include>
+        FROM
+            t_book_read_circle
+        WHERE c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
 
 </mapper>

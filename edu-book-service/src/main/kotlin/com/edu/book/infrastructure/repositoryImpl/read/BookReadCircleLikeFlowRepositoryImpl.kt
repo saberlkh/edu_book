@@ -1,9 +1,12 @@
 package com.edu.book.infrastructure.repositoryImpl.read;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edu.book.domain.read.enums.ReadCircleLikeStatusEnum
 import com.edu.book.domain.read.repository.BookReadCircleLikeFlowRepository
 import com.edu.book.infrastructure.po.read.BookReadCircleLikeFlowPo
 import com.edu.book.infrastructure.repositoryImpl.dao.read.BookReadCircleLikeFlowDao
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +17,19 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookReadCircleLikeFlowRepositoryImpl : ServiceImpl<BookReadCircleLikeFlowDao, BookReadCircleLikeFlowPo>(), BookReadCircleLikeFlowRepository {
+
+    @Autowired
+    private lateinit var bookReadCircleLikeFlowDao: BookReadCircleLikeFlowDao
+
+    /**
+     * 批量查询
+     */
+    override fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleLikeFlowPo>? {
+        if (circleUids.isNullOrEmpty()) return emptyList()
+        val wrapper = KtQueryWrapper(BookReadCircleLikeFlowPo::class.java)
+            .`in`(BookReadCircleLikeFlowPo::readCircleUid, circleUids)
+            .eq(BookReadCircleLikeFlowPo::likeStatus, ReadCircleLikeStatusEnum.LIKE.status)
+        return bookReadCircleLikeFlowDao.selectList(wrapper)
+    }
 
 }
