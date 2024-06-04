@@ -47,4 +47,9 @@ object RedisKeyConstant {
      */
     const val COLLECT_BOOK_KEY = "COLLECT:BOOK:KEY"
 
+    /**
+     * 发布阅读圈
+     */
+    const val PUBLISH_READ_CIRCLE_LOCK_KEY = "PUBLISH:READ:CIRCLE:LOCK:KEY:"
+
 }
