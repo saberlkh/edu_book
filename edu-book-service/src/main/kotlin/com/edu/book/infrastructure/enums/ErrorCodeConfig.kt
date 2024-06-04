@@ -86,6 +86,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     BOOK_NOT_BORROWING(600019, "图书没有借阅中"),
 
+    READ_CIRCLE_NOT_FOUND(600020, "阅读圈不存在"),
+
     ;
 
 }

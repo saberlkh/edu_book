@@ -9,6 +9,7 @@ import com.edu.book.infrastructure.util.page.Page
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,6 +35,14 @@ class BookReadCircleController {
     @PostMapping("/v1/circle")
     fun publishReadCircle(@RequestBody @Valid vo: PublishReadCircleVo) {
         bookReadCircleWebService.publishReadCircle(vo)
+    }
+
+    /**
+     * 查询详情
+     */
+    @GetMapping("/v1/{readCircleUid}/circle")
+    fun getReadCircleDetail(@PathVariable readCircleUid: String): PageReadCircleVo {
+        return bookReadCircleWebService.getReadCircleDetail(readCircleUid)
     }
 
     /**

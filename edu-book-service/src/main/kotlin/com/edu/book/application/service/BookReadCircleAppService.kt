@@ -38,4 +38,11 @@ class BookReadCircleAppService: Serializable {
         return bookReadCircleDomainService.pageQueryReadCircle(param)
     }
 
+    /**
+     * 查询详情
+     */
+    fun getReadCircleDetail(circleUid: String): PageReadCircleDto {
+        return bookReadCircleDomainService.getReadCircleDetail(circleUid)
+    }
+
 }

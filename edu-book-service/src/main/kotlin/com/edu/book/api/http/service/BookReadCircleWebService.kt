@@ -6,6 +6,7 @@ import com.edu.book.api.vo.read.PageReadCircleVo
 import com.edu.book.api.vo.read.PublishReadCircleVo
 import com.edu.book.application.service.BookReadCircleAppService
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
+import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.infrastructure.util.MapperUtil
 import com.edu.book.infrastructure.util.page.Page
@@ -42,6 +43,14 @@ class BookReadCircleWebService {
         val pageQuery = bookReadCircleAppService.pageQueryReadCircle(param)
         if (pageQuery.result.isNullOrEmpty()) return Page()
         return Page(param.page, param.pageSize, pageQuery.totalCount, MapperUtil.mapToList(PageReadCircleVo::class.java, pageQuery.result!!))
+    }
+
+    /**
+     * 查询详情
+     */
+    fun getReadCircleDetail(circleUid: String): PageReadCircleVo {
+        val dto = bookReadCircleAppService.getReadCircleDetail(circleUid)
+        return MapperUtil.map(PageReadCircleVo::class.java, dto)
     }
 
 }

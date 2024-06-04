@@ -8,6 +8,7 @@ import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.domain.read.dto.ReadCircleAttachmentDto
 import com.edu.book.domain.read.dto.ReadCircleCommentDto
 import com.edu.book.domain.read.dto.ReadCircleLikeDto
+import com.edu.book.domain.read.exception.ReadCircleNotExistException
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPageQueryCircleDto
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPublishBookReadCircleAttachment
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPublishBookReadCirclePo
@@ -74,6 +75,16 @@ class BookReadCircleDomainService {
 
     @Autowired
     private lateinit var levelRepository: LevelRepository
+
+    /**
+     * 查询详情
+     */
+    fun getReadCircleDetail(circleUid: String): PageReadCircleDto {
+        val circleDetailDto = pageQueryReadCircle(PageQueryReadCircleParam().apply {
+            this.circleUid = circleUid
+        }).result?.firstOrNull() ?: throw ReadCircleNotExistException()
+        return circleDetailDto
+    }
 
     /**
      * 分页查询阅读圈

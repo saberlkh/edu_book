@@ -25,4 +25,9 @@ class PageQueryReadCircleParam: Serializable {
      */
     var pageSize: Int = 10
 
+    /**
+     * 阅读圈Uid
+     */
+    var circleUid: String = ""
+
 }

@@ -9,6 +9,8 @@ import com.edu.book.domain.book.exception.BookException
 import com.edu.book.domain.book.exception.BookNotCollectException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
+import com.edu.book.domain.read.exception.BookReadCircleException
+import com.edu.book.domain.read.exception.ReadCircleNotExistException
 import com.edu.book.domain.user.exception.AccountBindedException
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.IllegalPasswordException
@@ -108,6 +110,21 @@ class GlobalExceptionHandler {
             }
             is UserUnBindedException -> {
                 ErrorCodeConfig.USER_IS_UNBINDED
+            }
+            else -> {
+                ErrorCodeConfig.NOT_FOUNT
+            }
+        }
+        log.warn("errorCode is ${errorCode.errorCode}, message = ${ex.message}")
+        val res = ResponseVo(errorCode, null)
+        return ResponseEntity(res, errorCode.httpStatus)
+    }
+
+    @ExceptionHandler(BookReadCircleException::class)
+    fun handlebookReadCircleException(ex: BookReadCircleException): ResponseEntity<ResponseVo<Nothing>> {
+        val errorCode = when (ex) {
+            is ReadCircleNotExistException -> {
+                ErrorCodeConfig.READ_CIRCLE_NOT_FOUND
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT
