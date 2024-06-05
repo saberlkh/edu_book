@@ -1,11 +1,13 @@
 package com.edu.book.infrastructure.repositoryImpl.read;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.read.enums.ReadCircleLikeStatusEnum
 import com.edu.book.domain.read.repository.BookReadCircleLikeFlowRepository
 import com.edu.book.infrastructure.po.read.BookReadCircleLikeFlowPo
 import com.edu.book.infrastructure.repositoryImpl.dao.read.BookReadCircleLikeFlowDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +32,26 @@ class BookReadCircleLikeFlowRepositoryImpl : ServiceImpl<BookReadCircleLikeFlowD
             .`in`(BookReadCircleLikeFlowPo::readCircleUid, circleUids)
             .eq(BookReadCircleLikeFlowPo::likeStatus, ReadCircleLikeStatusEnum.LIKE.status)
         return bookReadCircleLikeFlowDao.selectList(wrapper)
+    }
+
+    /**
+     * 查询用户点赞记录
+     */
+    override fun queryUserLike(circleUid: String, userUid: String): BookReadCircleLikeFlowPo? {
+        val wrapper = KtQueryWrapper(BookReadCircleLikeFlowPo::class.java)
+            .eq(BookReadCircleLikeFlowPo::readCircleUid, circleUid)
+            .eq(BookReadCircleLikeFlowPo::userUid, userUid)
+            .limitOne()
+        return bookReadCircleLikeFlowDao.selectOne(wrapper)
+    }
+
+    /**
+     * 更新
+     */
+    override fun updateByUid(po: BookReadCircleLikeFlowPo) {
+        val wrapper = KtUpdateWrapper(BookReadCircleLikeFlowPo::class.java)
+            .eq(BookReadCircleLikeFlowPo::uid, po.uid)
+        update(po, wrapper)
     }
 
 }

@@ -1,10 +1,12 @@
 package com.edu.book.api.http.service
 
 import com.edu.book.api.http.common.CurrentHolder
+import com.edu.book.api.vo.read.LikeReadCircleVo
 import com.edu.book.api.vo.read.PageQueryReadCircleParamVo
 import com.edu.book.api.vo.read.PageReadCircleVo
 import com.edu.book.api.vo.read.PublishReadCircleVo
 import com.edu.book.application.service.BookReadCircleAppService
+import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.infrastructure.util.MapperUtil
@@ -42,6 +44,14 @@ class BookReadCircleWebService {
         val pageQuery = bookReadCircleAppService.pageQueryReadCircle(param)
         if (pageQuery.result.isNullOrEmpty()) return Page()
         return Page(param.page, param.pageSize, pageQuery.totalCount, MapperUtil.mapToList(PageReadCircleVo::class.java, pageQuery.result!!))
+    }
+
+    /**
+     * 点赞
+     */
+    fun likeReadCircle(vo: LikeReadCircleVo) {
+        val dto = MapperUtil.map(LikeReadCircleDto::class.java, vo)
+        bookReadCircleAppService.likeReadCircle(dto)
     }
 
     /**

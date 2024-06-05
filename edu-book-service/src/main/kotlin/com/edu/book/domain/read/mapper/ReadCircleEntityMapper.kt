@@ -1,6 +1,7 @@
 package com.edu.book.domain.read.mapper
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
+import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.domain.read.dto.ReadCircleAttachmentDto
@@ -17,6 +18,18 @@ import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.util.UUIDUtil
 
 object ReadCircleEntityMapper {
+
+    /**
+     * 构建
+     */
+    fun buildLikeReadCircleFlowPo(dto: LikeReadCircleDto): BookReadCircleLikeFlowPo {
+        return BookReadCircleLikeFlowPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.readCircleUid = dto.circleUid
+            this.userUid = dto.userUid
+            this.likeStatus = dto.likeStatus
+        }
+    }
 
     /**
      * 构建

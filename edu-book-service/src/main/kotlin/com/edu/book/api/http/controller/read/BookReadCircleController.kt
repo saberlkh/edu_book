@@ -1,6 +1,7 @@
 package com.edu.book.api.http.controller.read
 
 import com.edu.book.api.http.service.BookReadCircleWebService
+import com.edu.book.api.vo.read.LikeReadCircleVo
 import com.edu.book.api.vo.read.PageQueryReadCircleParamVo
 import com.edu.book.api.vo.read.PageReadCircleVo
 import com.edu.book.api.vo.read.PublishReadCircleVo
@@ -40,9 +41,9 @@ class BookReadCircleController {
     /**
      * 查询详情
      */
-    @GetMapping("/v1/{readCircleUid}/circle")
-    fun getReadCircleDetail(@PathVariable readCircleUid: String): PageReadCircleVo {
-        return bookReadCircleWebService.getReadCircleDetail(readCircleUid)
+    @GetMapping("/v1/{circleUid}/circle")
+    fun getReadCircleDetail(@PathVariable circleUid: String): PageReadCircleVo {
+        return bookReadCircleWebService.getReadCircleDetail(circleUid)
     }
 
     /**
@@ -51,6 +52,14 @@ class BookReadCircleController {
     @GetMapping("/v1/circle/page")
     fun pageQueryReadCircle(@Valid vo: PageQueryReadCircleParamVo): Page<PageReadCircleVo> {
         return bookReadCircleWebService.pageQueryReadCircle(vo)
+    }
+
+    /**
+     * 点赞
+     */
+    @PostMapping("/v1/circle/like")
+    fun likeReadCircle(@RequestBody @Valid vo: LikeReadCircleVo) {
+        bookReadCircleWebService.likeReadCircle(vo)
     }
 
 }

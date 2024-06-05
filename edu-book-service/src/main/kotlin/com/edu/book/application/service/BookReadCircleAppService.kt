@@ -1,5 +1,6 @@
 package com.edu.book.application.service
 
+import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
@@ -36,6 +37,13 @@ class BookReadCircleAppService: Serializable {
      */
     fun pageQueryReadCircle(param: PageQueryReadCircleParam): Page<PageReadCircleDto> {
         return bookReadCircleDomainService.pageQueryReadCircle(param)
+    }
+
+    /**
+     * 点赞
+     */
+    fun likeReadCircle(dto: LikeReadCircleDto) {
+        bookReadCircleDomainService.likeReadCircle(dto)
     }
 
     /**

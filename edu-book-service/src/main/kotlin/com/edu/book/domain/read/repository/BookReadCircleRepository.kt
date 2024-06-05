@@ -20,4 +20,9 @@ interface BookReadCircleRepository : IService<BookReadCirclePo> {
      */
     fun pageQueryReadCircle(param: PageQueryReadCircleParam): Page<BookReadCirclePo>
 
+    /**
+     * 查询
+     */
+    fun getByUid(circleUid: String): BookReadCirclePo?
+
 }

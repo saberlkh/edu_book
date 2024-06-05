@@ -2,10 +2,12 @@ package com.edu.book.domain.read.service
 
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.domain.read.exception.ReadCircleNotExistException
+import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildLikeReadCircleFlowPo
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPageQueryCircleDto
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPublishBookReadCircleAttachment
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPublishBookReadCirclePo
@@ -72,6 +74,37 @@ class BookReadCircleDomainService {
 
     @Autowired
     private lateinit var levelRepository: LevelRepository
+
+    /**
+     * 点赞阅读圈
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun likeReadCircle(dto: LikeReadCircleDto) {
+        val lockKey = RedisKeyConstant.LIKE_READ_CIRCLE_LOCK_KEY + dto.userUid
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(lockKey)
+            }
+            //查询阅读圈信息
+            bookReadCircleRepository.getByUid(dto.circleUid) ?: throw ReadCircleNotExistException()
+            //查询用户和账户信息
+            bookUserRepository.findByUserUid(dto.userUid) ?: throw UserNotFoundException(dto.userUid)
+            //查询点赞流水
+            val circleLikeFlow = bookReadCircleLikeFlowRepository.queryUserLike(dto.circleUid, dto.userUid)
+            if (circleLikeFlow == null) {
+                val savePo = buildLikeReadCircleFlowPo(dto)
+                bookReadCircleLikeFlowRepository.save(savePo)
+            } else {
+                circleLikeFlow.likeStatus = dto.likeStatus
+                bookReadCircleLikeFlowRepository.updateByUid(circleLikeFlow)
+            }
+        } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
+        }
+    }
 
     /**
      * 查询详情

@@ -18,4 +18,14 @@ interface BookReadCircleLikeFlowRepository : IService<BookReadCircleLikeFlowPo> 
      */
     fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleLikeFlowPo>?
 
+    /**
+     * 查询用户点赞记录
+     */
+    fun queryUserLike(circleUid: String, userUid: String): BookReadCircleLikeFlowPo?
+
+    /**
+     * 更新
+     */
+    fun updateByUid(po: BookReadCircleLikeFlowPo)
+
 }
