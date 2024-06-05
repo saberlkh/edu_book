@@ -25,7 +25,7 @@ object ReadCircleEntityMapper {
     fun buildLikeReadCircleFlowPo(dto: LikeReadCircleDto): BookReadCircleLikeFlowPo {
         return BookReadCircleLikeFlowPo().apply {
             this.uid = UUIDUtil.createUUID()
-            this.readCircleUid = dto.circleUid
+            this.readCircleUid = dto.readCircleUid
             this.userUid = dto.userUid
             this.likeStatus = dto.likeStatus
         }

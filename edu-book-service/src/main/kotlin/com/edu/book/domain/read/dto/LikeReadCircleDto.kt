@@ -18,7 +18,7 @@ class LikeReadCircleDto: Serializable {
     /**
      * 阅读圈id
      */
-    var circleUid: String = ""
+    var readCircleUid: String = ""
 
     /**
      * 点赞状态

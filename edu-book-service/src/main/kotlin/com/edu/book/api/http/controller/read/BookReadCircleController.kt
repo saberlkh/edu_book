@@ -41,9 +41,9 @@ class BookReadCircleController {
     /**
      * 查询详情
      */
-    @GetMapping("/v1/{circleUid}/circle")
-    fun getReadCircleDetail(@PathVariable circleUid: String): PageReadCircleVo {
-        return bookReadCircleWebService.getReadCircleDetail(circleUid)
+    @GetMapping("/v1/{readCircleUid}/circle")
+    fun getReadCircleDetail(@PathVariable readCircleUid: String): PageReadCircleVo {
+        return bookReadCircleWebService.getReadCircleDetail(readCircleUid)
     }
 
     /**

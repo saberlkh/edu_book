@@ -87,11 +87,11 @@ class BookReadCircleDomainService {
                 throw ConcurrentCreateInteractRoomException(lockKey)
             }
             //查询阅读圈信息
-            bookReadCircleRepository.getByUid(dto.circleUid) ?: throw ReadCircleNotExistException()
+            bookReadCircleRepository.getByUid(dto.readCircleUid) ?: throw ReadCircleNotExistException()
             //查询用户和账户信息
             bookUserRepository.findByUserUid(dto.userUid) ?: throw UserNotFoundException(dto.userUid)
             //查询点赞流水
-            val circleLikeFlow = bookReadCircleLikeFlowRepository.queryUserLike(dto.circleUid, dto.userUid)
+            val circleLikeFlow = bookReadCircleLikeFlowRepository.queryUserLike(dto.readCircleUid, dto.userUid)
             if (circleLikeFlow == null) {
                 val savePo = buildLikeReadCircleFlowPo(dto)
                 bookReadCircleLikeFlowRepository.save(savePo)

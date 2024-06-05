@@ -57,8 +57,8 @@ class BookReadCircleWebService {
     /**
      * 查询详情
      */
-    fun getReadCircleDetail(circleUid: String): PageReadCircleVo {
-        val dto = bookReadCircleAppService.getReadCircleDetail(circleUid)
+    fun getReadCircleDetail(readCircleUid: String): PageReadCircleVo {
+        val dto = bookReadCircleAppService.getReadCircleDetail(readCircleUid)
         return MapperUtil.map(PageReadCircleVo::class.java, dto)
     }
 

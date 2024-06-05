@@ -22,7 +22,7 @@ class LikeReadCircleVo: Serializable {
      * 阅读圈id
      */
     @NotBlank(message = "阅读圈不能为空")
-    var circleUid: String = ""
+    var readCircleUid: String = ""
 
     /**
      * 点赞状态
