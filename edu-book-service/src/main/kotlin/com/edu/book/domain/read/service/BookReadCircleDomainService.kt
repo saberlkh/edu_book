@@ -2,11 +2,13 @@ package com.edu.book.domain.read.service
 
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.read.dto.CommentLikeCircleDto
 import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
 import com.edu.book.domain.read.exception.ReadCircleNotExistException
+import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildCommentReadCirclePo
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildLikeReadCircleFlowPo
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPageQueryCircleDto
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildPublishBookReadCircleAttachment
@@ -24,6 +26,7 @@ import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.RedisKeyConstant
+import com.edu.book.infrastructure.po.read.BookReadCircleCommentFlowPo
 import com.edu.book.infrastructure.util.UUIDUtil
 import com.edu.book.infrastructure.util.page.Page
 import java.util.concurrent.TimeUnit
@@ -74,6 +77,34 @@ class BookReadCircleDomainService {
 
     @Autowired
     private lateinit var levelRepository: LevelRepository
+
+    /**
+     * 评论阅读圈
+     * 1.查询阅读圈信息
+     * 2.查询用户信息
+     * 3.添加评论信息
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun commentLikeReadCircle(dto: CommentLikeCircleDto) {
+        val lockKey = RedisKeyConstant.COMMENT_READ_CIRCLE_LOCK_KEY + dto.commentUserUid
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(lockKey)
+            }
+            //查询阅读圈信息
+            bookReadCircleRepository.getByUid(dto.readCircleUid) ?: throw ReadCircleNotExistException()
+            //查询用户信息
+            bookUserRepository.findByUserUid(dto.commentUserUid) ?: throw UserNotFoundException(dto.commentUserUid)
+            //添加评论信息
+            val commentPo = buildCommentReadCirclePo(dto)
+            bookReadCircleCommentFlowRepository.save(commentPo)
+        } finally {
+            if (lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
+        }
+    }
 
     /**
      * 点赞阅读圈

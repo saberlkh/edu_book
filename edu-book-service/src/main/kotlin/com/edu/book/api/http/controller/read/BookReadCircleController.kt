@@ -1,6 +1,7 @@
 package com.edu.book.api.http.controller.read
 
 import com.edu.book.api.http.service.BookReadCircleWebService
+import com.edu.book.api.vo.read.CommentLikeCircleVo
 import com.edu.book.api.vo.read.LikeReadCircleVo
 import com.edu.book.api.vo.read.PageQueryReadCircleParamVo
 import com.edu.book.api.vo.read.PageReadCircleVo
@@ -60,6 +61,14 @@ class BookReadCircleController {
     @PostMapping("/v1/circle/like")
     fun likeReadCircle(@RequestBody @Valid vo: LikeReadCircleVo) {
         bookReadCircleWebService.likeReadCircle(vo)
+    }
+
+    /**
+     * 评论
+     */
+    @PostMapping("/v1/circle/comment")
+    fun commentLikeReadCircle(@RequestBody @Valid vo: CommentLikeCircleVo) {
+        bookReadCircleWebService.commentLikeReadCircle(vo)
     }
 
 }

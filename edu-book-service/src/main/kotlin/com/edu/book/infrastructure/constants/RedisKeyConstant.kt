@@ -57,4 +57,9 @@ object RedisKeyConstant {
      */
     const val LIKE_READ_CIRCLE_LOCK_KEY = "LIKE:READ:CIRCLE:LOCK:KEY:"
 
+    /**
+     * 评论阅读圈锁
+     */
+    const val COMMENT_READ_CIRCLE_LOCK_KEY = "COMMENT:READ:CIRCLE:LOCK:KEY:"
+
 }

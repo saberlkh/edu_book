@@ -1,6 +1,7 @@
 package com.edu.book.domain.read.mapper
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
+import com.edu.book.domain.read.dto.CommentLikeCircleDto
 import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
@@ -18,6 +19,20 @@ import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.util.UUIDUtil
 
 object ReadCircleEntityMapper {
+
+    /**
+     * 评论
+     */
+    fun buildCommentReadCirclePo(dto: CommentLikeCircleDto): BookReadCircleCommentFlowPo {
+        return BookReadCircleCommentFlowPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.readCircleUid = dto.readCircleUid
+            this.commentUserUid = dto.commentUserUid
+            this.commentedUserUid = dto.commentedUserUid
+            this.comment = dto.commentText
+            this.parentCommentUid = dto.parentCommentUid
+        }
+    }
 
     /**
      * 构建
