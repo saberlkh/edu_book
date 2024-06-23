@@ -139,4 +139,9 @@ class BookDetailVo: Serializable {
      */
     var collectStatus: Int? = null
 
+    /**
+     * 图书音频文件
+     */
+    var bookAudioUrl: String? = null
+
 }

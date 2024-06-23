@@ -184,4 +184,10 @@ class BookDetailPo : BasePo() {
     @TableField("c_book_class")
     var bookClass: String? = null
 
+    /**
+     * 图书音频文件
+     */
+    @TableField("c_book_audio_url")
+    var bookAudioUrl: String? = null
+
 }
