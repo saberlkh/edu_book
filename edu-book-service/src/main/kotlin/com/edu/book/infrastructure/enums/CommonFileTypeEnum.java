@@ -1,6 +1,5 @@
 package com.edu.book.infrastructure.enums;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public enum CommonFileTypeEnum {
