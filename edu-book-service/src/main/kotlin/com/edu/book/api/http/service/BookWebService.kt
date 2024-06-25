@@ -6,6 +6,7 @@ import com.edu.book.api.vo.book.BookClassifyVo
 import com.edu.book.api.vo.book.BookCollectVo
 import com.edu.book.api.vo.book.BookDetailVo
 import com.edu.book.api.vo.book.BorrowBookVo
+import com.edu.book.api.vo.book.ModifyBookDetailVo
 import com.edu.book.api.vo.book.PageQueryBookCollectVo
 import com.edu.book.api.vo.book.PageQueryBookResultVo
 import com.edu.book.api.vo.book.PageQueryBookVo
@@ -18,6 +19,7 @@ import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
@@ -96,6 +98,14 @@ class BookWebService {
     fun scanBookCodeInStorage(vo: ScanBookCodeInStorageVo) {
         val dto = MapperUtil.map(ScanBookCodeInStorageParam::class.java, vo)
         bookAppService.scanBookCodeInStorage(dto)
+    }
+
+    /**
+     * 更新图书详情
+     */
+    fun modifyBookDetail(vo: ModifyBookDetailVo) {
+        val dto = MapperUtil.map(ModifyBookDetailDto::class.java, vo)
+        bookAppService.modifyBookDetail(dto)
     }
 
     /**

@@ -9,6 +9,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
@@ -34,6 +35,7 @@ import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailAgeGroupP
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailClassifyPos
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookDetailPo
+import com.edu.book.domain.book.mapper.BookEntityMapper.buildModifyBookDetailPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBookCollectDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildPageQueryBorrowBookResultDto
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildReturnBookBorrowFlowPo
@@ -56,6 +58,7 @@ import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.RedisKeyConstant.COLLECT_BOOK_KEY
+import com.edu.book.infrastructure.constants.RedisKeyConstant.MODIFY_BOOK_DETAIL_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
@@ -317,6 +320,38 @@ class BookDomainService {
         }
         //参数组装
         return buildBookDetailDto(detailPo, classifyList, ageGroups, collectFlowPo)
+    }
+
+    /**
+     * 编辑图书
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun modifyBookDetail(dto: ModifyBookDetailDto) {
+        val lockKey = MODIFY_BOOK_DETAIL_KEY + dto.bookUid
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.bookUid)
+            }
+            //查询图书详情
+            bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+            //查询园区信息
+            val gardenInfo = levelRepository.queryByUid(dto.gardenUid, LevelTypeEnum.Garden) ?: throw AreaInfoNotExistException()
+            //更新图书详情信息
+            val modifyBookDetailPo = buildModifyBookDetailPo(dto, gardenInfo)
+            bookDetailRepository.updateByBookUid(modifyBookDetailPo, dto.bookUid)
+            //更新分类和年龄段
+            bookDetailClassifyRepository.deleteByBookUid(dto.bookUid)
+            bookDetailAgeRepository.deleteByBookUid(dto.bookUid)
+            //添加分类
+            val classifyPos = buildBookDetailClassifyPos(dto)
+            bookDetailClassifyRepository.saveBatch(classifyPos)
+            //添加年龄段
+            val ageGroups = buildBookDetailAgeGroupPos(dto)
+            bookDetailAgeRepository.saveBatch(ageGroups)
+        } finally {
+            if (lock.isHeldByCurrentThread) lock.unlock()
+        }
     }
 
     /**

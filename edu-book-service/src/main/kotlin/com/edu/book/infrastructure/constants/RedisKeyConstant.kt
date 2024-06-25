@@ -38,6 +38,11 @@ object RedisKeyConstant {
     const val SCAN_BOOK_CODE_KEY = "SCAN:BOOK:CODE:LOCK:KEY:"
 
     /**
+     * 更新图书详情
+     */
+    const val MODIFY_BOOK_DETAIL_KEY = "MODIFY:BOOK:DETAIL:KEY:"
+
+    /**
      * 文件上传
      */
     const val UPLOAD_FILE_KEY = "UPLOAD:FILE:KEY:"

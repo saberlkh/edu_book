@@ -9,6 +9,7 @@ import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
@@ -155,6 +156,34 @@ object BookEntityMapper {
         }
     }
 
+
+    /**
+     * 构建实体类
+     */
+    fun buildModifyBookDetailPo(dto: ModifyBookDetailDto, gardenInfo: LevelPo): BookDetailPo {
+        return MapperUtil.map(BookDetailPo::class.java, dto, excludes = listOf("price")).apply {
+            this.uid = UUIDUtil.createUUID()
+            this.bookUid = dto.bookUid
+            this.status = BookDetailStatusEnum.IN_STORAGE.status
+            this.inStorageTime = Timestamp(Date().time)
+            this.garden = gardenInfo.levelName
+            this.gardenUid = gardenInfo.uid
+            this.subTitle = dto.subtitle
+            this.picUrl = dto.pic
+            this.publicPlace = dto.pubplace
+            this.publicDate = if (dto.pubdate.isNullOrBlank()) {
+                null
+            } else {
+                DateUtil.convertToDate(dto.pubdate, PATTREN_DATE3)
+            }
+            this.price = dto.price?.toDouble()?.times(hundred)?.toInt()
+            this.isbn10Code = dto.isbn10
+            this.isbnCode = dto.isbn
+            this.bookClass = dto.`class`
+            this.summary = JSON.toJSONString(dto.summary)
+        }
+    }
+
     /**
      * 构建实体类
      */
@@ -243,12 +272,40 @@ object BookEntityMapper {
     /**
      * 构建实体
      */
+    fun buildBookDetailAgeGroupPos(dto: ModifyBookDetailDto): List<BookDetailAgePo> {
+        return dto.ageGroups.map {
+            BookDetailAgePo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.isbnCode = dto.isbn
+                this.ageGroup = it
+                this.bookUid = dto.bookUid
+            }
+        }
+    }
+
+    /**
+     * 构建实体
+     */
     fun buildBookDetailAgeGroupPos(dto: ScanBookCodeInStorageParam): List<BookDetailAgePo> {
         return dto.ageGroups.map {
             BookDetailAgePo().apply {
                 this.uid = UUIDUtil.createUUID()
                 this.isbnCode = dto.isbn
                 this.ageGroup = it
+                this.bookUid = dto.bookUid
+            }
+        }
+    }
+
+    /**
+     * 构建列表
+     */
+    fun buildBookDetailClassifyPos(dto: ModifyBookDetailDto): List<BookDetailClassifyPo> {
+        return dto.classifyList.map {
+            BookDetailClassifyPo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.isbnCode = dto.isbn
+                this.classify = it
                 this.bookUid = dto.bookUid
             }
         }

@@ -4,6 +4,7 @@ import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
@@ -90,6 +91,13 @@ class BookAppService {
      */
     fun scanBookCodeInStorage(dto: ScanBookCodeInStorageParam) {
         bookDomainService.scanBookCodeInStorage(dto)
+    }
+
+    /**
+     * 更新图书详情
+     */
+    fun modifyBookDetail(dto: ModifyBookDetailDto) {
+        bookDomainService.modifyBookDetail(dto)
     }
 
     /**
