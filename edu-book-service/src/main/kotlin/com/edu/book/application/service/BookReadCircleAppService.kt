@@ -41,6 +41,13 @@ class BookReadCircleAppService: Serializable {
     }
 
     /**
+     * 删除阅读圈
+     */
+    fun deleteReadCircle(circleUid: String, userUid: String) {
+        bookReadCircleDomainService.deleteReadCircle(circleUid, userUid)
+    }
+
+    /**
      * 点赞
      */
     fun likeReadCircle(dto: LikeReadCircleDto) {

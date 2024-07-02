@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.read;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.read.repository.BookReadCircleAttachmentRepository
 import com.edu.book.infrastructure.po.read.BookReadCircleAttachmentPo
@@ -28,6 +29,15 @@ class BookReadCircleAttachmentRepositoryImpl : ServiceImpl<BookReadCircleAttachm
         val wrapper = KtQueryWrapper(BookReadCircleAttachmentPo::class.java)
             .`in`(BookReadCircleAttachmentPo::readCircleUid, circleUids)
         return bookReadCircleAttachmentDao.selectList(wrapper)
+    }
+
+    /**
+     * 删除附件
+     */
+    override fun deleteByCircleUid(circleUid: String) {
+        val wrapper = KtUpdateWrapper(BookReadCircleAttachmentPo::class.java)
+            .eq(BookReadCircleAttachmentPo::readCircleUid, circleUid)
+        remove(wrapper)
     }
 
 }

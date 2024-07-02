@@ -18,4 +18,9 @@ interface BookReadCircleAttachmentRepository : IService<BookReadCircleAttachment
      */
     fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleAttachmentPo>?
 
+    /**
+     * 删除附件
+     */
+    fun deleteByCircleUid(circleUid: String)
+
 }

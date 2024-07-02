@@ -10,6 +10,7 @@ import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.util.page.Page
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -53,6 +54,14 @@ class BookReadCircleController {
     @GetMapping("/v1/circle/page")
     fun pageQueryReadCircle(@Valid vo: PageQueryReadCircleParamVo): Page<PageReadCircleVo> {
         return bookReadCircleWebService.pageQueryReadCircle(vo)
+    }
+
+    /**
+     * 删除阅读圈
+     */
+    @DeleteMapping("/v1/{readCircleUid}/circle")
+    fun deleteReadCircle(@PathVariable readCircleUid: String) {
+        bookReadCircleWebService.deleteReadCircle(readCircleUid)
     }
 
     /**

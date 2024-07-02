@@ -49,6 +49,13 @@ class BookReadCircleWebService {
     }
 
     /**
+     * 删除阅读圈
+     */
+    fun deleteReadCircle(circleUid: String) {
+        bookReadCircleAppService.deleteReadCircle(circleUid, CurrentHolder.userDto!!.uid!!)
+    }
+
+    /**
      * 点赞
      */
     fun likeReadCircle(vo: LikeReadCircleVo) {

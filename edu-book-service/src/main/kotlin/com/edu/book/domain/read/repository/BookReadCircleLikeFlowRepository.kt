@@ -28,4 +28,9 @@ interface BookReadCircleLikeFlowRepository : IService<BookReadCircleLikeFlowPo> 
      */
     fun updateByUid(po: BookReadCircleLikeFlowPo)
 
+    /**
+     * 删除
+     */
+    fun deleteByCircleUid(circleUid: String)
+
 }

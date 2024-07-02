@@ -7,6 +7,7 @@ import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
 import com.edu.book.domain.read.dto.PageReadCircleDto
 import com.edu.book.domain.read.dto.PublishReadCircleDto
+import com.edu.book.domain.read.exception.CanNotDeleteCircleException
 import com.edu.book.domain.read.exception.ReadCircleNotExistException
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildCommentReadCirclePo
 import com.edu.book.domain.read.mapper.ReadCircleEntityMapper.buildLikeReadCircleFlowPo
@@ -30,6 +31,7 @@ import com.edu.book.infrastructure.util.UUIDUtil
 import com.edu.book.infrastructure.util.page.Page
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
+import org.apache.commons.lang3.StringUtils
 import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -144,6 +146,25 @@ class BookReadCircleDomainService {
             this.circleUid = circleUid
         }).result?.firstOrNull() ?: throw ReadCircleNotExistException()
         return circleDetailDto
+    }
+
+    /**
+     * 删除阅读圈
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun deleteReadCircle(circleUid: String, userUid: String) {
+        //查询阅读圈信息
+        val circleInfo = bookReadCircleRepository.getByUid(circleUid) ?: throw ReadCircleNotExistException()
+        //判断权限
+        if (!StringUtils.equals(userUid, circleInfo.userUid)) throw CanNotDeleteCircleException()
+        //删除阅读圈
+        bookReadCircleRepository.deleteByUid(circleUid)
+        //删除附件
+        bookReadCircleAttachmentRepository.deleteByCircleUid(circleUid)
+        //删除点赞
+        bookReadCircleLikeFlowRepository.deleteByCircleUid(circleUid)
+        //删除评论
+        bookReadCircleCommentFlowRepository.deleteByCircleUid(circleUid)
     }
 
     /**

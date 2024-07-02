@@ -54,4 +54,13 @@ class BookReadCircleLikeFlowRepositoryImpl : ServiceImpl<BookReadCircleLikeFlowD
         update(po, wrapper)
     }
 
+    /**
+     * 删除
+     */
+    override fun deleteByCircleUid(circleUid: String) {
+        val wrapper = KtUpdateWrapper(BookReadCircleLikeFlowPo::class.java)
+            .eq(BookReadCircleLikeFlowPo::readCircleUid, circleUid)
+        remove(wrapper)
+    }
+
 }

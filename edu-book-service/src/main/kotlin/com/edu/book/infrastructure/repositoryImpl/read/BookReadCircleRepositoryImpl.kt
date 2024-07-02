@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.read;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
@@ -44,6 +45,15 @@ class BookReadCircleRepositoryImpl : ServiceImpl<BookReadCircleDao, BookReadCirc
             .eq(BookReadCirclePo::uid, circleUid)
             .limitOne()
         return bookReadCircleDao.selectOne(wrapper)
+    }
+
+    /**
+     * 删除阅读圈
+     */
+    override fun deleteByUid(circleUid: String) {
+        val wrapper = KtUpdateWrapper(BookReadCirclePo::class.java)
+            .eq(BookReadCirclePo::uid, circleUid)
+        remove(wrapper)
     }
 
 }

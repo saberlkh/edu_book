@@ -18,4 +18,9 @@ interface BookReadCircleCommentFlowRepository : IService<BookReadCircleCommentFl
      */
     fun batchQueryByCircleUids(circleUids: List<String>): List<BookReadCircleCommentFlowPo>?
 
+    /**
+     * 删除
+     */
+    fun deleteByCircleUid(circleUid: String)
+
 }

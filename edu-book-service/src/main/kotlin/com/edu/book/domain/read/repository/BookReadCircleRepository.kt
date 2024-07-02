@@ -25,4 +25,9 @@ interface BookReadCircleRepository : IService<BookReadCirclePo> {
      */
     fun getByUid(circleUid: String): BookReadCirclePo?
 
+    /**
+     * 删除阅读圈
+     */
+    fun deleteByUid(circleUid: String)
+
 }
