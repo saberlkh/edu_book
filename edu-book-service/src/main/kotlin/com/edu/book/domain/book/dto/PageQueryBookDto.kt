@@ -29,4 +29,8 @@ class PageQueryBookDto: Serializable {
 
     var pageSize: Int = 10
 
+    var sort: String = ""
+
+    var orderBy = ""
+
 }

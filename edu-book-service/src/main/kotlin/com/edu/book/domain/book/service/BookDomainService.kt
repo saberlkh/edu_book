@@ -22,6 +22,7 @@ import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookCollectStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
+import com.edu.book.domain.book.enums.SortByColumnEnum
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
@@ -417,6 +418,9 @@ class BookDomainService {
      * 分页查询
      */
     fun pageQueryBooks(dto: PageQueryBookDto): Page<PageQueryBookResultDto> {
+        dto.apply {
+            this.sort = SortByColumnEnum.findByName(dto.sort).code
+        }
         val pageQuery = bookRepository.pageQueryBooks(dto)
         if (pageQuery.records.isNullOrEmpty()) return Page()
         val bookUids = pageQuery.records.mapNotNull { it.bookUid }
