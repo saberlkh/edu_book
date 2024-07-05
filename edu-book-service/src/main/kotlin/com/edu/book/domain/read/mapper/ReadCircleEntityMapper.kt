@@ -17,6 +17,7 @@ import com.edu.book.infrastructure.po.upload.UploadFilePo
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.po.user.BookUserPo
 import com.edu.book.infrastructure.util.UUIDUtil
+import org.apache.commons.lang3.math.NumberUtils
 
 object ReadCircleEntityMapper {
 
@@ -114,6 +115,8 @@ object ReadCircleEntityMapper {
                         this.parentCommentUid = it.parentCommentUid!!
                     }
                 }
+                this.createTime = it.createTime?.time ?: NumberUtils.LONG_ZERO
+                this.photoUrl = createCircleUser?.photoUrl ?: ""
             }
         }
     }

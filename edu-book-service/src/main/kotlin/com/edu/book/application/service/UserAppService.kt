@@ -2,6 +2,7 @@ package com.edu.book.application.service
 
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
+import com.edu.book.domain.user.dto.ModifyUserInfoDto
 import com.edu.book.domain.user.dto.PageQueryAccountDto
 import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.dto.RegisterUserDto
@@ -59,6 +60,13 @@ class UserAppService {
      */
     fun registerUser(openId: String, phone: String): RegisterUserDto {
         return userDomainService.registerUser(openId, phone)
+    }
+
+    /**
+     * 修改用户信息
+     */
+    fun modifyUserInfo(dto: ModifyUserInfoDto) {
+        userDomainService.modifyUserInfo(dto)
     }
 
     /**

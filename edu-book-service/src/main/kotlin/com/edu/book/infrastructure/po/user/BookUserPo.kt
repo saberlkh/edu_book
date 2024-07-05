@@ -63,4 +63,10 @@ class BookUserPo : BasePo() {
     @TableField("c_borrow_card_id")
     var borrowCardId: String? = null
 
+    /**
+     * 头像
+     */
+    @TableField("c_photo_url")
+    var photoUrl: String? = null
+
 }

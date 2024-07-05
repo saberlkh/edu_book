@@ -80,4 +80,10 @@ class RegisterUserVo: Serializable {
      */
     var gardenName: String = ""
 
+    /**
+     * 头像
+     */
+    var photoUrl: String = ""
+
+
 }

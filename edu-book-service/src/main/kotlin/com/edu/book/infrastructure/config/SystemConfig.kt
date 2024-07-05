@@ -126,4 +126,10 @@ class SystemConfig {
     @Value("\${qiniu.upload.domain}")
     var qiniuUploadDomain: String = ""
 
+    /**
+     * 默认头像
+     */
+    @Value("\${user.default.photo.url:https://www.future-books.fun/Fky1djPcfM3sFQP-BsnPNlLj3In_}")
+    var defaultPhotoUrl: String = ""
+
 }

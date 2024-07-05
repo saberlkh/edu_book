@@ -9,6 +9,7 @@ import com.edu.book.domain.book.repository.BookBorrowFlowRepository
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.BindAccountRespDto
 import com.edu.book.domain.user.dto.ExportExcelAccountDto
+import com.edu.book.domain.user.dto.ModifyUserInfoDto
 import com.edu.book.domain.user.dto.PageQueryAccountDto
 import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.dto.RegisterUserDto
@@ -325,6 +326,18 @@ class UserDomainService {
     }
 
     /**
+     * 修改用户信息
+     */
+    fun modifyUserInfo(dto: ModifyUserInfoDto) {
+        //查询用户信息
+        val userPo = bookUserRepository.findByUserUid(dto.userUid) ?: throw UserNotFoundException(dto.userUid)
+        val modifyUserPo = MapperUtil.map(BookUserPo::class.java, dto).apply {
+            this.uid = userPo.uid
+        }
+        bookUserRepository.updateUserPoByUid(modifyUserPo)
+    }
+
+    /**
      * 用户注册
      * 如果用户存在 返回
      * 不存在则注册新用户
@@ -350,7 +363,7 @@ class UserDomainService {
                 userPo.phone = phone
                 userPo
             } else {
-                val newUserPo = registerUserBuildUserPo(openId, phone)
+                val newUserPo = registerUserBuildUserPo(openId, phone, systemConfig.defaultPhotoUrl)
                 bookUserRepository.save(newUserPo)
                 newUserPo
             }

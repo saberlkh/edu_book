@@ -1,6 +1,7 @@
 package com.edu.book.domain.read.dto
 
 import java.io.Serializable
+import org.apache.commons.lang3.math.NumberUtils
 
 /**
  * @Auther: liukaihua
@@ -93,5 +94,15 @@ class PageReadCircleDto: Serializable {
      * 评论
      */
     var comments: List<ReadCircleCommentDto> = emptyList()
+
+    /**
+     * 创建时间
+     */
+    var createTime: Long = NumberUtils.LONG_ZERO
+
+    /**
+     * 头像
+     */
+    var photoUrl: String = ""
 
 }

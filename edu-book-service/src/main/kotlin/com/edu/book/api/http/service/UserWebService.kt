@@ -1,8 +1,10 @@
 package com.edu.book.api.http.service
 
+import com.edu.book.api.http.common.CurrentHolder
 import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
 import com.edu.book.api.vo.user.CreateAccountRespVo
+import com.edu.book.api.vo.user.ModifyUserInfoVo
 import com.edu.book.api.vo.user.PageQueryAccountParamVo
 import com.edu.book.api.vo.user.PageQueryAccountVo
 import com.edu.book.api.vo.user.RegisterUserVo
@@ -12,6 +14,7 @@ import com.edu.book.api.vo.user.UploadFileCreateAccountVo
 import com.edu.book.application.service.UserAppService
 import com.edu.book.domain.user.dto.BindAccountDto
 import com.edu.book.domain.user.dto.CreateAccountDto
+import com.edu.book.domain.user.dto.ModifyUserInfoDto
 import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.dto.UnbindAccountDto
 import com.edu.book.domain.user.dto.UploadFileCreateAccountDto
@@ -80,6 +83,16 @@ class UserWebService {
     fun registerUser(openId: String, phone: String): RegisterUserVo {
         val dto = userAppService.registerUser(openId, phone)
         return MapperUtil.map(RegisterUserVo::class.java, dto)
+    }
+
+    /**
+     * 修改用户信息
+     */
+    fun modifyUserInfo(vo: ModifyUserInfoVo) {
+        val dto = MapperUtil.map(ModifyUserInfoDto::class.java, vo).apply {
+            this.userUid = CurrentHolder.userDto!!.uid!!
+        }
+        userAppService.modifyUserInfo(dto)
     }
 
     /**

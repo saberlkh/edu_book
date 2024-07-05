@@ -150,6 +150,7 @@ object UserEntityMapper {
             this.unionId = userPo.unionId ?: ""
             this.gardenUid = gardenInfo?.uid ?: ""
             this.gardenName = gardenInfo?.levelName ?: ""
+            this.photoUrl = userPo.photoUrl ?: ""
         }
     }
 
@@ -202,13 +203,14 @@ object UserEntityMapper {
             this.unionId = finalUserPo.unionId ?: ""
             this.gardenUid = gardenInfo?.uid ?: ""
             this.gardenName = gardenInfo?.levelName ?: ""
+            this.photoUrl = finalUserPo.photoUrl ?: ""
         }
     }
 
     /**
      * 构建实体
      */
-    fun registerUserBuildUserPo(openId: String, phone: String): BookUserPo {
+    fun registerUserBuildUserPo(openId: String, phone: String, photoUrl: String): BookUserPo {
         return BookUserPo().apply {
             this.uid = UUIDUtil.createUUID()
             this.name = StringUtils.EMPTY
@@ -216,6 +218,7 @@ object UserEntityMapper {
             this.wechatUid = openId
             this.phone = phone
             this.associateAccount = StringUtils.EMPTY
+            this.photoUrl = photoUrl
         }
     }
 

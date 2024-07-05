@@ -39,4 +39,10 @@ class UserDto: Serializable {
      */
     var associateAccount: String? = null
 
+    /**
+     * 头像
+     */
+    var photoUrl: String = ""
+
+
 }

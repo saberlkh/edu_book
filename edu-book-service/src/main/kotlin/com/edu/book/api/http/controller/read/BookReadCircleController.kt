@@ -33,7 +33,7 @@ class BookReadCircleController {
     private lateinit var bookReadCircleWebService: BookReadCircleWebService
 
     /**
-     * 借书
+     * 发布阅读圈
      */
     @PostMapping("/v1/circle")
     fun publishReadCircle(@RequestBody @Valid vo: PublishReadCircleVo) {

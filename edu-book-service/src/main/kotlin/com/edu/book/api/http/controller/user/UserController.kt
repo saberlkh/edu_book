@@ -5,6 +5,7 @@ import com.edu.book.api.vo.user.BindAccountRespVo
 import com.edu.book.api.vo.user.BindAccountVo
 import com.edu.book.api.vo.user.CreateAccountRespVo
 import com.edu.book.api.vo.user.LoginOrRegisterVo
+import com.edu.book.api.vo.user.ModifyUserInfoVo
 import com.edu.book.api.vo.user.PageQueryAccountParamVo
 import com.edu.book.api.vo.user.PageQueryAccountVo
 import com.edu.book.api.vo.user.RegisterUserVo
@@ -17,6 +18,7 @@ import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -58,6 +60,14 @@ class UserController {
     @PostMapping("/v1/login")
     fun registerUser(@RequestBody @Valid vo: LoginOrRegisterVo): ResponseVo<RegisterUserVo> {
         return ResponseVo(userWebService.registerUser(vo.openId, vo.phone))
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @PutMapping("/v1/info")
+    fun modifyUserInfo(@RequestBody @Valid vo: ModifyUserInfoVo) {
+        userWebService.modifyUserInfo(vo)
     }
 
     /**
