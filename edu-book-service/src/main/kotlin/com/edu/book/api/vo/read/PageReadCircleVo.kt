@@ -105,4 +105,14 @@ class PageReadCircleVo: Serializable {
      */
     var photoUrl: String = ""
 
+    /**
+     * 阅读天数
+     */
+    var readDay: Int = NumberUtils.INTEGER_ZERO
+
+    /**
+     * 阅读书籍数量
+     */
+    var readBookCount: Int = NumberUtils.INTEGER_ZERO
+
 }

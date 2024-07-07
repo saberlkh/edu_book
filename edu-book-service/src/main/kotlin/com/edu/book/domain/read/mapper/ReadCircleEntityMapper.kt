@@ -9,6 +9,7 @@ import com.edu.book.domain.read.dto.ReadCircleAttachmentDto
 import com.edu.book.domain.read.dto.ReadCircleCommentDto
 import com.edu.book.domain.read.dto.ReadCircleLikeDto
 import com.edu.book.infrastructure.po.area.LevelPo
+import com.edu.book.infrastructure.po.book.BookBorrowFlowPo
 import com.edu.book.infrastructure.po.read.BookReadCircleAttachmentPo
 import com.edu.book.infrastructure.po.read.BookReadCircleCommentFlowPo
 import com.edu.book.infrastructure.po.read.BookReadCircleLikeFlowPo
@@ -16,7 +17,9 @@ import com.edu.book.infrastructure.po.read.BookReadCirclePo
 import com.edu.book.infrastructure.po.upload.UploadFilePo
 import com.edu.book.infrastructure.po.user.BookAccountPo
 import com.edu.book.infrastructure.po.user.BookUserPo
+import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.UUIDUtil
+import kotlin.math.abs
 import org.apache.commons.lang3.math.NumberUtils
 
 object ReadCircleEntityMapper {
@@ -55,7 +58,8 @@ object ReadCircleEntityMapper {
                                 gradeMap: Map<String, LevelPo>, gardenMap: Map<String, LevelPo>,
                                 kindergartenMap: Map<String, LevelPo>, readCircleAttachmentMap: Map<String, List<BookReadCircleAttachmentPo>>,
                                 likeMap: Map<String, List<BookReadCircleLikeFlowPo>>, commentMap: Map<String, List<BookReadCircleCommentFlowPo>>,
-                                uploadInfoMap: Map<String, UploadFilePo>): List<PageReadCircleDto> {
+                                uploadInfoMap: Map<String, UploadFilePo>,
+                                userBorrowMap: Map<String, List<BookBorrowFlowPo>>): List<PageReadCircleDto> {
         return pageQuery.records.map {
             val createCircleUser = userPoMap.get(it.userUid)
             val createCircleAccount = accountPoMap.get(it.accountUid)
@@ -117,6 +121,8 @@ object ReadCircleEntityMapper {
                 }
                 this.createTime = it.createTime?.time ?: NumberUtils.LONG_ZERO
                 this.photoUrl = createCircleUser?.photoUrl ?: ""
+                this.readBookCount = userBorrowMap.get(it.userUid)?.mapNotNull { it.bookUid }?.distinct()?.size ?: NumberUtils.INTEGER_ZERO
+                this.readDay = abs(DateUtil.calDateDay(createCircleUser?.createTime))
             }
         }
     }

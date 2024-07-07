@@ -40,8 +40,17 @@ class BookBorrowFlowRepositoryImpl : ServiceImpl<BookBorrowFlowDao, BookBorrowFl
     override fun batchQueryByBorrowCardIds(borrowCardIds: List<String>, borrowStatus: Int): List<BookBorrowFlowPo>? {
         val wrapper = KtQueryWrapper(BookBorrowFlowPo::class.java)
             .`in`(BookBorrowFlowPo::borrowCardId, borrowCardIds)
-            .eq(BookBorrowFlowPo::borrowStatus, borrowCardIds)
+            .eq(BookBorrowFlowPo::borrowStatus, borrowStatus)
         return bookBorrowFlowDao.selectList(wrapper)
+    }
+
+    /**
+     * 批量查询
+     */
+    override fun batchQueryByUserUid(userUids: List<String>): List<BookBorrowFlowPo>? {
+        val wrapper = KtQueryWrapper(BookBorrowFlowPo::class.java)
+            .`in`(BookBorrowFlowPo::borrowUserUid, userUids)
+        return list(wrapper)
     }
 
     /**

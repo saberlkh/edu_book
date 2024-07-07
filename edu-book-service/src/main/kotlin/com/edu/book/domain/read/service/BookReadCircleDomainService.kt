@@ -2,6 +2,7 @@ package com.edu.book.domain.read.service
 
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.book.repository.BookBorrowFlowRepository
 import com.edu.book.domain.read.dto.CommentLikeCircleDto
 import com.edu.book.domain.read.dto.LikeReadCircleDto
 import com.edu.book.domain.read.dto.PageQueryReadCircleParam
@@ -78,6 +79,9 @@ class BookReadCircleDomainService {
 
     @Autowired
     private lateinit var levelRepository: LevelRepository
+
+    @Autowired
+    private lateinit var bookBorrowFlowRepository: BookBorrowFlowRepository
 
     /**
      * 评论阅读圈
@@ -211,8 +215,10 @@ class BookReadCircleDomainService {
         val allKindergartenUids = gardenList.mapNotNull { it.parentUid }.distinct()
         val kindergartenList = levelRepository.batchQueryByUids(allKindergartenUids, LevelTypeEnum.Kindergarten) ?: emptyList()
         val kindergartenMap = kindergartenList.associateBy { it.uid!! }
+        //用户借书记录
+        val userBorrowMap = bookBorrowFlowRepository.batchQueryByUserUid(pageQuery.records.mapNotNull { it.userUid })?.groupBy { it.borrowUserUid!! } ?: emptyMap()
         //数据组装
-        val result = buildPageQueryCircleDto(pageQuery, userPoMap, accountPoMap, classMap, gradeMap, gardenMap, kindergartenMap, readCircleAttachmentMap, likeMap, commentMap, uploadInfoMap)
+        val result = buildPageQueryCircleDto(pageQuery, userPoMap, accountPoMap, classMap, gradeMap, gardenMap, kindergartenMap, readCircleAttachmentMap, likeMap, commentMap, uploadInfoMap, userBorrowMap)
         return Page(param.page, param.pageSize, pageQuery.total.toInt(), result)
     }
 
