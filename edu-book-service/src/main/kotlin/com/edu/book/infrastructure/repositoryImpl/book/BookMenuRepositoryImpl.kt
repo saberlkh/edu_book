@@ -1,5 +1,6 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.infrastructure.po.book.BookMenuPo
@@ -14,5 +15,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuRepository {
+
+    /**
+     * 删除
+     */
+    override fun deleteByBookUid(bookUid: String) {
+        val wrapper = KtUpdateWrapper(BookMenuPo::class.java)
+            .eq(BookMenuPo::bookUid, bookUid)
+        update(wrapper)
+    }
 
 }

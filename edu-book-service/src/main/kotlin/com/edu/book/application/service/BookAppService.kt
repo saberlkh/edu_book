@@ -1,9 +1,11 @@
 package com.edu.book.application.service
 
 import com.edu.book.application.client.IsbnApi
+import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
@@ -77,6 +79,20 @@ class BookAppService {
      */
     fun returnBook(dto: ReturnBookDto) {
         return bookDomainService.returnBook(dto)
+    }
+
+    /**
+     * 添加书单
+     */
+    fun addBookMenu(dto: AddBookMenuDto) {
+        bookDomainService.addBookMenu(dto)
+    }
+
+    /**
+     * 删除书单
+     */
+    fun deleteBookMenu(dto: DeleteBookMenuDto) {
+        bookDomainService.deleteBookMenu(dto)
     }
 
     /**

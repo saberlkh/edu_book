@@ -3,12 +3,14 @@ package com.edu.book.domain.book.service
 import com.alibaba.fastjson.JSON
 import com.edu.book.domain.area.enums.LevelTypeEnum
 import com.edu.book.domain.area.repository.LevelRepository
+import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BookAgeGroupDto
 import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
@@ -46,6 +48,7 @@ import com.edu.book.domain.book.repository.BookCollectFlowRepository
 import com.edu.book.domain.book.repository.BookDetailAgeRepository
 import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
+import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.domain.book.repository.BookSellRepository
 import com.edu.book.domain.user.exception.AccountNotFoundException
@@ -63,6 +66,7 @@ import com.edu.book.infrastructure.constants.RedisKeyConstant.MODIFY_BOOK_DETAIL
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
+import com.edu.book.infrastructure.po.book.BookMenuPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.po.book.BookSellPo
 import com.edu.book.infrastructure.util.DateUtil
@@ -127,6 +131,31 @@ class BookDomainService {
 
     @Autowired
     private lateinit var bookCollectFlowRepository: BookCollectFlowRepository
+
+    @Autowired
+    private lateinit var bookMenuRepository: BookMenuRepository
+
+    /**
+     * 添加书单
+     */
+    fun addBookMenu(dto: AddBookMenuDto) {
+        //查询图书信息
+        bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+        val bookMenuPo = BookMenuPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.bookUid = dto.bookUid
+        }
+        bookMenuRepository.save(bookMenuPo)
+    }
+
+    /**
+     * 删除书单
+     */
+    fun deleteBookMenu(dto: DeleteBookMenuDto) {
+        //查询图书信息
+        bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+        bookMenuRepository.deleteByBookUid(dto.bookUid)
+    }
 
     /**
      * 还书
@@ -335,9 +364,9 @@ class BookDomainService {
                 throw ConcurrentCreateInteractRoomException(dto.bookUid)
             }
             //查询图书详情
-            bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+            val bookDetailPo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
             //查询园区信息
-            val gardenInfo = levelRepository.queryByUid(dto.gardenUid, LevelTypeEnum.Garden) ?: throw AreaInfoNotExistException()
+            val gardenInfo = levelRepository.queryByUid(bookDetailPo.gardenUid!!, LevelTypeEnum.Garden) ?: throw AreaInfoNotExistException()
             //更新图书详情信息
             val modifyBookDetailPo = buildModifyBookDetailPo(dto, gardenInfo)
             bookDetailRepository.updateByBookUid(modifyBookDetailPo, dto.bookUid)

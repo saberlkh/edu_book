@@ -13,4 +13,9 @@ import com.edu.book.infrastructure.po.book.BookMenuPo
  */
 interface BookMenuRepository : IService<BookMenuPo> {
 
+    /**
+     * 删除
+     */
+    fun deleteByBookUid(bookUid: String)
+
 }

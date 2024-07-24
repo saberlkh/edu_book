@@ -17,6 +17,7 @@ import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
+import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
@@ -66,6 +67,13 @@ class BookWebService {
             }
         }
         return bookAppService.returnBook(dto)
+    }
+
+    /**
+     * 添加书单
+     */
+    fun addBookMenu(dto: AddBookMenuDto) {
+        bookAppService.addBookMenu(dto)
     }
 
     /**

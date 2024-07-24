@@ -16,6 +16,7 @@ import com.edu.book.api.vo.book.PageQueryUserBookCollectParamVo
 import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
+import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
@@ -60,6 +61,14 @@ class BookController {
     @PostMapping("/v1/return")
     fun returnBook(@RequestBody @Valid vo: ReturnBookVo) {
         bookWebService.returnBook(vo)
+    }
+
+    /**
+     * 添加书单
+     */
+    @PostMapping("/v1/menu")
+    fun addBookMenu(@RequestBody @Valid dto: AddBookMenuDto) {
+        bookWebService.addBookMenu(dto)
     }
 
     /**
