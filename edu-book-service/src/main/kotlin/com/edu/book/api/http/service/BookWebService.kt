@@ -20,6 +20,7 @@ import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
+import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
@@ -74,6 +75,13 @@ class BookWebService {
      */
     fun addBookMenu(dto: AddBookMenuDto) {
         bookAppService.addBookMenu(dto)
+    }
+
+    /**
+     * 删除书单
+     */
+    fun deleteBookMenu(dto: DeleteBookMenuDto) {
+        bookAppService.deleteBookMenu(dto)
     }
 
     /**
