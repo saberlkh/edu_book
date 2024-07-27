@@ -16,6 +16,11 @@ interface BookMenuRepository : IService<BookMenuPo> {
     /**
      * 删除
      */
-    fun deleteByBookUid(bookUid: String)
+    fun deleteByIsbn(isbn: String)
+
+    /**
+     * 查询
+     */
+    fun findByIsbn(isbn: String): BookMenuPo?
 
 }

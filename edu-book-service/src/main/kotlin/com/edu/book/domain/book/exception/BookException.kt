@@ -54,3 +54,8 @@ class BookNotCollectException: BookException("图书还没收藏")
  * 图书没有被借阅中
  */
 class BookDetailNotBorrowingException: BookException("图书没有被借阅中")
+
+/**
+ * 图书已经在书单中
+ */
+class BookAlreadyInMenu: BookException("图书已经在书单中")

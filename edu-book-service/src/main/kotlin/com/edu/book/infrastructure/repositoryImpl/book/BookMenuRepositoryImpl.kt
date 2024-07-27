@@ -1,10 +1,12 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.infrastructure.po.book.BookMenuPo
 import com.edu.book.infrastructure.repositoryImpl.dao.book.BookMenuDao
+import com.edu.book.infrastructure.util.limitOne
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,10 +21,20 @@ class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuR
     /**
      * 删除
      */
-    override fun deleteByBookUid(bookUid: String) {
+    override fun deleteByIsbn(isbn: String) {
         val wrapper = KtUpdateWrapper(BookMenuPo::class.java)
-            .eq(BookMenuPo::bookUid, bookUid)
+            .eq(BookMenuPo::isbn, isbn)
         update(wrapper)
+    }
+
+    /**
+     * 查询
+     */
+    override fun findByIsbn(isbn: String): BookMenuPo? {
+        val wrapper = KtQueryWrapper(BookMenuPo::class.java)
+            .eq(BookMenuPo::isbn, isbn)
+            .limitOne()
+        return getOne(wrapper)
     }
 
 }

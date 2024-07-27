@@ -88,6 +88,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     READ_CIRCLE_NOT_FOUND(600020, "阅读圈不存在"),
 
+    BOOK_IN_MENU(600021, "图书已经在书单中"),
+
     ;
 
 }

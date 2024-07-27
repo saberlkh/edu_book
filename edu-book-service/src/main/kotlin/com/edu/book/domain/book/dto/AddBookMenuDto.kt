@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank
 class AddBookMenuDto: Serializable {
 
     /**
-     * 图书Uid
+     * isbn
      */
-    @NotBlank(message = "图书uid不能为空")
-    var bookUid: String = ""
+    @NotBlank(message = "isbn不能为空")
+    var isbn: String = ""
 
 }

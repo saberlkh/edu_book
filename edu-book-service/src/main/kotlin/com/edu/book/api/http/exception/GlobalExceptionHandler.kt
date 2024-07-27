@@ -1,6 +1,7 @@
 package com.edu.book.api.http.exception
 
 import com.edu.book.api.vo.exception.ErrorResponse
+import com.edu.book.domain.book.exception.BookAlreadyInMenu
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
@@ -146,6 +147,9 @@ class GlobalExceptionHandler {
             }
             is BookBorrowedException -> {
                 ErrorCodeConfig.BOOK_BORROWER
+            }
+            is BookAlreadyInMenu -> {
+                ErrorCodeConfig.BOOK_IN_MENU
             }
             is GardenIllegalException -> {
                 ErrorCodeConfig.GARDEN_ILLDEGA_CAN_NOT_BORROW

@@ -22,9 +22,9 @@ class BookMenuPo : BasePo() {
     var uid: String? = null
 
     /**
-     * 图书Uid
+     * isbn
      */
-    @TableField("c_book_uid")
-    var bookUid: String? = null
+    @TableField("c_isbn")
+    var isbn: String? = null
 
 }

@@ -27,6 +27,7 @@ import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookCollectStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
 import com.edu.book.domain.book.enums.SortByColumnEnum
+import com.edu.book.domain.book.exception.BookAlreadyInMenu
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
@@ -143,12 +144,15 @@ class BookDomainService {
      */
     fun addBookMenu(dto: AddBookMenuDto) {
         //查询图书信息
-        bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
-        val bookMenuPo = BookMenuPo().apply {
+        bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
+        //判断是否已经加入了书单
+        val bookMenuPo = bookMenuRepository.findByIsbn(dto.isbn)
+        if (bookMenuPo != null) throw BookAlreadyInMenu()
+        val saveBookMenuPo = BookMenuPo().apply {
             this.uid = UUIDUtil.createUUID()
-            this.bookUid = dto.bookUid
+            this.isbn = dto.isbn
         }
-        bookMenuRepository.save(bookMenuPo)
+        bookMenuRepository.save(saveBookMenuPo)
     }
 
     /**
@@ -156,8 +160,8 @@ class BookDomainService {
      */
     fun deleteBookMenu(dto: DeleteBookMenuDto) {
         //查询图书信息
-        bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
-        bookMenuRepository.deleteByBookUid(dto.bookUid)
+        bookDetailRepository.findByBookUid(dto.isbn) ?: throw BookDetailNotExistException()
+        bookMenuRepository.deleteByIsbn(dto.isbn)
     }
 
     /**
