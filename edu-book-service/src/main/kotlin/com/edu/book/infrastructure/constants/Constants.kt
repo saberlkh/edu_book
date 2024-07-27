@@ -14,6 +14,8 @@ object Constants {
 
     const val ten_thousand = 10000
 
+    const val twenty = 20
+
     const val eight = 8
 
     const val account_upload_file_name = "导入学生.xlsx"

@@ -18,6 +18,8 @@ import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
@@ -31,7 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -173,8 +174,8 @@ class BookController {
      * 获取isbn列表
      */
     @GetMapping("/v1/isbn")
-    fun getIsbnList(@RequestParam(required = false) garden: String?, @RequestParam(required = false) isbn: String?): List<String> {
-        return bookWebService.getIsbnList(garden, isbn)
+    fun getIsbnList(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
+        return bookWebService.getIsbnList(dto, null)
     }
 
 }

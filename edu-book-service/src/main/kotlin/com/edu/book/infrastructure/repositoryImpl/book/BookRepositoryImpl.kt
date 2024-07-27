@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.PageQueryBookResultEntity
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.infrastructure.po.book.BookPo
@@ -74,6 +76,18 @@ class BookRepositoryImpl : ServiceImpl<BookDao, BookPo>(), BookRepository {
         if (total <= NumberUtils.INTEGER_ZERO) return Page()
         val result = bookDao.getPage(dto)
         val page = Page<PageQueryBookResultEntity>(dto.page.toLong(), dto.pageSize.toLong(), total.toLong())
+        page.records = result
+        return page
+    }
+
+    /**
+     * 分页查询
+     */
+    override fun pageQueryBookIsbns(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
+        val total = bookDao.getIsbnPageTotal(dto)
+        if (total <= NumberUtils.INTEGER_ZERO) return Page()
+        val result = bookDao.getIsbnPage(dto)
+        val page = Page<PageQueryBookIsbnResultEntity>(dto.page.toLong(), dto.pageSize.toLong(), total.toLong())
         page.records = result
         return page
     }

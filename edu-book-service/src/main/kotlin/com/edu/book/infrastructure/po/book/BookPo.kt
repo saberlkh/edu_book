@@ -154,4 +154,10 @@ class BookPo : BasePo() {
     @TableField("c_garden_uid")
     var gardenUid: String? = null
 
+    /**
+     * 图书库存数量
+     */
+    @TableField("c_book_storage")
+    var bookStorage: Int? = null
+
 }

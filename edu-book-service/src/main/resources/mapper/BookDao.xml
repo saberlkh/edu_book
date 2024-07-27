@@ -2,6 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.book.BookDao">
 
+    <sql id="pageQueryIsbnFileds">
+        c_title as title,
+        c_sub_title as subtitle,
+        c_pic_url as pic,
+        c_author as author,
+        c_summary as summary,
+        c_publisher as publisher,
+        c_isbn_code as isbn
+    </sql>
+
     <sql id="pageQueryFileds">
         detail.c_title as title,
         detail.c_sub_title as subtitle,
@@ -28,6 +38,19 @@
         detail.c_status as bookStatus
     </sql>
 
+    <!--fun getIsbnPageTotal(dto: PageQueryBookIsbnDto): Int-->
+    <select id="getIsbnPageTotal" parameterType="com.edu.book.domain.book.dto.PageQueryBookIsbnDto" resultType="int">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book
+        WHERE
+            c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+    </select>
+
     <!--fun getPageTotal(dto: PageQueryBookDto): Int-->
     <select id="getPageTotal" parameterType="com.edu.book.domain.book.dto.PageQueryBookDto" resultType="int">
         SELECT
@@ -43,6 +66,20 @@
         </if>
         WHERE detail.c_is_deleted = 0
         <include refid="pageQueryCondition"></include>
+    </select>
+
+    <!--fun getIsbnPage(dto: PageQueryBookIsbnDto): List<PageQueryBookIsbnResultEntity>-->
+    <select id="getIsbnPage" parameterType="com.edu.book.domain.book.dto.PageQueryBookIsbnDto"
+        resultType="com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity">
+        SELECT
+        <include refid="pageQueryIsbnFileds"/>
+        FROM
+            t_book
+        WHERE
+        c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
     </select>
 
     <!--fun getPage(dto: PageQueryBookDto): List<PageQueryBookResultDto>-->

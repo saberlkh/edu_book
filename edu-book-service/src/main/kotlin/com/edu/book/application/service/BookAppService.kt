@@ -9,6 +9,8 @@ import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
+import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
@@ -172,8 +174,8 @@ class BookAppService {
     /**
      * 查询isbn列表
      */
-    fun getIsbnList(garden: String?, isbn: String?): List<String> {
-        return bookDomainService.getIsbnList(garden, isbn)
+    fun getIsbnList(dto: PageQueryBookIsbnDto, isbn: String?): Page<PageQueryBookIsbnResultEntity> {
+        return bookDomainService.getIsbnList(dto, isbn)
     }
 
 }
