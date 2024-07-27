@@ -81,6 +81,7 @@ import javax.annotation.Resource
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -411,6 +412,10 @@ class BookDomainService {
                 //新增po
                 val insertBookPo = buildScanBookCodeInsertBookPo(dto)
                 bookRepository.save(insertBookPo)
+            } else {
+                //修改图书库存
+                bookPo.bookStorage = (bookPo.bookStorage ?: NumberUtils.INTEGER_ZERO) + NumberUtils.INTEGER_ONE
+                bookRepository.updateByUid(bookPo)
             }
             //新增图书详情
             val bookDetailPo = buildBookDetailPo(dto, gardenInfo)

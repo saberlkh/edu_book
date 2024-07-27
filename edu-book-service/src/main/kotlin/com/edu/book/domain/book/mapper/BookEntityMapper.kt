@@ -344,6 +344,7 @@ object BookEntityMapper {
             this.isbnCode = dto.isbn
             this.bookClass = dto.`class`
             this.summary = JSON.toJSONString(dto.summary)
+            this.bookStorage = NumberUtils.INTEGER_ONE
         }
     }
 
