@@ -20,6 +20,7 @@ import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
+import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
@@ -79,6 +80,14 @@ class BookController {
     @DeleteMapping("/v1/menu")
     fun deleteBookMenu(@RequestBody @Valid dto: DeleteBookMenuDto) {
         bookWebService.deleteBookMenu(dto)
+    }
+
+    /**
+     * 获取书单信息
+     */
+    @GetMapping("/v1/menu")
+    fun getBookMenu(): List<QueryBookMenuResultDto> {
+        return bookWebService.getBookMenus()
     }
 
     /**

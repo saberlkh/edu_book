@@ -15,6 +15,7 @@ import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
+import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
@@ -95,6 +96,13 @@ class BookAppService {
      */
     fun deleteBookMenu(dto: DeleteBookMenuDto) {
         bookDomainService.deleteBookMenu(dto)
+    }
+
+    /**
+     * 查询书单列表
+     */
+    fun getBookMenus(): List<QueryBookMenuResultDto> {
+        return bookDomainService.getBookMenus()
     }
 
     /**

@@ -37,4 +37,12 @@ class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuR
         return getOne(wrapper)
     }
 
+    /**
+     * 查询书单信息
+     */
+    override fun findBookMenus(): List<BookMenuPo>? {
+        val wrapper = KtQueryWrapper(BookMenuPo::class.java)
+        return this.list()
+    }
+
 }

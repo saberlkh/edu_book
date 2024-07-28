@@ -20,6 +20,7 @@ import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
+import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
@@ -162,6 +163,27 @@ class BookDomainService {
         //查询图书信息
         bookDetailRepository.findByBookUid(dto.isbn) ?: throw BookDetailNotExistException()
         bookMenuRepository.deleteByIsbn(dto.isbn)
+    }
+
+    /**
+     * 查询书单列表
+     */
+    fun getBookMenus(): List<QueryBookMenuResultDto> {
+        //查询书单信息
+        val bookMenus = bookMenuRepository.findBookMenus() ?: return emptyList()
+        //查询图书信息
+        val bookPos = bookRepository.findByIsbnCodes(bookMenus.mapNotNull { it.isbn }) ?: return emptyList()
+        return bookPos.mapNotNull {
+            QueryBookMenuResultDto().apply {
+                this.title = it.title
+                this.subtitle = it.subTitle
+                this.pic = it.picUrl
+                this.author = it.author
+                this.summary = it.summary
+                this.publisher = it.publisher
+                this.isbn = it.isbnCode!!
+            }
+        }
     }
 
     /**

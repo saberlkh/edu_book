@@ -23,4 +23,9 @@ interface BookMenuRepository : IService<BookMenuPo> {
      */
     fun findByIsbn(isbn: String): BookMenuPo?
 
+    /**
+     * 查询书单信息
+     */
+    fun findBookMenus(): List<BookMenuPo>?
+
 }
