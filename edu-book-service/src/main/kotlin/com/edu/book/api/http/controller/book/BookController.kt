@@ -18,6 +18,7 @@ import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
+import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
@@ -75,11 +76,11 @@ class BookController {
     }
 
     /**
-     * 删除书单
+     * 更新书单
      */
-    @DeleteMapping("/v1/menu")
-    fun deleteBookMenu(@RequestBody @Valid dto: DeleteBookMenuDto) {
-        bookWebService.deleteBookMenu(dto)
+    @PutMapping("/v1/menu")
+    fun modifyBookMenu(@RequestBody @Valid dto: ModifyBookMenuDto) {
+        bookWebService.modifyBookMenu(dto)
     }
 
     /**

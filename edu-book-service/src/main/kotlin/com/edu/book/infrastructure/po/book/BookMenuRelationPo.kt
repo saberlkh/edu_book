@@ -6,14 +6,14 @@ import com.edu.book.infrastructure.po.BasePo;
 
 /**
  * <p>
- * 书单表
+ * 书单关联表
  * </p>
  *
  * @author 
- * @since 2024-07-02 23:32:18
+ * @since 2024-07-28 22:04:12
  */
-@TableName("t_book_menu")
-class BookMenuPo : BasePo() {
+@TableName("t_book_menu_relation")
+class BookMenuRelationPo : BasePo() {
 
     /**
      * 业务唯一id
@@ -22,21 +22,15 @@ class BookMenuPo : BasePo() {
     var uid: String? = null
 
     /**
-     * pic
+     * isbn
      */
-    @TableField("c_menu_pic")
-    var menuPic: String? = null
+    @TableField("c_isbn")
+    var isbn: String? = null
 
     /**
-     * c_menu_title
+     * c_book_menu_uid
      */
-    @TableField("c_menu_title")
-    var menuTitle: String? = null
-
-    /**
-     * c_menu_desc
-     */
-    @TableField("c_menu_desc")
-    var menuDesc: String? = null
+    @TableField("c_book_menu_uid")
+    var bookMenuUid: String? = null
 
 }

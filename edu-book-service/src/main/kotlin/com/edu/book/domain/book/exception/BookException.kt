@@ -59,3 +59,8 @@ class BookDetailNotBorrowingException: BookException("图书没有被借阅中")
  * 图书已经在书单中
  */
 class BookAlreadyInMenu: BookException("图书已经在书单中")
+
+/**
+ * 书单不存在
+ */
+class BookMenuNotExistException: BookException("书单不存在")

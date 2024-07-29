@@ -14,18 +14,13 @@ import com.edu.book.infrastructure.po.book.BookMenuPo
 interface BookMenuRepository : IService<BookMenuPo> {
 
     /**
-     * 删除
+     * 获取书单
      */
-    fun deleteByIsbn(isbn: String)
+    fun getByUid(bookMenuUid: String): BookMenuPo?
 
     /**
-     * 查询
+     * 更新
      */
-    fun findByIsbn(isbn: String): BookMenuPo?
-
-    /**
-     * 查询书单信息
-     */
-    fun findBookMenus(): List<BookMenuPo>?
+    fun modifyByUid(po: BookMenuPo)
 
 }

@@ -12,6 +12,7 @@ import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
+import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
@@ -34,6 +35,7 @@ import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
+import com.edu.book.domain.book.exception.BookMenuNotExistException
 import com.edu.book.domain.book.exception.BookNotCollectException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookBorrowFlowPo
@@ -52,6 +54,7 @@ import com.edu.book.domain.book.repository.BookCollectFlowRepository
 import com.edu.book.domain.book.repository.BookDetailAgeRepository
 import com.edu.book.domain.book.repository.BookDetailClassifyRepository
 import com.edu.book.domain.book.repository.BookDetailRepository
+import com.edu.book.domain.book.repository.BookMenuRelationRepository
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.domain.book.repository.BookRepository
 import com.edu.book.domain.book.repository.BookSellRepository
@@ -71,6 +74,7 @@ import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookMenuPo
+import com.edu.book.infrastructure.po.book.BookMenuRelationPo
 import com.edu.book.infrastructure.po.book.BookPo
 import com.edu.book.infrastructure.po.book.BookSellPo
 import com.edu.book.infrastructure.util.DateUtil
@@ -140,50 +144,73 @@ class BookDomainService {
     @Autowired
     private lateinit var bookMenuRepository: BookMenuRepository
 
+    @Autowired
+    private lateinit var bookMenuRelationRepository: BookMenuRelationRepository
+
     /**
-     * 添加书单
+     * 编辑书单
      */
-    fun addBookMenu(dto: AddBookMenuDto) {
-        //查询图书信息
-        bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
-        //判断是否已经加入了书单
-        val bookMenuPo = bookMenuRepository.findByIsbn(dto.isbn)
-        if (bookMenuPo != null) throw BookAlreadyInMenu()
-        val saveBookMenuPo = BookMenuPo().apply {
-            this.uid = UUIDUtil.createUUID()
-            this.isbn = dto.isbn
+    @Transactional(rollbackFor = [Exception::class])
+    fun modifyBookMenu(dto: ModifyBookMenuDto) {
+        //查询书单信息
+        val bookMenuPo = bookMenuRepository.getByUid(dto.bookMenuUid!!) ?: throw BookMenuNotExistException()
+        //更新书单信息
+        val modifyBookMenuPo = MapperUtil.map(BookMenuPo::class.java, dto).apply {
+            this.uid = dto.bookMenuUid
         }
-        bookMenuRepository.save(saveBookMenuPo)
+        bookMenuRepository.modifyByUid(modifyBookMenuPo)
+        //更新书单关联信息
+        bookMenuRelationRepository.deleteByMenuUid(bookMenuPo.uid!!)
+        val newBookMenuRelationPos = dto.isbns.map {
+            BookMenuRelationPo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.bookMenuUid = dto.bookMenuUid
+                this.isbn = it
+            }
+        }
+        bookMenuRelationRepository.saveBatch(newBookMenuRelationPos)
     }
 
     /**
-     * 删除书单
+     * 添加书单
      */
-    fun deleteBookMenu(dto: DeleteBookMenuDto) {
-        //查询图书信息
-        bookDetailRepository.findByBookUid(dto.isbn) ?: throw BookDetailNotExistException()
-        bookMenuRepository.deleteByIsbn(dto.isbn)
+    @Transactional(rollbackFor = [Exception::class])
+    fun addBookMenu(dto: AddBookMenuDto) {
+        //判断是否已经加入了书单
+        val bookMenuPo = MapperUtil.map(BookMenuPo::class.java, dto).apply {
+            this.uid = UUIDUtil.createUUID()
+        }
+        bookMenuRepository.save(bookMenuPo)
+        //添加书单关联数据
+        val bookMenuRelationPos = dto.isbns.map {
+            BookMenuRelationPo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.isbn = it
+            }
+        }
+        bookMenuRelationRepository.saveBatch(bookMenuRelationPos)
     }
 
     /**
      * 查询书单列表
      */
     fun getBookMenus(): List<QueryBookMenuResultDto> {
-        //查询书单信息
-        val bookMenus = bookMenuRepository.findBookMenus() ?: return emptyList()
-        //查询图书信息
-        val bookPos = bookRepository.findByIsbnCodes(bookMenus.mapNotNull { it.isbn }) ?: return emptyList()
-        return bookPos.mapNotNull {
-            QueryBookMenuResultDto().apply {
-                this.title = it.title
-                this.subtitle = it.subTitle
-                this.pic = it.picUrl
-                this.author = it.author
-                this.summary = it.summary
-                this.publisher = it.publisher
-                this.isbn = it.isbnCode!!
-            }
-        }
+//        //查询书单信息
+//        val bookMenus = bookMenuRepository.findBookMenus() ?: return emptyList()
+//        //查询图书信息
+//        val bookPos = bookRepository.findByIsbnCodes(bookMenus.mapNotNull { it.isbn }) ?: return emptyList()
+//        return bookPos.mapNotNull {
+//            QueryBookMenuResultDto().apply {
+//                this.title = it.title
+//                this.subtitle = it.subTitle
+//                this.pic = it.picUrl
+//                this.author = it.author
+//                this.summary = it.summary
+//                this.publisher = it.publisher
+//                this.isbn = it.isbnCode!!
+//            }
+//        }
+        return emptyList()
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
-import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.infrastructure.po.book.BookMenuPo
@@ -19,30 +18,22 @@ import org.springframework.stereotype.Repository;
 class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuRepository {
 
     /**
-     * 删除
+     * 查询uid
      */
-    override fun deleteByIsbn(isbn: String) {
-        val wrapper = KtUpdateWrapper(BookMenuPo::class.java)
-            .eq(BookMenuPo::isbn, isbn)
-        update(wrapper)
-    }
-
-    /**
-     * 查询
-     */
-    override fun findByIsbn(isbn: String): BookMenuPo? {
+    override fun getByUid(bookMenuUid: String): BookMenuPo? {
         val wrapper = KtQueryWrapper(BookMenuPo::class.java)
-            .eq(BookMenuPo::isbn, isbn)
+            .eq(BookMenuPo::uid, bookMenuUid)
             .limitOne()
         return getOne(wrapper)
     }
 
     /**
-     * 查询书单信息
+     * 更新
      */
-    override fun findBookMenus(): List<BookMenuPo>? {
+    override fun modifyByUid(po: BookMenuPo) {
         val wrapper = KtQueryWrapper(BookMenuPo::class.java)
-        return this.list()
+            .eq(BookMenuPo::uid, po.uid)
+        update(po, wrapper)
     }
 
 }

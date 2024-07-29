@@ -14,6 +14,6 @@ class DeleteBookMenuDto: Serializable {
      * isbn
      */
     @NotBlank(message = "isbn不能为空")
-    var isbn: String = ""
+    var menuUid: String = ""
 
 }

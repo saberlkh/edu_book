@@ -6,10 +6,16 @@ import javax.validation.constraints.NotEmpty
 
 /**
  * @Auther: liukaihua
- * @Date: 2024/7/24 20:36
+ * @Date: 2024/7/28 22:09
  * @Description:
  */
-class AddBookMenuDto: Serializable {
+class ModifyBookMenuDto: Serializable {
+
+    /**
+     * 书单uid
+     */
+    @NotBlank(message = "书单Uid不能为空")
+    var bookMenuUid: String? = null
 
     /**
      * isbn

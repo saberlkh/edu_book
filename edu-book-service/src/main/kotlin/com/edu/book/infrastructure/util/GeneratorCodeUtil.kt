@@ -22,7 +22,7 @@
 // */
 //
 //fun main(args: Array<String>) {
-//    GeneratorCodeUtils().execute(listOf("t_book_menu"))
+//    GeneratorCodeUtils().execute(listOf("t_book_menu_relation"))
 //}
 //
 //@Component
