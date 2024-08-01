@@ -39,4 +39,10 @@ class BookMenuPo : BasePo() {
     @TableField("c_menu_desc")
     var menuDesc: String? = null
 
+    /**
+     * c_garden_uid
+     */
+    @TableField("c_garden_uid")
+    var gardenUid: String? = null
+
 }

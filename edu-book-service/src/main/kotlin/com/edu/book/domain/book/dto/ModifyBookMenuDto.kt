@@ -41,4 +41,10 @@ class ModifyBookMenuDto: Serializable {
     @NotBlank(message = "标题不能为空")
     var menuTitle: String? = null
 
+    /**
+     * 园区uid
+     */
+    @NotBlank(message = "园区Uid")
+    var gardenUid: String? = null
+
 }
