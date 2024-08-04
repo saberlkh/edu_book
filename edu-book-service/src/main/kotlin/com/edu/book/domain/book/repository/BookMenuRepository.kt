@@ -19,6 +19,11 @@ interface BookMenuRepository : IService<BookMenuPo> {
     fun getByUid(bookMenuUid: String): BookMenuPo?
 
     /**
+     * 获取书单列表
+     */
+    fun getByGardenUid(gardenUid: String?): List<BookMenuPo>?
+
+    /**
      * 更新
      */
     fun modifyByUid(po: BookMenuPo)

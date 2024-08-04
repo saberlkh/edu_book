@@ -27,6 +27,15 @@ class BookMenuRelationRepositoryImpl : ServiceImpl<BookMenuRelationDao, BookMenu
     }
 
     /**
+     * 批量查询
+     */
+    override fun getByMenuUids(bookMenuUids: List<String>): List<BookMenuRelationPo>? {
+        val wrapper = KtQueryWrapper(BookMenuRelationPo::class.java)
+            .`in`(BookMenuRelationPo::bookMenuUid, bookMenuUids)
+        return list(wrapper)
+    }
+
+    /**
      * 删除
      */
     override fun deleteByMenuUid(bookMenuUid: String) {

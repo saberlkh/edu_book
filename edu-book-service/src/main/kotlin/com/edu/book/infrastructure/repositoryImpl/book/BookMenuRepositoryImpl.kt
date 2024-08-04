@@ -28,6 +28,15 @@ class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuR
     }
 
     /**
+     * 获取书单列表
+     */
+    override fun getByGardenUid(gardenUid: String?): List<BookMenuPo>? {
+        val wrapper = KtQueryWrapper(BookMenuPo::class.java)
+            .eq(!gardenUid.isNullOrBlank(), BookMenuPo::gardenUid, gardenUid)
+        return list(wrapper)
+    }
+
+    /**
      * 更新
      */
     override fun modifyByUid(po: BookMenuPo) {

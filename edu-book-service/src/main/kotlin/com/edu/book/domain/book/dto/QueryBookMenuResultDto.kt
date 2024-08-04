@@ -10,6 +10,45 @@ import java.io.Serializable
 class QueryBookMenuResultDto: Serializable {
 
     /**
+     * 书单列表
+     */
+    var bookMenuUid: String = ""
+
+    /**
+     * 图片
+     */
+    var menuPic: String = ""
+
+    /**
+     * 描述
+     */
+    var menuDesc: String = ""
+
+    /**
+     * 标题
+     */
+    var menuTitle: String = ""
+
+    /**
+     * 园区Uid
+     */
+    var gardenUid: String = ""
+
+    /**
+     * 园区
+     */
+    var garden: String = ""
+
+    /**
+     * 书籍列表
+     */
+    var books: List<BookMenuIsbnResultDto> = emptyList()
+
+}
+
+class BookMenuIsbnResultDto: Serializable {
+
+    /**
      * title
      */
     var title: String? = null

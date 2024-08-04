@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -86,8 +87,8 @@ class BookController {
      * 获取书单信息
      */
     @GetMapping("/v1/menu")
-    fun getBookMenu(): List<QueryBookMenuResultDto> {
-        return bookWebService.getBookMenus()
+    fun getBookMenu(@RequestParam(required = false) gardenUid: String?): List<QueryBookMenuResultDto> {
+        return bookWebService.getBookMenus(gardenUid)
     }
 
     /**

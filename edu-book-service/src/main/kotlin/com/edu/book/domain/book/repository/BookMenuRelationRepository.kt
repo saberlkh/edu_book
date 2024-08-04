@@ -19,6 +19,11 @@ interface BookMenuRelationRepository : IService<BookMenuRelationPo> {
     fun getByMenuUid(bookMenuUid: String): List<BookMenuRelationPo>?
 
     /**
+     * 批量查询
+     */
+    fun getByMenuUids(bookMenuUids: List<String>): List<BookMenuRelationPo>?
+
+    /**
      * 删除
      */
     fun deleteByMenuUid(bookMenuUid: String)

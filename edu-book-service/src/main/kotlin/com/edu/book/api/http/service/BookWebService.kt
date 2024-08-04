@@ -91,8 +91,8 @@ class BookWebService {
     /**
      * 查询书单列表
      */
-    fun getBookMenus(): List<QueryBookMenuResultDto> {
-        return bookAppService.getBookMenus()
+    fun getBookMenus(gardenUid: String?): List<QueryBookMenuResultDto> {
+        return bookAppService.getBookMenus(gardenUid)
     }
 
     /**

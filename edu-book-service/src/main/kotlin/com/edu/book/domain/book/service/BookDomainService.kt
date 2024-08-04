@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.BookAgeGroupDto
 import com.edu.book.domain.book.dto.BookClassifyDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
+import com.edu.book.domain.book.dto.BookMenuIsbnResultDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
@@ -84,6 +85,7 @@ import com.edu.book.infrastructure.util.page.Page
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
+import kotlinx.coroutines.channels.ticker
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
@@ -194,23 +196,43 @@ class BookDomainService {
     /**
      * 查询书单列表
      */
-    fun getBookMenus(): List<QueryBookMenuResultDto> {
-//        //查询书单信息
-//        val bookMenus = bookMenuRepository.findBookMenus() ?: return emptyList()
-//        //查询图书信息
-//        val bookPos = bookRepository.findByIsbnCodes(bookMenus.mapNotNull { it.isbn }) ?: return emptyList()
-//        return bookPos.mapNotNull {
-//            QueryBookMenuResultDto().apply {
-//                this.title = it.title
-//                this.subtitle = it.subTitle
-//                this.pic = it.picUrl
-//                this.author = it.author
-//                this.summary = it.summary
-//                this.publisher = it.publisher
-//                this.isbn = it.isbnCode!!
-//            }
-//        }
-        return emptyList()
+    fun getBookMenus(gardenUid: String?): List<QueryBookMenuResultDto> {
+        //获取书单列表
+        val bookMenuPos = bookMenuRepository.getByGardenUid(gardenUid) ?: return emptyList()
+        //查询园区信息
+        val gardenInfos = levelRepository.batchQueryByUids(bookMenuPos.mapNotNull { it.gardenUid }, LevelTypeEnum.Garden) ?: emptyList()
+        val gardenInfoMap = gardenInfos.associateBy { it.uid!! }
+        //获取书单对应的isbn
+        val bookMenuIsbnPos = bookMenuRelationRepository.getByMenuUids(bookMenuPos.mapNotNull { it.uid }) ?: emptyList()
+        val bookMenuIsbnMap = bookMenuIsbnPos.groupBy { it.bookMenuUid!! }
+        //查询isbn信息
+        val bookInfoMap = bookRepository.findByIsbnCodes(bookMenuIsbnPos.mapNotNull { it.isbn!! }.distinct())?.associateBy { it.isbnCode!! } ?: emptyMap()
+        //返回参数
+        val result = bookMenuPos.map {
+            val bookMenuIsbns = bookMenuIsbnMap.get(it.uid) ?: emptyList()
+            val gardenInfo = gardenInfoMap.get(it.gardenUid)
+            QueryBookMenuResultDto().apply {
+                this.bookMenuUid = it.uid!!
+                this.menuPic = it.menuPic ?: ""
+                this.menuTitle = it.menuTitle ?: ""
+                this.menuDesc = it.menuDesc ?: ""
+                this.garden = gardenInfo?.levelName ?: ""
+                this.gardenUid = it.gardenUid ?: ""
+                this.books = bookMenuIsbns.map {
+                    val bookInfo = bookInfoMap.get(it.isbn)
+                    BookMenuIsbnResultDto().apply {
+                        this.title = bookInfo?.title ?: ""
+                        this.subtitle = bookInfo?.subTitle ?: ""
+                        this.pic = bookInfo?.picUrl ?: ""
+                        this.author = bookInfo?.author ?: ""
+                        this.summary = bookInfo?.summary ?: ""
+                        this.publisher = bookInfo?.publisher ?: ""
+                        this.isbn = bookInfo?.isbnCode!!
+                    }
+                }
+            }
+        }
+        return result
     }
 
     /**
