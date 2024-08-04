@@ -30,6 +30,7 @@ class BookMenuRelationRepositoryImpl : ServiceImpl<BookMenuRelationDao, BookMenu
      * 批量查询
      */
     override fun getByMenuUids(bookMenuUids: List<String>): List<BookMenuRelationPo>? {
+        if (bookMenuUids.isNullOrEmpty()) return emptyList()
         val wrapper = KtQueryWrapper(BookMenuRelationPo::class.java)
             .`in`(BookMenuRelationPo::bookMenuUid, bookMenuUids)
         return list(wrapper)
