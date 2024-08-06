@@ -196,9 +196,9 @@ class BookDomainService {
     /**
      * 查询书单列表
      */
-    fun getBookMenus(gardenUid: String?): List<QueryBookMenuResultDto> {
+    fun getBookMenus(gardenUid: String?, kindergartenUid: String?): List<QueryBookMenuResultDto> {
         //获取书单列表
-        val bookMenuPos = bookMenuRepository.getByGardenUid(gardenUid) ?: return emptyList()
+        val bookMenuPos = bookMenuRepository.getByGardenUid(gardenUid, kindergartenUid) ?: return emptyList()
         //查询园区信息
         val gardenInfos = levelRepository.batchQueryByUids(bookMenuPos.mapNotNull { it.gardenUid }, LevelTypeEnum.Garden) ?: emptyList()
         val gardenInfoMap = gardenInfos.associateBy { it.uid!! }

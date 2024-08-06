@@ -38,7 +38,12 @@ class AddBookMenuDto: Serializable {
     /**
      * 园区uid
      */
-    @NotBlank(message = "园区Uid")
     var gardenUid: String? = null
+
+    /**
+     * 幼儿园
+     */
+    @NotBlank(message = "幼儿园Uid不能为空")
+    var kindergartenUid: String? = null
 
 }

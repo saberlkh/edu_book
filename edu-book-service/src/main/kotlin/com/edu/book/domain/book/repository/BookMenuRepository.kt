@@ -21,7 +21,7 @@ interface BookMenuRepository : IService<BookMenuPo> {
     /**
      * 获取书单列表
      */
-    fun getByGardenUid(gardenUid: String?): List<BookMenuPo>?
+    fun getByGardenUid(gardenUid: String?, kindergartenUid: String?): List<BookMenuPo>?
 
     /**
      * 更新

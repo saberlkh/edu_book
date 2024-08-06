@@ -30,9 +30,10 @@ class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuR
     /**
      * 获取书单列表
      */
-    override fun getByGardenUid(gardenUid: String?): List<BookMenuPo>? {
+    override fun getByGardenUid(gardenUid: String?, kindergartenUid: String?): List<BookMenuPo>? {
         val wrapper = KtQueryWrapper(BookMenuPo::class.java)
             .eq(!gardenUid.isNullOrBlank(), BookMenuPo::gardenUid, gardenUid)
+            .eq(!kindergartenUid.isNullOrBlank(), BookMenuPo::kindergartenUid, kindergartenUid)
         return list(wrapper)
     }
 

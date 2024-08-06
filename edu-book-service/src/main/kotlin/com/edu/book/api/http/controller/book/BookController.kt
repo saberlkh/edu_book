@@ -87,8 +87,8 @@ class BookController {
      * 获取书单信息
      */
     @GetMapping("/v1/menu")
-    fun getBookMenu(@RequestParam(required = false) gardenUid: String?): List<QueryBookMenuResultDto> {
-        return bookWebService.getBookMenus(gardenUid)
+    fun getBookMenu(@RequestParam(required = false) gardenUid: String?, @RequestParam(required = false) kindergartenUid: String?): List<QueryBookMenuResultDto> {
+        return bookWebService.getBookMenus(gardenUid, kindergartenUid)
     }
 
     /**
