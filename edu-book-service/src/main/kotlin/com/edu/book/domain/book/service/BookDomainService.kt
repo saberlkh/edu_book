@@ -188,14 +188,16 @@ class BookDomainService {
     @Transactional(rollbackFor = [Exception::class])
     fun addBookMenu(dto: AddBookMenuDto) {
         //判断是否已经加入了书单
+        val bookMenuUid = UUIDUtil.createUUID()
         val bookMenuPo = MapperUtil.map(BookMenuPo::class.java, dto).apply {
-            this.uid = UUIDUtil.createUUID()
+            this.uid = bookMenuUid
         }
         bookMenuRepository.save(bookMenuPo)
         //添加书单关联数据
         val bookMenuRelationPos = dto.isbns.map {
             BookMenuRelationPo().apply {
                 this.uid = UUIDUtil.createUUID()
+                this.bookMenuUid = bookMenuUid
                 this.isbn = it
             }
         }
