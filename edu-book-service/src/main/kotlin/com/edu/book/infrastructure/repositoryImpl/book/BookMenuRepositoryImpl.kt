@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.infrastructure.po.book.BookMenuPo
@@ -35,6 +36,15 @@ class BookMenuRepositoryImpl : ServiceImpl<BookMenuDao, BookMenuPo>(), BookMenuR
             .eq(!gardenUid.isNullOrBlank(), BookMenuPo::gardenUid, gardenUid)
             .eq(!kindergartenUid.isNullOrBlank(), BookMenuPo::kindergartenUid, kindergartenUid)
         return list(wrapper)
+    }
+
+    /**
+     * 删除
+     */
+    override fun removeByUid(bookMenuUid: String) {
+        val wrapper = KtUpdateWrapper(BookMenuPo::class.java)
+            .eq(BookMenuPo::uid, bookMenuUid)
+        remove(wrapper)
     }
 
     /**

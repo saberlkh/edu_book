@@ -28,4 +28,9 @@ interface BookMenuRepository : IService<BookMenuPo> {
      */
     fun modifyByUid(po: BookMenuPo)
 
+    /**
+     * 删除
+     */
+    fun removeByUid(bookMenuUid: String)
+
 }

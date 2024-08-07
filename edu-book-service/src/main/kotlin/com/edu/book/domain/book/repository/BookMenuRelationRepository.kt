@@ -28,4 +28,9 @@ interface BookMenuRelationRepository : IService<BookMenuRelationPo> {
      */
     fun deleteByMenuUid(bookMenuUid: String)
 
+    /**
+     * 删除书单关联书籍
+     */
+    fun removeByBookMenuUid(bookMenuUid: String)
+
 }

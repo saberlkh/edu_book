@@ -37,6 +37,15 @@ class BookMenuRelationRepositoryImpl : ServiceImpl<BookMenuRelationDao, BookMenu
     }
 
     /**
+     * 删除书单关联书籍
+     */
+    override fun removeByBookMenuUid(bookMenuUid: String) {
+        val wrapper = KtUpdateWrapper(BookMenuRelationPo::class.java)
+            .eq(BookMenuRelationPo::bookMenuUid, bookMenuUid)
+        remove(wrapper)
+    }
+
+    /**
      * 删除
      */
     override fun deleteByMenuUid(bookMenuUid: String) {

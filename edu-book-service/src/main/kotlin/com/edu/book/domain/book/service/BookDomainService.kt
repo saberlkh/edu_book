@@ -174,6 +174,15 @@ class BookDomainService {
     }
 
     /**
+     * 删除书单
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun deleteBookMenu(bookMenuUid: String) {
+        bookMenuRepository.removeByUid(bookMenuUid)
+        bookMenuRelationRepository.removeByBookMenuUid(bookMenuUid)
+    }
+
+    /**
      * 添加书单
      */
     @Transactional(rollbackFor = [Exception::class])

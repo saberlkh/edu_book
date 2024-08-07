@@ -82,6 +82,13 @@ class BookWebService {
     }
 
     /**
+     * 删除书单
+     */
+    fun deleteBookMenu(bookMenuUid: String) {
+        bookAppService.deleteBookMenu(bookMenuUid)
+    }
+
+    /**
      * 更新书单
      */
     fun modifyBookMenu(dto: ModifyBookMenuDto) {

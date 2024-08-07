@@ -76,6 +76,14 @@ class BookController {
     }
 
     /**
+     * 删除书单
+     */
+    @DeleteMapping("/v1/menu")
+    fun deleteBookMenu(@RequestParam bookMenuUid: String) {
+        bookWebService.deleteBookMenu(bookMenuUid)
+    }
+
+    /**
      * 更新书单
      */
     @PutMapping("/v1/menu")
