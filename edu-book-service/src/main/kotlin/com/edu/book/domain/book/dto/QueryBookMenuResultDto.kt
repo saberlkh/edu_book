@@ -40,6 +40,16 @@ class QueryBookMenuResultDto: Serializable {
     var garden: String = ""
 
     /**
+     * 幼儿园
+     */
+    var kindergartenUid: String = ""
+
+    /**
+     * 幼儿园
+     */
+    var kindergartenName: String = ""
+
+    /**
      * 书籍列表
      */
     var books: List<BookMenuIsbnResultDto> = emptyList()

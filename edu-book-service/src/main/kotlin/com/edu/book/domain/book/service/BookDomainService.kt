@@ -211,6 +211,9 @@ class BookDomainService {
         //查询园区信息
         val gardenInfos = levelRepository.batchQueryByUids(bookMenuPos.mapNotNull { it.gardenUid }, LevelTypeEnum.Garden) ?: emptyList()
         val gardenInfoMap = gardenInfos.associateBy { it.uid!! }
+        //查询幼儿园信息
+        val kindergartenInfos = levelRepository.batchQueryByUids(bookMenuPos.mapNotNull { it.kindergartenUid }, LevelTypeEnum.Kindergarten) ?: emptyList()
+        val kindergartenInfoMap = kindergartenInfos.associateBy { it.uid!! }
         //获取书单对应的isbn
         val bookMenuIsbnPos = bookMenuRelationRepository.getByMenuUids(bookMenuPos.mapNotNull { it.uid }) ?: emptyList()
         val bookMenuIsbnMap = bookMenuIsbnPos.groupBy { it.bookMenuUid!! }
@@ -220,6 +223,7 @@ class BookDomainService {
         val result = bookMenuPos.map {
             val bookMenuIsbns = bookMenuIsbnMap.get(it.uid) ?: emptyList()
             val gardenInfo = gardenInfoMap.get(it.gardenUid)
+            val kindergartenInfo = kindergartenInfoMap.get(it.kindergartenUid)
             QueryBookMenuResultDto().apply {
                 this.bookMenuUid = it.uid!!
                 this.menuPic = it.menuPic ?: ""
@@ -227,6 +231,8 @@ class BookDomainService {
                 this.menuDesc = it.menuDesc ?: ""
                 this.garden = gardenInfo?.levelName ?: ""
                 this.gardenUid = it.gardenUid ?: ""
+                this.kindergartenName = kindergartenInfo?.levelName ?: ""
+                this.kindergartenUid = kindergartenInfo?.uid ?: ""
                 this.books = bookMenuIsbns.map {
                     val bookInfo = bookInfoMap.get(it.isbn)
                     BookMenuIsbnResultDto().apply {
