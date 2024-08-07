@@ -13,7 +13,7 @@ class DeleteBookMenuDto: Serializable {
     /**
      * isbn
      */
-    @NotBlank(message = "isbn不能为空")
-    var menuUid: String = ""
+    @NotBlank(message = "bookMenuUid不能为空")
+    var bookMenuUid: String = ""
 
 }

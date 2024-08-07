@@ -383,11 +383,16 @@ class UserDomainService {
             } else {
                 null
             }
+            val kindergartenInfo = if (accountPo != null && gardenInfo != null) {
+                levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+            } else {
+                null
+            }
             //获取并设置token
             val token = UUIDUtil.createUUID()
             userCacheRepo.setUserToken(finalUserPo.uid!!, token)
             //组装数据
-            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo, token, gardenInfo)
+            return buildRegisterUserDto(finalUserPo, rolePermissionRelations, accountRoleRelationPo, accountPo, token, gardenInfo, kindergartenInfo)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()

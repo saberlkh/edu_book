@@ -85,5 +85,15 @@ class RegisterUserVo: Serializable {
      */
     var photoUrl: String = ""
 
+    /**
+     * 幼儿园
+     */
+    var kindergartenUid: String = ""
+
+    /**
+     * 幼儿园
+     */
+    var kindergartenName: String = ""
+
 
 }
