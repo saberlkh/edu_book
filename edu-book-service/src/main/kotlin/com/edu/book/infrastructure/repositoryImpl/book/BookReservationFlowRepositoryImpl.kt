@@ -3,6 +3,7 @@ package com.edu.book.infrastructure.repositoryImpl.book;
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edu.book.domain.book.enums.ReservationStatusEnum
 import com.edu.book.domain.book.repository.BookReservationFlowRepository
 import com.edu.book.infrastructure.po.book.BookReservationFlowPo
 import com.edu.book.infrastructure.repositoryImpl.dao.book.BookReservationFlowDao
@@ -29,6 +30,7 @@ class BookReservationFlowRepositoryImpl : ServiceImpl<BookReservationFlowDao, Bo
         val wrapper = KtQueryWrapper(BookReservationFlowPo::class.java)
             .eq(BookReservationFlowPo::reservationUserUid, userUid)
             .eq(BookReservationFlowPo::isbn, isbn)
+            .eq(BookReservationFlowPo::reservationStatus, ReservationStatusEnum.Reservationing.status)
             .limitOne()
         return getOne(wrapper)
     }
