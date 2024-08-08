@@ -28,6 +28,7 @@ import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
+import com.edu.book.domain.book.dto.ReservationBookDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
@@ -56,6 +57,14 @@ class BookWebService {
     fun borrowBook(vo: BorrowBookVo) {
         val dto = MapperUtil.map(BorrowBookDto::class.java, vo)
         bookAppService.borrowBook(dto)
+    }
+
+    /**
+     * 图书预定
+     */
+    fun reservationBook(dto: ReservationBookDto) {
+        dto.userUid = CurrentHolder.userDto!!.uid!!
+        bookAppService.reservationBook(dto)
     }
 
     /**

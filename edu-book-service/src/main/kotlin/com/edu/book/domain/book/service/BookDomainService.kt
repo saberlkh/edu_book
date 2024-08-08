@@ -11,7 +11,6 @@ import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookMenuIsbnResultDto
 import com.edu.book.domain.book.dto.BorrowBookDto
 import com.edu.book.domain.book.dto.CollectBookDto
-import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
@@ -23,14 +22,15 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
+import com.edu.book.domain.book.dto.ReservationBookDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
 import com.edu.book.domain.book.enums.BookClassifyEnum
 import com.edu.book.domain.book.enums.BookCollectStatusEnum
 import com.edu.book.domain.book.enums.BookDetailStatusEnum
+import com.edu.book.domain.book.enums.ReservationStatusEnum
 import com.edu.book.domain.book.enums.SortByColumnEnum
-import com.edu.book.domain.book.exception.BookAlreadyInMenu
 import com.edu.book.domain.book.exception.BookBorrowedException
 import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
@@ -38,6 +38,7 @@ import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
 import com.edu.book.domain.book.exception.BookMenuNotExistException
 import com.edu.book.domain.book.exception.BookNotCollectException
+import com.edu.book.domain.book.exception.BookStorageNotEnoughException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookBorrowFlowPo
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookCollectPo
@@ -58,6 +59,7 @@ import com.edu.book.domain.book.repository.BookDetailRepository
 import com.edu.book.domain.book.repository.BookMenuRelationRepository
 import com.edu.book.domain.book.repository.BookMenuRepository
 import com.edu.book.domain.book.repository.BookRepository
+import com.edu.book.domain.book.repository.BookReservationFlowRepository
 import com.edu.book.domain.book.repository.BookSellRepository
 import com.edu.book.domain.user.exception.AccountNotFoundException
 import com.edu.book.domain.user.exception.AreaInfoNotExistException
@@ -77,6 +79,7 @@ import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.po.book.BookMenuPo
 import com.edu.book.infrastructure.po.book.BookMenuRelationPo
 import com.edu.book.infrastructure.po.book.BookPo
+import com.edu.book.infrastructure.po.book.BookReservationFlowPo
 import com.edu.book.infrastructure.po.book.BookSellPo
 import com.edu.book.infrastructure.util.DateUtil
 import com.edu.book.infrastructure.util.MapperUtil
@@ -85,7 +88,6 @@ import com.edu.book.infrastructure.util.page.Page
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.annotation.Resource
-import kotlinx.coroutines.channels.ticker
 import org.apache.commons.lang3.BooleanUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.apache.commons.lang3.StringUtils
@@ -148,6 +150,9 @@ class BookDomainService {
 
     @Autowired
     private lateinit var bookMenuRelationRepository: BookMenuRelationRepository
+
+    @Autowired
+    private lateinit var bookReservationFlowRepository: BookReservationFlowRepository
 
     /**
      * 编辑书单
@@ -362,6 +367,33 @@ class BookDomainService {
     }
 
     /**
+     * 书本预订
+     * 1.查询isbn信息
+     * 2.判断库存
+     * 3.扣减库存
+     * 4.新增预定记录
+     */
+    @Transactional(rollbackFor = [Exception::class])
+    fun reservationBook(dto: ReservationBookDto) {
+        val bookInfo = bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
+        if ((bookInfo.bookStorage ?: NumberUtils.INTEGER_ZERO) <= NumberUtils.INTEGER_ZERO ) throw BookStorageNotEnoughException()
+        //更新书本库存
+        val modifyBookPo = BookPo().apply {
+            this.uid = bookInfo.uid
+            this.bookStorage = bookInfo.bookStorage!! - NumberUtils.INTEGER_ONE
+        }
+        bookRepository.updateByUid(modifyBookPo)
+        //新增预定记录
+        val bookReservationFlowPo = BookReservationFlowPo().apply {
+            this.uid = UUIDUtil.createUUID()
+            this.reservationUserUid = dto.userUid
+            this.isbn = dto.isbn
+            this.reservationStatus = ReservationStatusEnum.Reservationing.status
+        }
+        bookReservationFlowRepository.save(bookReservationFlowPo)
+    }
+
+    /**
      * 借书
      * 1.查询账户
      * 2.查询书籍
@@ -397,6 +429,11 @@ class BookDomainService {
             this.outStorageTime = Date()
         }
         bookDetailRepository.updateByBookUid(updateBookDetailPo, dto.bookUid)
+        //更新图书预订状态
+        val bookReservationPo = bookReservationFlowRepository.queryUserReservationByIsbn(userInfoPo.uid!!, bookInfo.isbnCode!!)
+        if (bookReservationPo != null) {
+            bookReservationFlowRepository.modifyStatusByUid(bookReservationPo.uid!!, ReservationStatusEnum.Borrowed.status)
+        }
     }
 
     /**

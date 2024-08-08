@@ -64,3 +64,8 @@ class BookAlreadyInMenu: BookException("图书已经在书单中")
  * 书单不存在
  */
 class BookMenuNotExistException: BookException("书单不存在")
+
+/**
+ * 书籍库存不足
+ */
+class BookStorageNotEnoughException: BookException("书籍库存不足")

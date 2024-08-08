@@ -22,6 +22,7 @@ import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
+import com.edu.book.domain.book.dto.ReservationBookDto
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
@@ -58,6 +59,14 @@ class BookController {
     @PostMapping("/v1/borrow")
     fun borrowBook(@RequestBody @Valid vo: BorrowBookVo) {
         bookWebService.borrowBook(vo)
+    }
+
+    /**
+     * 图书预定
+     */
+    @PostMapping("/v1/reservation")
+    fun reservationBook(@RequestBody @Valid dto: ReservationBookDto) {
+        bookWebService.reservationBook(dto)
     }
 
     /**

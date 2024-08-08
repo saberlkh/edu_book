@@ -16,6 +16,7 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
+import com.edu.book.domain.book.dto.ReservationBookDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.dto.ScanIsbnCodeBookDto
@@ -117,6 +118,13 @@ class BookAppService {
      */
     fun borrowBook(dto: BorrowBookDto) {
         bookDomainService.borrowBook(dto)
+    }
+
+    /**
+     * 图书预定
+     */
+    fun reservationBook(dto: ReservationBookDto) {
+        bookDomainService.reservationBook(dto)
     }
 
     /**
