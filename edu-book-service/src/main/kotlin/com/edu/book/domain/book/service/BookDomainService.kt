@@ -375,6 +375,15 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun reservationBook(dto: ReservationBookDto) {
+        //查询账户信息
+        val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
+        //查看班级、幼儿园信息
+        val classInfo = levelRepository.queryByUid(accountInfo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+        //查询年级
+        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+        //查询园区
+        val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        val kindergartenInfo = levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
         val bookInfo = bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
         if ((bookInfo.bookStorage ?: NumberUtils.INTEGER_ZERO) <= NumberUtils.INTEGER_ZERO ) throw BookStorageNotEnoughException()
         //更新书本库存
@@ -389,6 +398,8 @@ class BookDomainService {
             this.reservationUserUid = dto.userUid
             this.isbn = dto.isbn
             this.reservationStatus = ReservationStatusEnum.Reservationing.status
+            this.gardenUid = gardenInfo.uid
+            this.kindergartenUid = kindergartenInfo.uid
         }
         bookReservationFlowRepository.save(bookReservationFlowPo)
     }

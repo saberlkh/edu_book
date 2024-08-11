@@ -39,4 +39,16 @@ class BookReservationFlowPo : BasePo() {
     @TableField("c_reservation_status")
     var reservationStatus: Int? = null
 
+    /**
+     * c_garden_uid
+     */
+    @TableField("c_garden_uid")
+    var gardenUid: String? = null
+
+    /**
+     * c_kindergarten_uid
+     */
+    @TableField("c_kindergarten_uid")
+    var kindergartenUid: String? = null
+
 }
