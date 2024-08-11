@@ -2,4 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.book.BookReservationFlowDao">
 
+    <!--fun pageQueryReservationCount(kindergartenUid: String): Int-->
+    <select id="pageQueryReservationCount" resultType="int"
+            parameterType="com.edu.book.domain.book.dto.ReservationBookPageQueryDto">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_reservation_flow
+        WHERE c_is_deleted = 0
+        AND c_kindergarten_uid = #{kindergartenUid}
+        AND c_reservation_status = 0
+    </select>
+
+    <!--fun pageQueryReservation(kindergartenUid: String): List<BookReservationFlowPo>-->
+    <select id="pageQueryReservation" parameterType="com.edu.book.domain.book.dto.ReservationBookPageQueryDto"
+            resultType="com.edu.book.infrastructure.po.book.BookReservationFlowPo">
+        SELECT
+            c_uid AS uid,
+            c_isbn AS isbn,
+            c_reservation_user_uid AS reservationUserUid,
+            c_reservation_status AS reservationStatus,
+            c_garden_uid AS gardenUid,
+            c_kindergarten_uid AS kindergartenUid
+        FROM
+            t_book_reservation_flow
+        WHERE c_is_deleted = 0
+        AND c_kindergarten_uid = #{kindergartenUid}
+        AND c_reservation_status = 0
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
+
 </mapper>

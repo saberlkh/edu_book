@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.dao.book;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
 import com.edu.book.infrastructure.po.book.BookReservationFlowPo
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,15 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 interface BookReservationFlowDao : BaseMapper<BookReservationFlowPo> {
+
+    /**
+     * 查询数量
+     */
+    fun pageQueryReservationCount(dto: ReservationBookPageQueryDto): Int
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryReservation(dto: ReservationBookPageQueryDto): List<BookReservationFlowPo>
 
 }

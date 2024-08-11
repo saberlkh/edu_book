@@ -1,6 +1,8 @@
 package com.edu.book.domain.book.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
 import com.edu.book.infrastructure.po.book.BookReservationFlowPo
 
 /**
@@ -22,5 +24,10 @@ interface BookReservationFlowRepository : IService<BookReservationFlowPo> {
      * 修改
      */
     fun modifyStatusByUid(uid: String, reservationStatus: Int)
+
+    /**
+     * 分页查询
+     */
+    fun pageQueryReservation(dto: ReservationBookPageQueryDto): Page<BookReservationFlowPo>
 
 }

@@ -23,6 +23,8 @@ import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReservationBookDto
+import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
+import com.edu.book.domain.book.dto.ReservationBookPageResultDto
 import com.edu.book.infrastructure.anno.Response
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
@@ -172,6 +174,14 @@ class BookController {
     fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
         if (vo.gardenUid.isNullOrBlank()) throw WebAppException(ErrorCodeConfig.GARDEN_UID_NOT_NULL)
         return bookWebService.pageQueryBorrowFlow(vo)
+    }
+
+    /**
+     * 查询书单预订列表
+     */
+    @GetMapping("/v1/reservation")
+    fun getReservationBookPage(@Valid dto: ReservationBookPageQueryDto): Page<ReservationBookPageResultDto> {
+        return bookWebService.getReservationBookPage(dto)
     }
 
     /**

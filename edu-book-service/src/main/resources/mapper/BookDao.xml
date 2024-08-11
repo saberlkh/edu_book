@@ -80,6 +80,10 @@
         <if test="gardenUid != null and gardenUid != ''">
             AND c_garden_uid = #{gardenUid}
         </if>
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
     </select>
 
     <!--fun getPage(dto: PageQueryBookDto): List<PageQueryBookResultDto>-->

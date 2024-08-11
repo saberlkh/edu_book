@@ -3,7 +3,6 @@ package com.edu.book.infrastructure.repositoryImpl.user;
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.edu.book.domain.user.dto.PageQueryAccountDto
 import com.edu.book.domain.user.dto.PageQueryAccountParamDto
 import com.edu.book.domain.user.repository.BookAccountRepository
 import com.edu.book.infrastructure.po.user.BookAccountPo

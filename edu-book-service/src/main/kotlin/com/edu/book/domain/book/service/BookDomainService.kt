@@ -23,6 +23,9 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookResultDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReservationBookDto
+import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
+import com.edu.book.domain.book.dto.ReservationBookPageResultDto
+import com.edu.book.domain.book.dto.ReservationUserDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
@@ -362,6 +365,52 @@ class BookDomainService {
         val result = pageQuery.records.mapNotNull {
             val bookDetailPo = bookDetailPoMap.get(it.bookUid)
             buildPageQueryBorrowBookResultDto(it, bookDetailPo)
+        }
+        return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
+    }
+
+    /**
+     * 查询书单预订列表
+     */
+    fun getReservationBookPage(dto: ReservationBookPageQueryDto): Page<ReservationBookPageResultDto> {
+        val pageQuery = bookReservationFlowRepository.pageQueryReservation(dto)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        val pageQueryResult = pageQuery.records
+        //查询图书信息
+        val bookInfoMap = bookRepository.findByIsbnCodes(pageQueryResult.mapNotNull { it.isbn })?.associateBy { it.isbnCode!! } ?: emptyMap()
+        //查询用户信息
+        val userInfoMap = bookUserRepository.batchQueryByUserUids(pageQueryResult.mapNotNull { it.reservationUserUid })?.associateBy { it.uid!! } ?: emptyMap()
+        //查询账户信息
+        val accountInfos = bookAccountRepository.batchQueryByAccountUids(userInfoMap.mapNotNull { it.value.associateAccount }) ?: emptyList()
+        //查询园区信息
+        //查看班级、幼儿园信息
+        val classInfos = levelRepository.batchQueryByUids(accountInfos.mapNotNull { it.classUid!! }, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+        //查询年级
+        val gradeInfos = levelRepository.batchQueryByUids(classInfos.mapNotNull { it.parentUid!! }, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+        //查询园区
+        val gardenInfos = levelRepository.batchQueryByUids(gradeInfos.mapNotNull { it.parentUid }, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        val gardenInfoMap = gardenInfos.associateBy { it.uid!! }
+        //查询幼儿园
+        val kindergartenInfos = levelRepository.batchQueryByUids(gardenInfos.mapNotNull { it.parentUid }, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+        val kindergartenInfoMap = kindergartenInfos.associateBy { it.uid!! }
+        //组装参数
+        val result = pageQuery.records.mapNotNull {
+            val bookInfo = bookInfoMap.get(it.isbn)
+            val userInfo = userInfoMap.get(it.reservationUserUid)
+            val gardenInfo = gardenInfoMap.get(it.gardenUid)
+            ReservationBookPageResultDto().apply {
+                this.isbn = it.isbn!!
+                this.title = bookInfo?.title ?: ""
+                this.subtitle = bookInfo?.subTitle ?: ""
+                this.summary = bookInfo?.summary ?: ""
+                this.pic = bookInfo?.picUrl ?: ""
+                this.reservationUser = ReservationUserDto().apply {
+                    this.userUid = userInfo?.uid ?: ""
+                    this.nickname = userInfo?.nickName ?: ""
+                    this.gardenUid = it.gardenUid ?: ""
+                    this.gardenName = gardenInfo?.levelName ?: ""
+                }
+            }
         }
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
     }

@@ -29,6 +29,8 @@ import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReservationBookDto
+import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
+import com.edu.book.domain.book.dto.ReservationBookPageResultDto
 import com.edu.book.domain.book.dto.ReturnBookDto
 import com.edu.book.domain.book.dto.ScanBookCodeInStorageParam
 import com.edu.book.domain.book.enums.AgeGroupEnum
@@ -222,6 +224,13 @@ class BookWebService {
             }
         }
         return Page(vo.page, vo.pageSize, pageResult.totalCount, finalResult)
+    }
+
+    /**
+     * 查询书单预订列表
+     */
+    fun getReservationBookPage(dto: ReservationBookPageQueryDto): Page<ReservationBookPageResultDto> {
+        return bookAppService.getReservationBookPage(dto)
     }
 
     /**
