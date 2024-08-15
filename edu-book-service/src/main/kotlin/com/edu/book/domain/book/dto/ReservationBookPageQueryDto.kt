@@ -17,4 +17,6 @@ class ReservationBookPageQueryDto: Serializable {
 
     var pageSize: Int = 20
 
+    var userUid: String = ""
+
 }

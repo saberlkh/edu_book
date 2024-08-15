@@ -12,6 +12,9 @@
         WHERE c_is_deleted = 0
         AND c_kindergarten_uid = #{kindergartenUid}
         AND c_reservation_status = 0
+        <if test="userUid != null and userUid != ''">
+            AND c_reservation_user_uid = #{userUid}
+        </if>
     </select>
 
     <!--fun pageQueryReservation(kindergartenUid: String): List<BookReservationFlowPo>-->
@@ -29,6 +32,9 @@
         WHERE c_is_deleted = 0
         AND c_kindergarten_uid = #{kindergartenUid}
         AND c_reservation_status = 0
+        <if test="userUid != null and userUid != ''">
+            AND c_reservation_user_uid = #{userUid}
+        </if>
         <bind name="key_offset" value="(page-1) * pageSize"/>
         <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
             LIMIT #{key_offset},#{pageSize}
