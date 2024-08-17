@@ -17,10 +17,12 @@ import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.domain.book.dto.AddBookMenuDto
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
+import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
 import com.edu.book.domain.book.dto.ReservationBookDto
 import com.edu.book.domain.book.dto.ReservationBookPageQueryDto
@@ -165,6 +167,14 @@ class BookController {
     @PostMapping("/v1/page")
     fun pageQuery(@RequestBody vo: PageQueryBookVo): Page<PageQueryBookResultVo> {
         return bookWebService.pageQueryBooks(vo)
+    }
+
+    /**
+     * 查询更多精选
+     */
+    @GetMapping("/v1/choiceness")
+    fun getChoicenessPage(@Valid dto: ChoicenessPageQueryDto): Page<PageQueryBookResultDto> {
+        return bookWebService.getChoicenessPage(dto)
     }
 
     /**

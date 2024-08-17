@@ -2,11 +2,14 @@ package com.edu.book.infrastructure.repositoryImpl.book;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.repository.BookDetailRepository
 import com.edu.book.infrastructure.po.book.BookDetailPo
 import com.edu.book.infrastructure.repositoryImpl.dao.book.BookDetailDao
 import com.edu.book.infrastructure.util.limitOne
+import org.apache.commons.lang3.math.NumberUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository;
 
@@ -48,6 +51,28 @@ class BookDetailRepositoryImpl : ServiceImpl<BookDetailDao, BookDetailPo>(), Boo
             .set(BookDetailPo::status, bookStatus)
             .eq(BookDetailPo::bookUid, bookUid)
         update(wrapper)
+    }
+
+    /**
+     * 更新收藏数
+     */
+    override fun modifyBookCollectCount(bookUid: String, collectCount: Int) {
+        val wrapper = KtUpdateWrapper(BookDetailPo::class.java)
+            .set(BookDetailPo::collectCount, collectCount)
+            .eq(BookDetailPo::bookUid, bookUid)
+        update(wrapper)
+    }
+
+    /**
+     * 分页查询图书精选
+     */
+    override fun pageQueryBookChoiceness(dto: ChoicenessPageQueryDto): Page<BookDetailPo> {
+        val totalCount = bookDetailDao.getTotalCountChoiceness(dto)
+        if (totalCount <= NumberUtils.INTEGER_ZERO) return Page()
+        val pageQuery = bookDetailDao.getListCountChoiceness(dto)
+        val page = Page<BookDetailPo>(dto.page.toLong(), dto.pageSize.toLong(), totalCount.toLong())
+        page.records = pageQuery
+        return page
     }
 
     /**

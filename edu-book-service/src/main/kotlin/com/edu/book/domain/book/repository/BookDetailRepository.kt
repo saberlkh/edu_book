@@ -1,6 +1,8 @@
 package com.edu.book.domain.book.repository;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.infrastructure.po.book.BookDetailPo
 
 /**
@@ -42,5 +44,15 @@ interface BookDetailRepository : IService<BookDetailPo> {
      * 修改图书状态
      */
     fun updateBookStatus(bookUid: String, bookStatus: Int)
+
+    /**
+     * 更新收藏数
+     */
+    fun modifyBookCollectCount(bookUid: String, collectCount: Int)
+
+    /**
+     * 分页查询图书精选
+     */
+    fun pageQueryBookChoiceness(dto: ChoicenessPageQueryDto): Page<BookDetailPo>
 
 }

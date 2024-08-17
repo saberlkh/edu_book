@@ -190,4 +190,10 @@ class BookDetailPo : BasePo() {
     @TableField("c_book_audio_url")
     var bookAudioUrl: String? = null
 
+    /**
+     * c_collect_count
+     */
+    @TableField("c_collect_count")
+    var collectCount: Int? = null
+
 }

@@ -19,12 +19,14 @@ import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
+import com.edu.book.domain.book.dto.PageQueryBookResultDto
 import com.edu.book.domain.book.dto.PageQueryBorrowBookDto
 import com.edu.book.domain.book.dto.PageQueryUserBookCollectParam
 import com.edu.book.domain.book.dto.QueryBookMenuResultDto
@@ -241,6 +243,13 @@ class BookWebService {
         val pageResult = bookAppService.pageQueryBooks(paramDto)
         if (pageResult.result.isNullOrEmpty()) return Page()
         return Page(vo.page, vo.pageSize, pageResult.totalCount, MapperUtil.mapToList(PageQueryBookResultVo::class.java, pageResult.result!!))
+    }
+
+    /**
+     * 获取图书精选
+     */
+    fun getChoicenessPage(dto: ChoicenessPageQueryDto): Page<PageQueryBookResultDto> {
+        return bookAppService.getChoicenessPage(dto)
     }
 
     /**

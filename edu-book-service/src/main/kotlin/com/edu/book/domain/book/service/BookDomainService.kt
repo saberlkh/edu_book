@@ -10,6 +10,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookMenuIsbnResultDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
@@ -294,7 +295,7 @@ class BookDomainService {
             val userPo = bookUserRepository.findByUserUid(dto.userUid) ?: throw UserNotFoundException(dto.userUid)
             val accountPo = bookAccountRepository.findByUid(userPo.associateAccount)
             //查询图书信息
-            val bookPo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+            val bookDetailPo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
             when(dto.collectStatus) {
 
                 /**
@@ -304,12 +305,15 @@ class BookDomainService {
                     //查询收藏流水
                     val bookCollectFlow = bookCollectFlowRepository.findUserCollectFlowByBookUid(dto.userUid, dto.bookUid)
                     if (bookCollectFlow == null) {
-                        val collectPo = buildBookCollectPo(bookPo, userPo, accountPo, dto)
+                        val collectPo = buildBookCollectPo(bookDetailPo, userPo, accountPo, dto)
                         bookCollectFlowRepository.save(collectPo)
                     } else {
                         bookCollectFlow.collectStatus = BooleanUtils.toBoolean(BookCollectStatusEnum.COLLECTED.status)
                         bookCollectFlowRepository.updateBookCollectFlow(bookCollectFlow)
                     }
+                    //收藏数 + 1
+                    val finalCollectCount = (bookDetailPo.collectCount ?: NumberUtils.INTEGER_ZERO) + NumberUtils.INTEGER_ONE
+                    bookDetailRepository.modifyBookCollectCount(bookDetailPo.bookUid!!, finalCollectCount)
                 }
 
                 /**
@@ -323,6 +327,14 @@ class BookDomainService {
                         this.collectStatus = BooleanUtils.toBoolean(BookCollectStatusEnum.UN_COLLECTED.status)
                     }
                     bookCollectFlowRepository.updateBookCollectFlow(updatedBookCollectFlow)
+                    //收藏数 - 1
+                    val bookCollectCount = (bookDetailPo.collectCount ?: NumberUtils.INTEGER_ZERO) - NumberUtils.INTEGER_ONE
+                    val finalCollectCount = if (bookCollectCount <= NumberUtils.INTEGER_ZERO) {
+                        NumberUtils.INTEGER_ZERO
+                    } else {
+                        bookCollectCount
+                    }
+                    bookDetailRepository.modifyBookCollectCount(bookDetailPo.bookUid!!, finalCollectCount)
                 }
 
             }
@@ -637,6 +649,61 @@ class BookDomainService {
             it
         }
         bookSellRepository.saveBatch(bookSellList)
+    }
+
+
+    /**
+     * 获取图书精选
+     */
+    fun getChoicenessPage(dto: ChoicenessPageQueryDto): Page<PageQueryBookResultDto> {
+        val pageQuery = bookDetailRepository.pageQueryBookChoiceness(dto)
+        if (pageQuery.records.isNullOrEmpty()) return Page()
+        val bookUids = pageQuery.records.mapNotNull { it.bookUid }
+        //查询分类和年龄段
+        val classifyPos = bookDetailClassifyRepository.batchQueryClassifyList(bookUids)
+        val classifyPoMap = classifyPos.groupBy { it.bookUid!! }
+        val ageGroups = bookDetailAgeRepository.batchQueryBookAgeGroups(bookUids)
+        val ageGroupMap = ageGroups.groupBy { it.bookUid!! }
+        //查询园区信息
+        val gardenInfoMap = levelRepository.batchQueryByUids(pageQuery.records.mapNotNull { it.gardenUid!! }, LevelTypeEnum.Garden)?.associateBy { it.uid } ?: emptyMap()
+        //参数组装
+        val result = pageQuery.records.mapNotNull { po ->
+            val gardenInfo = gardenInfoMap.get(po.gardenUid)
+            val classifyPoList = classifyPoMap.get(po.bookUid) ?: emptyList()
+            val ageGroupPos = ageGroupMap.get(po.bookUid) ?: emptyList()
+            PageQueryBookResultDto().apply {
+                this.title = po.title
+                this.subtitle = po.subTitle
+                this.pic = po.picUrl
+                this.author = po.author
+                this.summary = po.summary
+                this.publisher = po.publisher
+                this.pubplace = po.publicPlace
+                this.pubdate = if (po.publicDate != null) DateUtil.format(po.publicDate!!, DateUtil.PATTREN_DATE3) else ""
+                this.page = po.page?.toString() ?: NumberUtils.INTEGER_ZERO.toString()
+                this.price = po.price?.toDouble()?.div(Constants.hundred)?.toString()
+                this.binding = po.binding
+                this.isbn10 = po.isbn10Code
+                this.keyword = po.keyword
+                this.cip = po.cip
+                this.edition = po.edition
+                this.impression = po.impression
+                this.language = po.language
+                this.format = po.format
+                this.`class` = po.bookClass
+                this.isbn = po.isbnCode!!
+                this.bookUid = po.bookUid!!
+                this.bookStatus = po.status
+                this.garden = gardenInfo?.levelName ?: ""
+                this.classifyList = classifyPoList.mapNotNull { it.classify }.map {
+                    BookClassifyDto.buildBookClassifyDto(BookClassifyEnum.getDescByCode(it), it)
+                }
+                this.ageGroups = ageGroupPos.mapNotNull { it.ageGroup }.map {
+                    BookAgeGroupDto.buildBookAgeGroupDto(AgeGroupEnum.getDescByCode(it), it)
+                }
+            }
+        }
+        return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
     }
 
     /**

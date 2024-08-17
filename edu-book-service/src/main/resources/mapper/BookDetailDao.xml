@@ -2,4 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.edu.book.infrastructure.repositoryImpl.dao.book.BookDetailDao">
 
+    <sql id="pageQueryFileds">
+        c_id as id,
+        c_uid as uid,
+        c_isbn_code as isbnCode,
+        c_book_uid as bookUid,
+        c_detail_info as detailInfo,
+        c_status as status,
+        c_in_storage_time as inStorageTime,
+        c_out_storage_time as outStorageTime,
+        c_garden as garden,
+        c_garden_uid as gardenUid,
+        c_title as title,
+        c_sub_title as subTitle,
+        c_pic_url as picUrl,
+        c_author as author,
+        c_summary as summary,
+        c_publisher as publisher,
+        c_public_place as publicPlace,
+        c_public_date as publicDate,
+        c_page as page,
+        c_price as price,
+        c_binding as binding,
+        c_isbn10_code as isbn10Code,
+        c_keyword as keyword,
+        c_cip as cip,
+        c_edition as edition,
+        c_impression as impression,
+        c_language as `language`,
+        c_format as format,
+        c_book_class as bookClass,
+        c_book_audio_url as bookAudioUrl,
+        c_collect_count as collectCount
+    </sql>
+
+    <!--fun getTotalCountChoiceness(dto: ChoicenessPageQueryDto): Int-->
+    <select id="getTotalCountChoiceness" resultType="int" parameterType="com.edu.book.domain.book.dto.ChoicenessPageQueryDto">
+        SELECT
+            COUNT(1)
+        FROM
+            t_book_detail
+        WHERE c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+    </select>
+
+    <!--fun getListCountChoiceness(dto: ChoicenessPageQueryDto): List<BookDetailPo>-->
+    <select id="getListCountChoiceness" resultType="com.edu.book.infrastructure.po.book.BookDetailPo"
+        parameterType="com.edu.book.domain.book.dto.ChoicenessPageQueryDto">
+        SELECT
+        <include refid="pageQueryFileds"/>
+        FROM
+            t_book_detail
+        WHERE c_is_deleted = 0
+        <if test="gardenUid != null and gardenUid != ''">
+            AND c_garden_uid = #{gardenUid}
+        </if>
+        ORDER BY c_collect_count DESC
+        <bind name="key_offset" value="(page-1) * pageSize"/>
+        <if test="page != null and page >= 0 and pageSize != null and pageSize >= 0">
+            LIMIT #{key_offset},#{pageSize}
+        </if>
+    </select>
+
 </mapper>

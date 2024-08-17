@@ -4,6 +4,7 @@ import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
@@ -201,6 +202,13 @@ class BookAppService {
      */
     fun pageQueryBooks(dto: PageQueryBookDto): Page<PageQueryBookResultDto> {
         return bookDomainService.pageQueryBooks(dto)
+    }
+
+    /**
+     * 获取图书精选
+     */
+    fun getChoicenessPage(dto: ChoicenessPageQueryDto): Page<PageQueryBookResultDto> {
+        return bookDomainService.getChoicenessPage(dto)
     }
 
     /**
