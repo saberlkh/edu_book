@@ -206,6 +206,7 @@ object UserEntityMapper {
             this.photoUrl = finalUserPo.photoUrl ?: ""
             this.kindergartenName = kindergartenInfo?.levelName ?: ""
             this.kindergartenUid = kindergartenInfo?.uid ?: ""
+            this.borrowCardId = accountPo?.borrowCardId ?: ""
         }
     }
 

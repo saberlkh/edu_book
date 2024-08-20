@@ -95,4 +95,9 @@ class RegisterUserDto: Serializable {
      */
     var kindergartenName: String = ""
 
+    /**
+     * 借阅卡id
+     */
+    var borrowCardId: String = ""
+
 }
