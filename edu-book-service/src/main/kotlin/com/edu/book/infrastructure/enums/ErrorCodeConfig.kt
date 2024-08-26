@@ -90,6 +90,10 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     BOOK_IN_MENU(600021, "图书已经在书单中"),
 
+    BOOK_STORAGE_NOT_ENOUGH(600022, "图书库存不够"),
+
+    BOOK_RESERVATION(600023, "图书已经预定中"),
+
     ;
 
 }

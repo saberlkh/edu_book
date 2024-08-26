@@ -7,7 +7,10 @@ import com.edu.book.domain.book.exception.BookDetailAlreadyExistException
 import com.edu.book.domain.book.exception.BookDetailNotBorrowingException
 import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookException
+import com.edu.book.domain.book.exception.BookInfoNotExistException
 import com.edu.book.domain.book.exception.BookNotCollectException
+import com.edu.book.domain.book.exception.BookReservationException
+import com.edu.book.domain.book.exception.BookStorageNotEnoughException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.exception.QueryIsbnApiInfoErrorException
 import com.edu.book.domain.read.exception.BookReadCircleException
@@ -162,6 +165,15 @@ class GlobalExceptionHandler {
             }
             is BookDetailNotBorrowingException -> {
                 ErrorCodeConfig.BOOK_NOT_BORROWING
+            }
+            is BookStorageNotEnoughException -> {
+                ErrorCodeConfig.BOOK_STORAGE_NOT_ENOUGH
+            }
+            is BookInfoNotExistException -> {
+                ErrorCodeConfig.BOOK_DETAIL_NOT_EXIST
+            }
+            is BookReservationException -> {
+                ErrorCodeConfig.BOOK_RESERVATION
             }
             else -> {
                 ErrorCodeConfig.NOT_FOUNT

@@ -42,6 +42,7 @@ import com.edu.book.domain.book.exception.BookDetailNotExistException
 import com.edu.book.domain.book.exception.BookInfoNotExistException
 import com.edu.book.domain.book.exception.BookMenuNotExistException
 import com.edu.book.domain.book.exception.BookNotCollectException
+import com.edu.book.domain.book.exception.BookReservationException
 import com.edu.book.domain.book.exception.BookStorageNotEnoughException
 import com.edu.book.domain.book.exception.GardenIllegalException
 import com.edu.book.domain.book.mapper.BookEntityMapper.buildBookBorrowFlowPo
@@ -436,6 +437,9 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun reservationBook(dto: ReservationBookDto) {
+        //判断图书是否有预定中
+        val currentBookReservationFlow = bookReservationFlowRepository.queryUserReservationByIsbn(dto.userUid, dto.isbn)
+        if (currentBookReservationFlow != null) throw BookReservationException()
         //查询账户信息
         val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
         //查看班级、幼儿园信息
