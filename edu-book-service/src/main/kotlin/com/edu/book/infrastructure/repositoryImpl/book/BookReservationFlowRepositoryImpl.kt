@@ -39,6 +39,16 @@ class BookReservationFlowRepositoryImpl : ServiceImpl<BookReservationFlowDao, Bo
     }
 
     /**
+     * 删除图书预订记录
+     */
+    override fun deleteUserReservation(userUid: String, isbn: String) {
+        val wrapper = KtUpdateWrapper(BookReservationFlowPo::class.java)
+            .eq(BookReservationFlowPo::reservationUserUid, userUid)
+            .eq(BookReservationFlowPo::isbn, isbn)
+        remove(wrapper)
+    }
+
+    /**
      * 修改
      */
     override fun modifyStatusByUid(uid: String, reservationStatus: Int) {

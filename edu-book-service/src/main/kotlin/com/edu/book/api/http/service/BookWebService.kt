@@ -19,6 +19,7 @@ import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.application.service.BookAppService
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
@@ -69,6 +70,14 @@ class BookWebService {
     fun reservationBook(dto: ReservationBookDto) {
         dto.userUid = CurrentHolder.userDto!!.uid!!
         bookAppService.reservationBook(dto)
+    }
+
+    /**
+     * 取消预定
+     */
+    fun cancelReservationBook(dto: CancelReservationBookDto) {
+        dto.userUid = CurrentHolder.userDto!!.uid!!
+        bookAppService.cancelReservationBook(dto)
     }
 
     /**

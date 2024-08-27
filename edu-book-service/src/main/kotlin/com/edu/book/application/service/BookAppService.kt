@@ -4,6 +4,7 @@ import com.edu.book.application.client.IsbnApi
 import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
@@ -135,6 +136,13 @@ class BookAppService {
      */
     fun reservationBook(dto: ReservationBookDto) {
         bookDomainService.reservationBook(dto)
+    }
+
+    /**
+     * 取消预定
+     */
+    fun cancelReservationBook(dto: CancelReservationBookDto) {
+        bookDomainService.cancelReservationBook(dto)
     }
 
     /**

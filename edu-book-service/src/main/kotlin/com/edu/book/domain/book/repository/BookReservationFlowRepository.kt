@@ -21,6 +21,11 @@ interface BookReservationFlowRepository : IService<BookReservationFlowPo> {
     fun queryUserReservationByIsbn(userUid: String, isbn: String): BookReservationFlowPo?
 
     /**
+     * 删除图书预订记录
+     */
+    fun deleteUserReservation(userUid: String, isbn: String)
+
+    /**
      * 修改
      */
     fun modifyStatusByUid(uid: String, reservationStatus: Int)

@@ -17,6 +17,7 @@ import com.edu.book.api.vo.book.ReturnBookVo
 import com.edu.book.api.vo.book.ScanBookCodeInStorageVo
 import com.edu.book.api.vo.book.ScanIsbnCodeBookVo
 import com.edu.book.domain.book.dto.AddBookMenuDto
+import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
@@ -71,6 +72,14 @@ class BookController {
     @PostMapping("/v1/reservation")
     fun reservationBook(@RequestBody @Valid dto: ReservationBookDto) {
         bookWebService.reservationBook(dto)
+    }
+
+    /**
+     * 取消预定
+     */
+    @DeleteMapping("/v1/reservation")
+    fun cancelReservationBook(@RequestBody @Valid dto: CancelReservationBookDto) {
+        bookWebService.cancelReservationBook(dto)
     }
 
     /**

@@ -10,6 +10,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookMenuIsbnResultDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
@@ -428,6 +429,14 @@ class BookDomainService {
             }
         }
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
+    }
+
+    /**
+     * 取消预定
+     */
+    fun cancelReservationBook(dto: CancelReservationBookDto) {
+        //删除图书预订流水记录
+        bookReservationFlowRepository.deleteUserReservation(dto.userUid, dto.isbn)
     }
 
     /**
