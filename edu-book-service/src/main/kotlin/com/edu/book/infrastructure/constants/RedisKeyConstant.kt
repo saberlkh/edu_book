@@ -67,4 +67,14 @@ object RedisKeyConstant {
      */
     const val COMMENT_READ_CIRCLE_LOCK_KEY = "COMMENT:READ:CIRCLE:LOCK:KEY:"
 
+    /**
+     * 结束分布式锁
+     */
+    const val BORROW_BOOOK_LOCK_KEY = "BORROW:BOOK:LOCK:KEY:"
+
+    /**
+     * 预定分布式锁
+     */
+    const val RESERVATION_BOOOK_LOCK_KEY = "RESERVATION:BOOK:LOCK:KEY:"
+
 }

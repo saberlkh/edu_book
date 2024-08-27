@@ -76,8 +76,10 @@ import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
+import com.edu.book.infrastructure.constants.RedisKeyConstant.BORROW_BOOOK_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.COLLECT_BOOK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.MODIFY_BOOK_DETAIL_KEY
+import com.edu.book.infrastructure.constants.RedisKeyConstant.RESERVATION_BOOOK_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
@@ -437,36 +439,45 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun reservationBook(dto: ReservationBookDto) {
-        //判断图书是否有预定中
-        val currentBookReservationFlow = bookReservationFlowRepository.queryUserReservationByIsbn(dto.userUid, dto.isbn)
-        if (currentBookReservationFlow != null) throw BookReservationException()
-        //查询账户信息
-        val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
-        //查看班级、幼儿园信息
-        val classInfo = levelRepository.queryByUid(accountInfo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
-        //查询年级
-        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
-        //查询园区
-        val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
-        val kindergartenInfo = levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
-        val bookInfo = bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
-        if ((bookInfo.bookStorage ?: NumberUtils.INTEGER_ZERO) <= NumberUtils.INTEGER_ZERO ) throw BookStorageNotEnoughException()
-        //更新书本库存
-        val modifyBookPo = BookPo().apply {
-            this.uid = bookInfo.uid
-            this.bookStorage = bookInfo.bookStorage!! - NumberUtils.INTEGER_ONE
+        val lockKey = RESERVATION_BOOOK_LOCK_KEY + dto.isbn
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.isbn)
+            }
+            //判断图书是否有预定中
+            val currentBookReservationFlow = bookReservationFlowRepository.queryUserReservationByIsbn(dto.userUid, dto.isbn)
+            if (currentBookReservationFlow != null) throw BookReservationException()
+            //查询账户信息
+            val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
+            //查看班级、幼儿园信息
+            val classInfo = levelRepository.queryByUid(accountInfo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+            //查询年级
+            val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+            //查询园区
+            val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+            val kindergartenInfo = levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten) ?: throw ClassNotExistException()
+            val bookInfo = bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
+            if ((bookInfo.bookStorage ?: NumberUtils.INTEGER_ZERO) <= NumberUtils.INTEGER_ZERO ) throw BookStorageNotEnoughException()
+            //更新书本库存
+            val modifyBookPo = BookPo().apply {
+                this.uid = bookInfo.uid
+                this.bookStorage = bookInfo.bookStorage!! - NumberUtils.INTEGER_ONE
+            }
+            bookRepository.updateByUid(modifyBookPo)
+            //新增预定记录
+            val bookReservationFlowPo = BookReservationFlowPo().apply {
+                this.uid = UUIDUtil.createUUID()
+                this.reservationUserUid = dto.userUid
+                this.isbn = dto.isbn
+                this.reservationStatus = ReservationStatusEnum.Reservationing.status
+                this.gardenUid = gardenInfo.uid
+                this.kindergartenUid = kindergartenInfo.uid
+            }
+            bookReservationFlowRepository.save(bookReservationFlowPo)
+        } finally {
+            if (lock.isHeldByCurrentThread) lock.unlock()
         }
-        bookRepository.updateByUid(modifyBookPo)
-        //新增预定记录
-        val bookReservationFlowPo = BookReservationFlowPo().apply {
-            this.uid = UUIDUtil.createUUID()
-            this.reservationUserUid = dto.userUid
-            this.isbn = dto.isbn
-            this.reservationStatus = ReservationStatusEnum.Reservationing.status
-            this.gardenUid = gardenInfo.uid
-            this.kindergartenUid = kindergartenInfo.uid
-        }
-        bookReservationFlowRepository.save(bookReservationFlowPo)
     }
 
     /**
@@ -478,37 +489,46 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun borrowBook(dto: BorrowBookDto) {
-        //查询账户信息
-        val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
-        //查询用户信息
-        val accountUserRelationPo = bookAccountUserRelationRepository.findByAccountUid(accountInfo.accountUid) ?: throw AccountNotFoundException(dto.borrowCardId)
-        val userInfoPo = bookUserRepository.findByUserUid(accountUserRelationPo.userUid!!) ?: throw UserNotFoundException(accountUserRelationPo.userUid!!)
-        //查询书籍信息
-        val bookDetailInfo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
-        if (ObjectUtils.equals(bookDetailInfo.status, BookDetailStatusEnum.BORROWED.status)) throw BookBorrowedException()
-        //查看班级、幼儿园信息
-        val classInfo = levelRepository.queryByUid(accountInfo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
-        //查询年级
-        val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
-        //查询园区
-        val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
-        //判断账号的园区和书籍的园区是否对应的上
-        if (!StringUtils.equals(gardenInfo.uid, bookDetailInfo.gardenUid)) throw GardenIllegalException()
-        //查询书籍信息
-        val bookInfo = bookRepository.findByIsbnCode(bookDetailInfo.isbnCode) ?: throw BookInfoNotExistException()
-        //添加书籍借阅流水
-        val borrowFlowPo = buildBookBorrowFlowPo(bookInfo, bookDetailInfo, userInfoPo, dto, accountInfo, gardenInfo)
-        bookBorrowFlowRepository.save(borrowFlowPo)
-        //更新书籍状态
-        val updateBookDetailPo = BookDetailPo().apply {
-            this.status = BookDetailStatusEnum.BORROWED.status
-            this.outStorageTime = Date()
-        }
-        bookDetailRepository.updateByBookUid(updateBookDetailPo, dto.bookUid)
-        //更新图书预订状态
-        val bookReservationPo = bookReservationFlowRepository.queryUserReservationByIsbn(userInfoPo.uid!!, bookInfo.isbnCode!!)
-        if (bookReservationPo != null) {
-            bookReservationFlowRepository.modifyStatusByUid(bookReservationPo.uid!!, ReservationStatusEnum.Borrowed.status)
+        val lockKey = BORROW_BOOOK_LOCK_KEY + dto.bookUid
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.bookUid)
+            }
+            //查询账户信息
+            val accountInfo = bookAccountRepository.findByBorrwoCardId(dto.borrowCardId) ?: throw AccountNotFoundException(dto.borrowCardId)
+            //查询用户信息
+            val accountUserRelationPo = bookAccountUserRelationRepository.findByAccountUid(accountInfo.accountUid) ?: throw AccountNotFoundException(dto.borrowCardId)
+            val userInfoPo = bookUserRepository.findByUserUid(accountUserRelationPo.userUid!!) ?: throw UserNotFoundException(accountUserRelationPo.userUid!!)
+            //查询书籍信息
+            val bookDetailInfo = bookDetailRepository.findByBookUid(dto.bookUid) ?: throw BookDetailNotExistException()
+            if (ObjectUtils.equals(bookDetailInfo.status, BookDetailStatusEnum.BORROWED.status)) throw BookBorrowedException()
+            //查看班级、幼儿园信息
+            val classInfo = levelRepository.queryByUid(accountInfo.classUid!!, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
+            //查询年级
+            val gradeInfo = levelRepository.queryByUid(classInfo.parentUid!!, LevelTypeEnum.Grade) ?: throw ClassNotExistException()
+            //查询园区
+            val gardenInfo = levelRepository.queryByUid(gradeInfo.parentUid!!, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+            //判断账号的园区和书籍的园区是否对应的上
+            if (!StringUtils.equals(gardenInfo.uid, bookDetailInfo.gardenUid)) throw GardenIllegalException()
+            //查询书籍信息
+            val bookInfo = bookRepository.findByIsbnCode(bookDetailInfo.isbnCode) ?: throw BookInfoNotExistException()
+            //添加书籍借阅流水
+            val borrowFlowPo = buildBookBorrowFlowPo(bookInfo, bookDetailInfo, userInfoPo, dto, accountInfo, gardenInfo)
+            bookBorrowFlowRepository.save(borrowFlowPo)
+            //更新书籍状态
+            val updateBookDetailPo = BookDetailPo().apply {
+                this.status = BookDetailStatusEnum.BORROWED.status
+                this.outStorageTime = Date()
+            }
+            bookDetailRepository.updateByBookUid(updateBookDetailPo, dto.bookUid)
+            //更新图书预订状态
+            val bookReservationPo = bookReservationFlowRepository.queryUserReservationByIsbn(userInfoPo.uid!!, bookInfo.isbnCode!!)
+            if (bookReservationPo != null) {
+                bookReservationFlowRepository.modifyStatusByUid(bookReservationPo.uid!!, ReservationStatusEnum.Borrowed.status)
+            }
+        } finally {
+            if (lock.isHeldByCurrentThread) lock.unlock()
         }
     }
 
