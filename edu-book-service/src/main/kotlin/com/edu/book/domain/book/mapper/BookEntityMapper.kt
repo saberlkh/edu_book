@@ -356,7 +356,11 @@ object BookEntityMapper {
             this.subTitle = respDto.subtitle
             this.picUrl = respDto.pic
             this.publicPlace = respDto.pubplace
-            this.publicDate = DateUtil.convertToDate(respDto.pubdate, PATTREN_DATE3)
+            this.publicDate = if (respDto.pubdate == null) {
+                Date()
+            } else {
+                DateUtil.convertToDate(respDto.pubdate, PATTREN_DATE3)
+            }
             this.price = respDto.price?.toDouble()?.times(hundred)?.toInt()
             this.isbn10Code = respDto.isbn10
             this.isbnCode = respDto.isbn

@@ -573,8 +573,6 @@ class BookDomainService {
     fun findBookDetail(bookUid: String, userUid: String?): BookDetailDto {
         //查询图书详情信息
         val detailPo = bookDetailRepository.findByBookUid(bookUid) ?: throw BookDetailNotExistException()
-        //查询isbn信息
-        val bookPo = bookRepository.findByIsbnCode(detailPo.isbnCode) ?: throw BookInfoNotExistException()
         //查询分类信息
         val classifyList = bookDetailClassifyRepository.findClassifyList(bookUid, detailPo.isbnCode!!)
         //查询年龄段
