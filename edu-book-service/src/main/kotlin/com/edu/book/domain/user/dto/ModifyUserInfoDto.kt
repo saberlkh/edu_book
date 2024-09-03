@@ -19,4 +19,9 @@ class ModifyUserInfoDto: Serializable {
      */
     var photoUrl: String = ""
 
+    /**
+     * 班级Uid
+     */
+    var classUid: String = ""
+
 }

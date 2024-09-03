@@ -41,4 +41,9 @@ interface BookAccountRepository : IService<BookAccountPo> {
      */
     fun findByBorrwoCardId(borrowCardId: String): BookAccountPo?
 
+    /**
+     * 更新账户
+     */
+    fun modifyBookAccount(bookAccountPo: BookAccountPo)
+
 }

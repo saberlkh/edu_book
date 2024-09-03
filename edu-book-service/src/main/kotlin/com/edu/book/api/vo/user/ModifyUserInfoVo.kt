@@ -16,4 +16,9 @@ class ModifyUserInfoVo: Serializable {
     @NotBlank(message = "头像不能为空")
     var photoUrl: String = ""
 
+    /**
+     * 班级Uid
+     */
+    var classUid: String = ""
+
 }

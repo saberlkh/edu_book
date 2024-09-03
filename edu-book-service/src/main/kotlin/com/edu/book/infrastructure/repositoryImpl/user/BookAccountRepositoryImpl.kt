@@ -1,6 +1,7 @@
 package com.edu.book.infrastructure.repositoryImpl.user;
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.edu.book.domain.user.dto.PageQueryAccountParamDto
@@ -60,6 +61,15 @@ class BookAccountRepositoryImpl : ServiceImpl<BookAccountDao, BookAccountPo>(), 
             .eq(BookAccountPo::borrowCardId, borrowCardId)
             .limitOne()
         return bookAccountDao.selectOne(wrapper)
+    }
+
+    /**
+     * 更新账户
+     */
+    override fun modifyBookAccount(bookAccountPo: BookAccountPo) {
+        val wrapper = KtUpdateWrapper(BookAccountPo::class.java)
+            .eq(BookAccountPo::uid, bookAccountPo.uid)
+        update(bookAccountPo, wrapper)
     }
 
     /**

@@ -335,6 +335,11 @@ class UserDomainService {
             this.uid = userPo.uid
         }
         bookUserRepository.updateUserPoByUid(modifyUserPo)
+        //查询账户信息
+        val accountPo = bookAccountRepository.findByUid(userPo.associateAccount) ?: return
+        //更新账户信息
+        if (StringUtils.isNotBlank(dto.classUid)) accountPo.classUid = dto.classUid
+        bookAccountRepository.modifyBookAccount(accountPo)
     }
 
     /**
