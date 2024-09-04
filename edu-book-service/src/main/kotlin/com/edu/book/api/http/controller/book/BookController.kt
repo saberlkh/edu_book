@@ -20,6 +20,7 @@ import com.edu.book.domain.book.dto.AddBookMenuDto
 import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.DeleteBookMenuDto
+import com.edu.book.domain.book.dto.ModifyBookGardenDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnResultEntity
@@ -217,6 +218,14 @@ class BookController {
     @PostMapping("/v1/collect")
     fun collectBook(@RequestBody @Valid vo: BookCollectVo) {
         bookWebService.collectBook(vo)
+    }
+
+    /**
+     * 修改图书归属园区
+     */
+    @PostMapping("/v1/garden")
+    fun modifyBookGarden(@RequestBody @Valid dto: ModifyBookGardenDto) {
+        bookWebService.modifyBookGarden(dto)
     }
 
     /**

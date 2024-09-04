@@ -23,6 +23,7 @@ import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
+import com.edu.book.domain.book.dto.ModifyBookGardenDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
 import com.edu.book.domain.book.dto.PageQueryBookIsbnDto
@@ -197,6 +198,13 @@ class BookWebService {
             this.userUid = CurrentHolder.userDto!!.uid!!
         }
         bookAppService.collectBook(dto)
+    }
+
+    /**
+     * 修改图书所属园区
+     */
+    fun modifyBookGarden(dto: ModifyBookGardenDto) {
+        bookAppService.modifyBookGarden(dto)
     }
 
     /**

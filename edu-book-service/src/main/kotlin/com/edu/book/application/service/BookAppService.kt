@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
+import com.edu.book.domain.book.dto.ModifyBookGardenDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
@@ -80,6 +81,13 @@ class BookAppService {
      */
     fun pageQueryCollectList(param: PageQueryUserBookCollectParam): Page<PageQueryBookCollectDto> {
         return bookDomainService.pageQueryCollectList(param)
+    }
+
+    /**
+     * 修改图书所属园区
+     */
+    fun modifyBookGarden(dto: ModifyBookGardenDto) {
+        bookDomainService.modifyBookGarden(dto)
     }
 
     /**

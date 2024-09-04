@@ -14,6 +14,7 @@ import com.edu.book.domain.book.dto.CancelReservationBookDto
 import com.edu.book.domain.book.dto.ChoicenessPageQueryDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
+import com.edu.book.domain.book.dto.ModifyBookGardenDto
 import com.edu.book.domain.book.dto.ModifyBookMenuDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
 import com.edu.book.domain.book.dto.PageQueryBookDto
@@ -347,6 +348,16 @@ class BookDomainService {
                 lock.unlock()
             }
         }
+    }
+
+    /**
+     * 修改图书所属园区
+     */
+    fun modifyBookGarden(dto: ModifyBookGardenDto) {
+        //查询园区信息
+        val gardenInfo = levelRepository.queryByUid(dto.gardenUid, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        //修改图书信息
+        bookDetailRepository.batchModifyBookDetailGarden(dto.bookUids, dto.gardenUid)
     }
 
     /**

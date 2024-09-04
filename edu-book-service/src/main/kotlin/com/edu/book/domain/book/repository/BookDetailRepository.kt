@@ -51,6 +51,11 @@ interface BookDetailRepository : IService<BookDetailPo> {
     fun modifyBookCollectCount(bookUid: String, collectCount: Int)
 
     /**
+     * 修改图书园区
+     */
+    fun batchModifyBookDetailGarden(bookUids: List<String>, gardenUid: String)
+
+    /**
      * 分页查询图书精选
      */
     fun pageQueryBookChoiceness(dto: ChoicenessPageQueryDto): Page<BookDetailPo>

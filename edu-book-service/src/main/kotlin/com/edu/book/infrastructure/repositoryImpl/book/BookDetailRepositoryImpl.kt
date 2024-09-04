@@ -64,6 +64,16 @@ class BookDetailRepositoryImpl : ServiceImpl<BookDetailDao, BookDetailPo>(), Boo
     }
 
     /**
+     * 修改图书园区
+     */
+    override fun batchModifyBookDetailGarden(bookUids: List<String>, gardenUid: String) {
+        val wrapper = KtUpdateWrapper(BookDetailPo::class.java)
+            .`in`(BookDetailPo::bookUid, bookUids)
+            .set(BookDetailPo::gardenUid, gardenUid)
+        update(wrapper)
+    }
+
+    /**
      * 分页查询图书精选
      */
     override fun pageQueryBookChoiceness(dto: ChoicenessPageQueryDto): Page<BookDetailPo> {
