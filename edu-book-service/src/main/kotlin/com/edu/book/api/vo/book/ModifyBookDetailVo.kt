@@ -135,4 +135,9 @@ class ModifyBookDetailVo: Serializable {
     @NotEmpty(message = "年龄段不能为空")
     var ageGroups: List<Int> = emptyList()
 
+    /**
+     * 音频文件
+     */
+    var bookAudioUrl: String? = null
+
 }

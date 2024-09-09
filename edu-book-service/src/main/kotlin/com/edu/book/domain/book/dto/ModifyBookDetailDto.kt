@@ -129,4 +129,9 @@ class ModifyBookDetailDto: Serializable {
      */
     var ageGroups: List<Int> = emptyList()
 
+    /**
+     * 音频文件
+     */
+    var bookAudioUrl: String? = null
+
 }
