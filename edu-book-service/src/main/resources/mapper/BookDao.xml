@@ -35,7 +35,8 @@
         detail.c_isbn_code as isbn,
         detail.c_book_uid as bookUid,
         detail.c_garden as garden,
-        detail.c_status as bookStatus
+        detail.c_status as bookStatus,
+        detail.c_book_audio_url as bookAudioUrl
     </sql>
 
     <!--fun getIsbnPageTotal(dto: PageQueryBookIsbnDto): Int-->

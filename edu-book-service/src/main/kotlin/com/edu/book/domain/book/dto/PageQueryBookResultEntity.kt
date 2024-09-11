@@ -135,4 +135,9 @@ class PageQueryBookResultEntity: Serializable {
      */
     var ageGroups: List<Int> = emptyList()
 
+    /**
+     * 音频地址
+     */
+    var bookAudioUrl: String? = null
+
 }

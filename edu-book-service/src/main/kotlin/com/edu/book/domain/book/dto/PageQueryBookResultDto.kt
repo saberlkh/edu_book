@@ -134,4 +134,9 @@ class PageQueryBookResultDto: Serializable {
      */
     var ageGroups: List<BookAgeGroupDto> = emptyList()
 
+    /**
+     * 音频地址
+     */
+    var bookAudioUrl: String? = null
+
 }
