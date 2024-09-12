@@ -26,4 +26,14 @@ class PageQueryBookIsbnDto: Serializable {
      */
     var pageSize: Int = twenty
 
+    /**
+     * 标题
+     */
+    var title: String? = null
+
+    /**
+     * isbn
+     */
+    var isbn: String? = null
+
 }

@@ -230,8 +230,8 @@ class BookAppService {
     /**
      * 查询isbn列表
      */
-    fun getIsbnList(dto: PageQueryBookIsbnDto, isbn: String?): Page<PageQueryBookIsbnResultEntity> {
-        return bookDomainService.getIsbnList(dto, isbn)
+    fun getIsbnList(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
+        return bookDomainService.getIsbnList(dto)
     }
 
 }

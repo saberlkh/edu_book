@@ -786,7 +786,7 @@ class BookDomainService {
     /**
      * 查询isbn列表
      */
-    fun getIsbnList(dto: PageQueryBookIsbnDto, isbn: String?): Page<PageQueryBookIsbnResultEntity> {
+    fun getIsbnList(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
         val pageQuery = bookRepository.pageQueryBookIsbns(dto)
         if (pageQuery.records.isNullOrEmpty()) return Page()
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), pageQuery.records)

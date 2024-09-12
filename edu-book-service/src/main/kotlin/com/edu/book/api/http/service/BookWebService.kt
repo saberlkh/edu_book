@@ -272,8 +272,8 @@ class BookWebService {
     /**
      * 查询isbn列表
      */
-    fun getIsbnList(dto: PageQueryBookIsbnDto, isbn: String?): Page<PageQueryBookIsbnResultEntity> {
-        val pageResult = bookAppService.getIsbnList(dto, isbn)
+    fun getIsbnList(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
+        val pageResult = bookAppService.getIsbnList(dto)
         if (pageResult.result.isNullOrEmpty()) return Page()
         return Page(dto.page, dto.pageSize, pageResult.totalCount, pageResult.result!!)
     }

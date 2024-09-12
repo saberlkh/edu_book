@@ -241,7 +241,7 @@ class BookController {
      */
     @GetMapping("/v1/isbn")
     fun getIsbnList(dto: PageQueryBookIsbnDto): Page<PageQueryBookIsbnResultEntity> {
-        return bookWebService.getIsbnList(dto, null)
+        return bookWebService.getIsbnList(dto)
     }
 
 }
