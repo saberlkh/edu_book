@@ -135,7 +135,8 @@ object UserEntityMapper {
     /**
      * 构建实体类
      */
-    fun bindBindAccountRespDto(accountPo: BookAccountPo, userPo: BookUserPo, rolePermissionRelations: List<BookRolePermissionRelationPo>, accountRoleRelationPo: BookAccountRoleRelationPo?, gardenInfo: LevelPo?): BindAccountRespDto {
+    fun bindBindAccountRespDto(accountPo: BookAccountPo, userPo: BookUserPo, rolePermissionRelations: List<BookRolePermissionRelationPo>, accountRoleRelationPo: BookAccountRoleRelationPo?, gardenInfo: LevelPo?,
+                               kindergartenInfo: LevelPo?): BindAccountRespDto {
         return BindAccountRespDto().apply {
             this.bind = BooleanUtils.toInteger(StringUtils.isNotBlank(userPo.associateAccount))
             this.phone = userPo.phone ?: ""
@@ -151,6 +152,7 @@ object UserEntityMapper {
             this.gardenUid = gardenInfo?.uid ?: ""
             this.gardenName = gardenInfo?.levelName ?: ""
             this.photoUrl = userPo.photoUrl ?: ""
+            this.kindergartenUid = kindergartenInfo?.uid ?: ""
         }
     }
 

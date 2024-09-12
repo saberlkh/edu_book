@@ -313,11 +313,17 @@ class UserDomainService {
             } else {
                 null
             }
+            //查询幼儿园
+            val kindergartenInfo = if (gardenInfo == null) {
+                null
+            } else {
+                levelRepository.queryByUid(gardenInfo.parentUid!!, LevelTypeEnum.Kindergarten)
+            }
             //获取角色和权限信息
             val accountRoleRelationPo = bookAccountRoleRelationRepository.findByAccountUid(accountPo.accountUid)
             val rolePermissionRelations = bookRolePermissionRelationRepository.findListByRoleUid(accountRoleRelationPo?.roleUid)
             val finalUserPo = bookUserRepository.findByPhone(dto.phone) ?: throw UserNotFoundException(dto.phone)
-            return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo, gardenInfo)
+            return bindBindAccountRespDto(accountPo, finalUserPo, rolePermissionRelations, accountRoleRelationPo, gardenInfo, kindergartenInfo)
         } finally {
             if (lock.isHeldByCurrentThread) {
                 lock.unlock()

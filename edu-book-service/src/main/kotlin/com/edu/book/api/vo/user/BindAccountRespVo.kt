@@ -85,4 +85,9 @@ class BindAccountRespVo: Serializable {
      */
     var photoUrl: String = ""
 
+    /**
+     * 幼儿园
+     */
+    var kindergartenUid: String = ""
+
 }
