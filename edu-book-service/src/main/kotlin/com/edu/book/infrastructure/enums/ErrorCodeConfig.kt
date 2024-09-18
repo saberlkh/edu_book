@@ -94,6 +94,8 @@ enum class ErrorCodeConfig(override val errorCode: Int,
 
     BOOK_RESERVATION(600023, "图书已经预定中"),
 
+    WECHAT_CHECK_FAIL(600024, "微信校验信息失败"),
+
     ;
 
 }

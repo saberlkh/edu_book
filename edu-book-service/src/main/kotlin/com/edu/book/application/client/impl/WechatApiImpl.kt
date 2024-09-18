@@ -5,12 +5,20 @@ import com.alibaba.fastjson.TypeReference
 import com.edu.book.api.vo.wechat.WechatApiLoginRespVo
 import com.edu.book.application.client.OkHttpClientManager
 import com.edu.book.application.client.WechatApi
+import com.edu.book.domain.wechat.dto.WechatCheckMessageDto
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.WechatConstant
+import com.edu.book.infrastructure.constants.WechatConstant.CONTENT
 import com.edu.book.infrastructure.constants.WechatConstant.PARAM_ACCESS_TOKEN
 import com.edu.book.infrastructure.constants.WechatConstant.PARAM_CODE
+import com.edu.book.infrastructure.constants.WechatConstant.VERSION
+import com.edu.book.infrastructure.constants.WechatConstant.openid
+import com.edu.book.infrastructure.constants.WechatConstant.scene
+import com.edu.book.infrastructure.dto.wechat.CheckMessageResultDto
 import com.edu.book.infrastructure.dto.wechat.WechatGetAccessTokenApiDto
 import com.edu.book.infrastructure.dto.wechat.WechatGetPhoneApiDto
+import org.apache.commons.lang3.math.NumberUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -60,6 +68,26 @@ class WechatApiImpl: WechatApi {
         )
         val httpResult = okHttpClientManager.get(systemConfig.wechatApiDomain, systemConfig.wechatApiLoginUrl, emptyMap(), urlParamMap, object: TypeReference<WechatApiLoginRespVo>() {})
         logger.info("调用微信登录http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
+        return httpResult
+    }
+
+    /**
+     * 微信信息校验接口
+     */
+    override fun checkMessage(dto: WechatCheckMessageDto): CheckMessageResultDto? {
+        val urlMap = mapOf(
+            PARAM_ACCESS_TOKEN to dto.accessToken
+        )
+        val jsonBodyMap = mapOf(
+            CONTENT to dto.content,
+            VERSION to NumberUtils.INTEGER_TWO,
+            scene to NumberUtils.INTEGER_TWO,
+            openid to dto.openId
+        )
+        val httpResult = okHttpClientManager.postJson(
+            systemConfig.wechatApiDomain, systemConfig.wechatApiCheckUrl, emptyMap(), urlMap, jsonBodyMap, object: TypeReference<CheckMessageResultDto>() {}
+        )
+        logger.info("微信信息校验接口http接口 返回 httpResult:${JSON.toJSONString(httpResult)}")
         return httpResult
     }
 

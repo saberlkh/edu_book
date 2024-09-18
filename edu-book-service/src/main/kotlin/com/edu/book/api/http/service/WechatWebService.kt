@@ -4,7 +4,10 @@ import com.edu.book.api.vo.wechat.WechatGetPhoneVo
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
 import com.edu.book.application.client.WechatApi
 import com.edu.book.application.service.WechatAppService
+import com.edu.book.domain.wechat.dto.WechatCheckMessageDto
 import com.edu.book.infrastructure.config.SystemConfig
+import com.edu.book.infrastructure.dto.wechat.CheckMessageResultDto
+import com.edu.book.infrastructure.dto.wechat.WechatCheckMessageHttpRespDto
 import com.edu.book.infrastructure.enums.ErrorCodeConfig
 import com.edu.book.infrastructure.exception.WebAppException
 import org.apache.commons.lang3.ObjectUtils
@@ -43,6 +46,18 @@ class WechatWebService {
             this.sessionKey = httpResult.session_key ?: ""
             this.openId = httpResult.openid ?: ""
             this.unionId = httpResult.unionid ?: ""
+        }
+    }
+
+    /**
+     * 微信校验
+     */
+    fun wechatCheckMessage(dto: WechatCheckMessageDto): WechatCheckMessageHttpRespDto {
+        val httpResult = wechatApi.checkMessage(dto)
+        if (httpResult == null || ObjectUtils.notEqual(httpResult.errcode, NumberUtils.INTEGER_ZERO)) throw WebAppException(ErrorCodeConfig.WECHAT_CHECK_FAIL)
+        return WechatCheckMessageHttpRespDto().apply {
+            this.detail = httpResult.detail
+            this.result = httpResult.result
         }
     }
 

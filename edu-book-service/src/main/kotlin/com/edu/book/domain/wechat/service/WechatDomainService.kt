@@ -1,4 +1,4 @@
-package com.edu.book.domain.wechat
+package com.edu.book.domain.wechat.service
 
 import com.edu.book.infrastructure.repositoryImpl.cache.repo.WechatCacheRepo
 import org.springframework.beans.factory.annotation.Autowired

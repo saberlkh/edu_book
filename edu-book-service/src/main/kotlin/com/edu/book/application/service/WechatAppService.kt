@@ -1,6 +1,6 @@
 package com.edu.book.application.service
 
-import com.edu.book.domain.wechat.WechatDomainService
+import com.edu.book.domain.wechat.service.WechatDomainService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

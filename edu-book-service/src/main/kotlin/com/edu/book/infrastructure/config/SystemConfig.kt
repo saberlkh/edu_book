@@ -31,6 +31,12 @@ class SystemConfig {
     var wechatApiDomain: String = ""
 
     /**
+     * 检黄建暴api
+     */
+    @Value("\${wechat.api.check}")
+    var wechatApiCheckUrl: String = ""
+
+    /**
      * 微信登录api
      */
     @Value("\${wechat.api.login.url}")

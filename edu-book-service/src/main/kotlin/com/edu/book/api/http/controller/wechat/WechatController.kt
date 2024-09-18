@@ -4,11 +4,15 @@ import com.edu.book.api.http.service.WechatWebService
 import com.edu.book.api.vo.wechat.WechatGetAccessTokenVo
 import com.edu.book.api.vo.wechat.WechatGetPhoneVo
 import com.edu.book.api.vo.wechat.WechatLoginRespVo
+import com.edu.book.domain.wechat.dto.WechatCheckMessageDto
 import com.edu.book.infrastructure.anno.Response
+import com.edu.book.infrastructure.dto.wechat.WechatCheckMessageHttpRespDto
 import com.edu.book.infrastructure.response.ResponseVo
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -51,6 +55,14 @@ class WechatController {
     @GetMapping("/v1/phone")
     fun getWechatPhone(@RequestParam accessToken: String, @RequestParam code: String): ResponseVo<WechatGetPhoneVo> {
         return ResponseVo(wechatWebService.getWechatPhone(accessToken, code))
+    }
+
+    /**
+     * 校验消息
+     */
+    @PostMapping("/v1/check")
+    fun wechatCheckMessage(@RequestBody dto: WechatCheckMessageDto): ResponseVo<WechatCheckMessageHttpRespDto> {
+        return ResponseVo(wechatWebService.wechatCheckMessage(dto))
     }
 
 }

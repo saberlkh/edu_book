@@ -42,4 +42,12 @@ object WechatConstant {
      */
     const val PARAM_CODE = "code"
 
+    const val CONTENT = "content"
+
+    const val VERSION = "version"
+
+    const val scene = "scene"
+
+    const val openid = "openid"
+
 }
