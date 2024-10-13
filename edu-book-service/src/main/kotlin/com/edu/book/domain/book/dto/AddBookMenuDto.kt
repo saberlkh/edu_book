@@ -38,6 +38,7 @@ class AddBookMenuDto: Serializable {
     /**
      * 园区uid
      */
+    @NotBlank(message = "园区不能为空")
     var gardenUid: String? = null
 
     /**
