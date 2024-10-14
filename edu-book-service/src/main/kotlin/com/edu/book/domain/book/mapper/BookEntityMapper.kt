@@ -8,6 +8,7 @@ import com.edu.book.domain.book.dto.BookDetailDto
 import com.edu.book.domain.book.dto.BookDto
 import com.edu.book.domain.book.dto.BookSellDto
 import com.edu.book.domain.book.dto.BorrowBookDto
+import com.edu.book.domain.book.dto.BorrowUserDto
 import com.edu.book.domain.book.dto.CollectBookDto
 import com.edu.book.domain.book.dto.ModifyBookDetailDto
 import com.edu.book.domain.book.dto.PageQueryBookCollectDto
@@ -230,7 +231,12 @@ object BookEntityMapper {
     /**
      * 构建实体类
      */
-    fun buildPageQueryBorrowBookResultDto(borrowFlowPo: BookBorrowFlowPo, bookDetailPo: BookDetailPo?): PageQueryBorrowBookResultDto {
+    fun buildPageQueryBorrowBookResultDto(borrowFlowPo: BookBorrowFlowPo, bookDetailPo: BookDetailPo?,
+                                          userInfoMap: Map<String, BookUserPo>, accountInfoMap: Map<String, BookAccountPo>,
+                                          gardenInfoMap: Map<String, LevelPo>): PageQueryBorrowBookResultDto {
+        val userInfo = userInfoMap.get(borrowFlowPo.borrowUserUid)
+        val accountInfo = accountInfoMap.get(userInfo?.associateAccount)
+        val gardenInfo = gardenInfoMap.get(borrowFlowPo.gardenUid)
         return PageQueryBorrowBookResultDto().apply {
             this.bookUid = borrowFlowPo.bookUid!!
             this.picUrl = bookDetailPo?.picUrl
@@ -249,6 +255,12 @@ object BookEntityMapper {
                 borrowFlowPo.borrowStatus
             }
             this.subTitle = bookDetailPo?.subTitle
+            this.borrowUser = BorrowUserDto().apply {
+                this.userUid = borrowFlowPo.borrowUserUid ?: ""
+                this.nickname = accountInfo?.accountNickName ?: ""
+                this.gardenUid = borrowFlowPo.gardenUid ?: ""
+                this.gardenName = gardenInfo?.levelName ?: ""
+            }
         }
     }
 

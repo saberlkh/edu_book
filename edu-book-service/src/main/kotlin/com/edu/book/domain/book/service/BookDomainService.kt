@@ -389,9 +389,19 @@ class BookDomainService {
         val bookUids = pageQuery.records.mapNotNull { it.bookUid }
         val bookDetailPos = bookDetailRepository.findByBookUids(bookUids) ?: emptyList()
         val bookDetailPoMap = bookDetailPos.associateBy { it.bookUid!! }
+        //查询用户信息
+        val userUids = pageQuery.records.mapNotNull { it.borrowUserUid }
+        val userInfoMap = bookUserRepository.batchQueryByUserUids(userUids)?.associateBy { it.uid!! } ?: emptyMap()
+        //查询账户信息
+        val accountUids = userInfoMap.mapNotNull { it.value.associateAccount }
+        val accountInfoMap = bookAccountRepository.batchQueryByAccountUids(accountUids)?.associateBy { it.accountUid!! } ?: emptyMap()
+        //查询园区
+        val gardenUids = pageQuery.records.mapNotNull { it.gardenUid }
+        val gardenInfos = levelRepository.batchQueryByUids(gardenUids, LevelTypeEnum.Garden) ?: throw ClassNotExistException()
+        val gardenInfoMap = gardenInfos.associateBy { it.uid!! }
         val result = pageQuery.records.mapNotNull {
             val bookDetailPo = bookDetailPoMap.get(it.bookUid)
-            buildPageQueryBorrowBookResultDto(it, bookDetailPo)
+            buildPageQueryBorrowBookResultDto(it, bookDetailPo, userInfoMap, accountInfoMap, gardenInfoMap)
         }
         return Page(dto.page, dto.pageSize, pageQuery.total.toInt(), result)
     }

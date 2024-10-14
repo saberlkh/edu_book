@@ -55,4 +55,21 @@ class PageQueryBorrowBookResultDto: Serializable {
      */
     var returnDay: Int = NumberUtils.INTEGER_ZERO
 
+    /**
+     * 借阅人
+     */
+    var borrowUser: BorrowUserDto? = null
+
+}
+
+class BorrowUserDto: Serializable {
+
+    var userUid: String = ""
+
+    var nickname: String = ""
+
+    var gardenUid: String = ""
+
+    var gardenName: String = ""
+
 }

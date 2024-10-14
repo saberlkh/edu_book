@@ -55,4 +55,21 @@ class PageQueryBorrowBookResultVo: Serializable {
      */
     var subtitle: String? = null
 
+    /**
+     * 借阅人
+     */
+    var borrowUser: BorrowUserVo? = null
+
+}
+
+class BorrowUserVo: Serializable {
+
+    var userUid: String = ""
+
+    var nickname: String = ""
+
+    var gardenUid: String = ""
+
+    var gardenName: String = ""
+
 }
