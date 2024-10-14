@@ -409,6 +409,7 @@ class BookDomainService {
         val userInfoMap = bookUserRepository.batchQueryByUserUids(pageQueryResult.mapNotNull { it.reservationUserUid })?.associateBy { it.uid!! } ?: emptyMap()
         //查询账户信息
         val accountInfos = bookAccountRepository.batchQueryByAccountUids(userInfoMap.mapNotNull { it.value.associateAccount }) ?: emptyList()
+        val accountInfoMap = accountInfos.associateBy { it.accountUid!! }
         //查询园区信息
         //查看班级、幼儿园信息
         val classInfos = levelRepository.batchQueryByUids(accountInfos.mapNotNull { it.classUid!! }, LevelTypeEnum.Classroom) ?: throw ClassNotExistException()
@@ -425,6 +426,7 @@ class BookDomainService {
             val bookInfo = bookInfoMap.get(it.isbn)
             val userInfo = userInfoMap.get(it.reservationUserUid)
             val gardenInfo = gardenInfoMap.get(it.gardenUid)
+            val accountInfo = accountInfoMap.get(userInfo?.associateAccount)
             ReservationBookPageResultDto().apply {
                 this.isbn = it.isbn!!
                 this.title = bookInfo?.title ?: ""
@@ -433,7 +435,7 @@ class BookDomainService {
                 this.pic = bookInfo?.picUrl ?: ""
                 this.reservationUser = ReservationUserDto().apply {
                     this.userUid = userInfo?.uid ?: ""
-                    this.nickname = userInfo?.nickName ?: ""
+                    this.nickname = accountInfo?.accountNickName ?: ""
                     this.gardenUid = it.gardenUid ?: ""
                     this.gardenName = gardenInfo?.levelName ?: ""
                 }
