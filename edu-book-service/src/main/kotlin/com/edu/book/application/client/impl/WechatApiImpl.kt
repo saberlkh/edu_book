@@ -7,7 +7,6 @@ import com.edu.book.application.client.OkHttpClientManager
 import com.edu.book.application.client.WechatApi
 import com.edu.book.domain.wechat.dto.WechatCheckMessageDto
 import com.edu.book.infrastructure.config.SystemConfig
-import com.edu.book.infrastructure.constants.Constants
 import com.edu.book.infrastructure.constants.WechatConstant
 import com.edu.book.infrastructure.constants.WechatConstant.CONTENT
 import com.edu.book.infrastructure.constants.WechatConstant.PARAM_ACCESS_TOKEN
