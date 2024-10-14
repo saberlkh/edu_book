@@ -448,8 +448,25 @@ class BookDomainService {
      * 取消预定
      */
     fun cancelReservationBook(dto: CancelReservationBookDto) {
-        //删除图书预订流水记录
-        bookReservationFlowRepository.deleteUserReservation(dto.userUid, dto.isbn)
+        val lockKey = RESERVATION_BOOOK_LOCK_KEY + dto.isbn
+        val lock = redissonClient.getLock(lockKey)
+        try {
+            if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
+                throw ConcurrentCreateInteractRoomException(dto.isbn)
+            }
+            //查询图书信息
+            val bookInfo = bookRepository.findByIsbnCode(dto.isbn) ?: throw BookInfoNotExistException()
+            //删除图书预订流水记录
+            bookReservationFlowRepository.deleteUserReservation(dto.userUid, dto.isbn)
+            //更新书本库存
+            val modifyBookPo = BookPo().apply {
+                this.uid = bookInfo.uid
+                this.bookStorage = (bookInfo.bookStorage ?: NumberUtils.INTEGER_ZERO) + NumberUtils.INTEGER_ONE
+            }
+            bookRepository.updateByUid(modifyBookPo)
+        } finally {
+            if (lock.isHeldByCurrentThread) lock.unlock()
+        }
     }
 
     /**
