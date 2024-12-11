@@ -235,6 +235,7 @@ class BookWebService {
      */
     fun pageQueryBorrowFlow(vo: PageQueryBorrowBookVo): Page<PageQueryBorrowBookResultVo> {
         val paramDto = MapperUtil.map(PageQueryBorrowBookDto::class.java, vo)
+        paramDto.userUid = CurrentHolder.userDto!!.uid
         val pageResult = bookAppService.pageQueryBorrowFlow(paramDto)
         if (pageResult.result.isNullOrEmpty()) return Page()
         val finalResult = pageResult.result!!.map {
