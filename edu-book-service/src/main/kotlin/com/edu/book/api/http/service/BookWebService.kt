@@ -78,6 +78,7 @@ class BookWebService {
      */
     fun cancelReservationBook(dto: CancelReservationBookDto) {
         dto.userUid = CurrentHolder.userDto!!.uid!!
+        //取消预定
         bookAppService.cancelReservationBook(dto)
     }
 
