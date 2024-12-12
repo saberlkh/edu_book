@@ -83,7 +83,7 @@ class PageQueryAccountVo: Serializable {
     /**
      * 在借书籍数量
      */
-    var borrowBoookCount: Int = NumberUtils.INTEGER_ZERO
+    var borrowBookCount: Int = NumberUtils.INTEGER_ZERO
 
     /**
      * 超时未归还数量

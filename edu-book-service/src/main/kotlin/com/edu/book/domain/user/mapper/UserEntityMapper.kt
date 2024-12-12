@@ -62,7 +62,7 @@ object UserEntityMapper {
             this.kindergartenName = kindergartenInfo.levelName
             this.gardenName = gardenInfo.levelName
             this.className = classInfo.levelName
-            this.borrowBoookCount = bookBorrowFlows.filter { (it.returnTime?.time ?: NumberUtils.LONG_ZERO) >= Date().time }.size
+            this.borrowBookCount = bookBorrowFlows.filter { (it.returnTime?.time ?: NumberUtils.LONG_ZERO) >= Date().time }.size
             this.overTimeBookCount = bookBorrowFlows.filter { (it.returnTime?.time ?: NumberUtils.LONG_ZERO) < Date().time }.size
         }
     }
