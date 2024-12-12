@@ -78,10 +78,10 @@ import com.edu.book.domain.user.repository.BookAccountUserRelationRepository
 import com.edu.book.domain.user.repository.BookUserRepository
 import com.edu.book.infrastructure.config.SystemConfig
 import com.edu.book.infrastructure.constants.Constants
-import com.edu.book.infrastructure.constants.RedisKeyConstant.BORROW_BOOOK_LOCK_KEY
+import com.edu.book.infrastructure.constants.RedisKeyConstant.BORROW_BOOK_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.COLLECT_BOOK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.MODIFY_BOOK_DETAIL_KEY
-import com.edu.book.infrastructure.constants.RedisKeyConstant.RESERVATION_BOOOK_LOCK_KEY
+import com.edu.book.infrastructure.constants.RedisKeyConstant.RESERVATION_BOOK_LOCK_KEY
 import com.edu.book.infrastructure.constants.RedisKeyConstant.SCAN_BOOK_CODE_KEY
 import com.edu.book.infrastructure.po.book.BookCollectFlowPo
 import com.edu.book.infrastructure.po.book.BookDetailPo
@@ -458,7 +458,7 @@ class BookDomainService {
      * 取消预定
      */
     fun cancelReservationBook(dto: CancelReservationBookDto) {
-        val lockKey = RESERVATION_BOOOK_LOCK_KEY + dto.isbn
+        val lockKey = RESERVATION_BOOK_LOCK_KEY + dto.isbn
         val lock = redissonClient.getLock(lockKey)
         try {
             if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
@@ -488,7 +488,7 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun reservationBook(dto: ReservationBookDto) {
-        val lockKey = RESERVATION_BOOOK_LOCK_KEY + dto.isbn
+        val lockKey = RESERVATION_BOOK_LOCK_KEY + dto.isbn
         val lock = redissonClient.getLock(lockKey)
         try {
             if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {
@@ -538,7 +538,7 @@ class BookDomainService {
      */
     @Transactional(rollbackFor = [Exception::class])
     fun borrowBook(dto: BorrowBookDto) {
-        val lockKey = BORROW_BOOOK_LOCK_KEY + dto.bookUid
+        val lockKey = BORROW_BOOK_LOCK_KEY + dto.bookUid
         val lock = redissonClient.getLock(lockKey)
         try {
             if (!lock.tryLock(systemConfig.distributedLockWaitTime, systemConfig.distributedLockReleaseTime, TimeUnit.MILLISECONDS)) {

@@ -70,11 +70,11 @@ object RedisKeyConstant {
     /**
      * 结束分布式锁
      */
-    const val BORROW_BOOOK_LOCK_KEY = "BORROW:BOOK:LOCK:KEY:"
+    const val BORROW_BOOK_LOCK_KEY = "BORROW:BOOK:LOCK:KEY:"
 
     /**
      * 预定分布式锁
      */
-    const val RESERVATION_BOOOK_LOCK_KEY = "RESERVATION:BOOK:LOCK:KEY:"
+    const val RESERVATION_BOOK_LOCK_KEY = "RESERVATION:BOOK:LOCK:KEY:"
 
 }
