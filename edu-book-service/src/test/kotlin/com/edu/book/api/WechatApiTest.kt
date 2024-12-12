@@ -1,6 +1,6 @@
 package com.edu.book.api
 
-import com.edu.book.EduBoolServiceApplication
+import com.edu.book.EduBooKServiceApplication
 import com.edu.book.application.client.IsbnApi
 import com.edu.book.application.client.WechatApi
 import com.edu.book.domain.user.dto.CreateAccountDto
@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner
  */
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [EduBoolServiceApplication::class])
+@SpringBootTest(classes = [EduBooKServiceApplication::class])
 class WechatApiTest {
 
     @Autowired
