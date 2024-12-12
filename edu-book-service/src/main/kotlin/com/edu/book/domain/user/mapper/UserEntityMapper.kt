@@ -112,8 +112,8 @@ object UserEntityMapper {
             this.uid = uid
             this.accountUid = accountUid
             this.password = GeneratorShortUidUtil.generateShortUUID()
-            this.accountName = kindergartenInfo.levelName + "_" + classInfo.levelName + "_" + dto.studentName
-            this.accountNickName = accountName
+            this.accountName = Constants.ACCOUNT_NAME_PREFIX + dto.studentName
+            this.accountNickName = this.accountName
             this.expireTime = if (openBorrowService) {
                 DateUtil.addMonths(Date(), number_five)
             } else {

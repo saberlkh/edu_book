@@ -32,4 +32,9 @@ object Constants {
 
     const val seven = 7
 
+    /**
+     * 前缀
+     */
+    const val ACCOUNT_NAME_PREFIX = "绘比星绘本馆_"
+
 }
