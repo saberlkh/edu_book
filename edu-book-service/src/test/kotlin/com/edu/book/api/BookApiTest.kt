@@ -1,6 +1,6 @@
 package com.edu.book.api
 
-import com.edu.book.EduBooKServiceApplication
+import com.edu.book.EduBookServiceApplication
 import com.edu.book.application.task.BookBorrowStatusUnsetTask
 import com.edu.book.domain.book.service.BookDomainService
 import org.junit.Test
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner
  */
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [EduBooKServiceApplication::class])
+@SpringBootTest(classes = [EduBookServiceApplication::class])
 class BookApiTest {
 
     @Autowired

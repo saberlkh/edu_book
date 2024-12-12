@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @SpringBootApplication(scanBasePackages = ["com.edu"])
 @EnableScheduling
 @EnableTransactionManagement
-class EduBooKServiceApplication {
+class EduBookServiceApplication {
 
 
 }
 fun main(args: Array<String>) {
-    runApplication<EduBooKServiceApplication>(*args)
+    runApplication<EduBookServiceApplication>(*args)
 }
