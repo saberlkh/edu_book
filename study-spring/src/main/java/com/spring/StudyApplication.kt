@@ -18,6 +18,8 @@ class StudyApplication<T> {
 
     private var singletonObjects: MutableMap<String, Any?> = HashMap()
 
+    private var beanPostProcessorList: MutableList<BeanPostProcessor> = ArrayList()
+
     private fun scanBean(appConfig: Class<T>) {
         if (appConfig.isAnnotationPresent(ComponentScan::class.java)) {
             val componentScan = appConfig.getAnnotation(ComponentScan::class.java)
@@ -34,6 +36,10 @@ class StudyApplication<T> {
                         .replace("/", ".")
                     val clazz = classLoader.loadClass(finalAbsolutePath)
                     if (clazz.isAnnotationPresent(Component::class.java)) {
+                        if (BeanPostProcessor::class.java.isAssignableFrom(clazz)) {
+                            val instance = clazz.getConstructor().newInstance() as BeanPostProcessor
+                            beanPostProcessorList.add(instance)
+                        }
                         val componentAnnotation = clazz.getAnnotation(Component::class.java)
                         val beanName = componentAnnotation.value
                         val finalBeanName = if (StringUtils.isBlank(beanName)) {
@@ -87,6 +93,12 @@ class StudyApplication<T> {
                 field.isAccessible = true
                 field.set(instance, getBean(field.name))
             }
+        }
+        if (instance is InitializingBean) {
+            instance.afterPropertiesSet()
+        }
+        beanPostProcessorList.forEach {
+            it.postProcessAfterInitialization(beanName, instance)
         }
         return instance
     }
