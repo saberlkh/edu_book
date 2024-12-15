@@ -12,6 +12,7 @@
     <modules>
         <module>edu-book-service</module>
         <module>edu-book-service-api</module>
+        <module>study-spring</module>
     </modules>
 
     <parent>
