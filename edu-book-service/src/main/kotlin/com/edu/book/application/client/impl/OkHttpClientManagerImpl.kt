@@ -10,6 +10,7 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.io.IOException
@@ -28,7 +29,7 @@ class OkHttpClientManagerImpl : OkHttpClientManager {
     private lateinit var client: OkHttpClient
 
     companion object {
-        private val log = org.slf4j.LoggerFactory.getLogger(OkHttpClientManagerImpl::class.java)
+        private val log = LoggerFactory.getLogger(OkHttpClientManagerImpl::class.java)
         private val JSON_TYPE = MediaType.parse("application/json;charset=utf-8")
         private val X_WWW_FORM_URLENCODED_TYPE = MediaType.parse("application/x-www-form-urlencoded;charset=utf-8")
     }
