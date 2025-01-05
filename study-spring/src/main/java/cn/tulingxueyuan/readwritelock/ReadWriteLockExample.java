@@ -36,6 +36,7 @@ public class ReadWriteLockExample {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            write(2, "ll12312");
             return data[index];
         } finally {
             System.out.println(Thread.currentThread().getName()+"释放读锁");
@@ -47,8 +48,8 @@ public class ReadWriteLockExample {
         ReadWriteLockExample rwl = new ReadWriteLockExample();
         // 测试读读，读写，写写场景
         new Thread(()->{
-            //rwl.read(2);
-            rwl.write(2,"rwl");
+            rwl.read(2);
+//            rwl.write(2,"rwl");
           //  rwl.read(2);
         }).start();
 //        new Thread(()->rwl.read(2)).start();
