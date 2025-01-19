@@ -17,7 +17,7 @@ public class SafeOperate {
         int firstHash = System.identityHashCode(first);
         int secondHash = System.identityHashCode(second);
 
-        if(firstHash<secondHash){
+        if(firstHash < secondHash){
             synchronized (first){
                 System.out.println(Thread.currentThread().getName()+" get "+first);
                 Thread.sleep(100);
@@ -25,7 +25,7 @@ public class SafeOperate {
                     System.out.println(Thread.currentThread().getName()+" get "+second);
                 }
             }
-        }else if(secondHash<firstHash){
+        }else if(secondHash < firstHash){
             synchronized (second){
                 System.out.println(Thread.currentThread().getName()+" get"+second);
                 Thread.sleep(100);
