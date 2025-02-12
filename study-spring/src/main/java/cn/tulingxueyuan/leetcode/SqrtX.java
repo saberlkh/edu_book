@@ -9,7 +9,23 @@ package cn.tulingxueyuan.leetcode;
 public class SqrtX {
 
     public static void main(String[] args) {
-        System.out.println(binarySearch(24));
+        System.out.println(newton(24));
+    }
+
+    public static int newton(int x) {
+        if (x == 0) {
+            return 0;
+        }
+        return (int)sqrt(x, x);
+    }
+
+    public static double sqrt(double i, int x) {
+        double res = (i + x / i) / 2;
+        if (res == i) {
+            return i;
+        } else {
+            return sqrt(res, x);
+        }
     }
 
     /**
