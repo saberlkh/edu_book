@@ -30,6 +30,11 @@ public class ArrangeCoin {
         }
     }
 
+    /**
+     * 二分查找法  双指针
+     * @param n
+     * @return
+     */
     public static int arrangeCoin2(int n) {
         int low = 0, high = n;
         while (low < high) {
