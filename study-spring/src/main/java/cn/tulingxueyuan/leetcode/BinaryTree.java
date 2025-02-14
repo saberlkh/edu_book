@@ -3,6 +3,7 @@ package cn.tulingxueyuan.leetcode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @Classname BinaryTree
@@ -20,9 +21,10 @@ public class BinaryTree {
         TreeDeep.TreeNode node3 = new TreeDeep.TreeNode(3, null, null);
         TreeDeep.TreeNode node2 = new TreeDeep.TreeNode(2, node4, node5);
         TreeDeep.TreeNode node1 = new TreeDeep.TreeNode(1, node2, node3);
-        ArrayList result = new ArrayList<>();
-        levelOrder(node1, 1, result);
-        System.out.println(Arrays.toString(result.toArray()));
+//        ArrayList result = new ArrayList<>();
+//        levelOrder(node1, 1, result);
+//        System.out.println(Arrays.toString(result.toArray()));
+        preOrderIter(node1);
     }
 
     public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
@@ -34,8 +36,8 @@ public class BinaryTree {
             }
         }
         list.set(i, root.val);
-        levelOrder(root.left, 2 * i, list);
-        levelOrder(root.right, 2 * i + 1, list);
+        levelOrder(root.left, i * 2, list);
+        levelOrder(root.right, i * 2 + 1, list);
     }
 
     public static void preOrder(TreeDeep.TreeNode root) {
@@ -57,6 +59,21 @@ public class BinaryTree {
         lastOrder(root.left);
         lastOrder(root.right);
         System.out.println(root.val);
+    }
+
+    public static void preOrderIter(TreeDeep.TreeNode root) {
+        if (root != null) {
+            Stack<TreeDeep.TreeNode> stack = new Stack<>();
+            stack.add(root);
+            while (!stack.isEmpty()) {
+                root = stack.pop();
+                if (root != null) {
+                    System.out.println(root.val);
+                    stack.push(root.right);
+                    stack.push(root.left);
+                }
+            }
+        }
     }
 
 }
