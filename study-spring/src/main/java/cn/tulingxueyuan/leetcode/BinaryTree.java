@@ -24,7 +24,7 @@ public class BinaryTree {
 //        ArrayList result = new ArrayList<>();
 //        levelOrder(node1, 1, result);
 //        System.out.println(Arrays.toString(result.toArray()));
-        preOrderIter(node1);
+        midOrderIter(node1);
     }
 
     public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
@@ -61,6 +61,10 @@ public class BinaryTree {
         System.out.println(root.val);
     }
 
+    /**
+     * 前序遍历  根左右
+     * @param root
+     */
     public static void preOrderIter(TreeDeep.TreeNode root) {
         if (root != null) {
             Stack<TreeDeep.TreeNode> stack = new Stack<>();
@@ -71,6 +75,26 @@ public class BinaryTree {
                     System.out.println(root.val);
                     stack.push(root.right);
                     stack.push(root.left);
+                }
+            }
+        }
+    }
+
+    /**
+     * 中序遍历
+     * @param root
+     */
+    public static void midOrderIter(TreeDeep.TreeNode root) {
+        if (root != null) {
+            Stack<TreeDeep.TreeNode> stack = new Stack<>();
+            while (!stack.isEmpty() || root != null) {
+                if (root != null) {
+                    stack.push(root);
+                    root = root.left;
+                } else {
+                    root = stack.pop();
+                    System.out.println(root.val);
+                    root = root.right;
                 }
             }
         }
