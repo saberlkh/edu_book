@@ -1,5 +1,8 @@
 package cn.tulingxueyuan.leetcode;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * @Classname TreeDeep
  * @Description TODO
@@ -17,8 +20,43 @@ public class TreeDeep {
         TreeNode node2 = new TreeNode(2, node4, node5);
         TreeNode node1 = new TreeNode(1, node2, node3);
         System.out.println(minDepth(node1));
+        System.out.println(minDepth1(node1));
     }
 
+    /**
+     * 广度优先
+     * @param root
+     * @return
+     */
+    public static int minDepth1(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        root.deep = 1;
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if (node.left == null && node.right == null) {
+                return node.deep;
+            }
+            if (node.left != null) {
+                node.left.deep = node.deep + 1;
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                node.right.deep = node.deep + 1;
+                queue.offer(node.right);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 深度优先
+     * @param root
+     * @return
+     */
     public static int minDepth(TreeNode root) {
         if (root == null) {
             return 0;
@@ -40,6 +78,7 @@ public class TreeDeep {
         int val;
         TreeNode left;
         TreeNode right;
+        int deep;
 
         public TreeNode(int val, TreeNode left, TreeNode right) {
             this.left = left;
