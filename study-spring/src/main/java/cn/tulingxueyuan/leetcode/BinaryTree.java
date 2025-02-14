@@ -1,5 +1,9 @@
 package cn.tulingxueyuan.leetcode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @Classname BinaryTree
  * @Description TODO
@@ -16,7 +20,22 @@ public class BinaryTree {
         TreeDeep.TreeNode node3 = new TreeDeep.TreeNode(3, null, null);
         TreeDeep.TreeNode node2 = new TreeDeep.TreeNode(2, node4, node5);
         TreeDeep.TreeNode node1 = new TreeDeep.TreeNode(1, node2, node3);
-        midOrder(node1);
+        ArrayList result = new ArrayList<>();
+        levelOrder(node1, 1, result);
+        System.out.println(Arrays.toString(result.toArray()));
+    }
+
+    public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
+        if (root == null) return;
+        int length = list.size();
+        if (length <= i) {
+            for (int j = 0; j <= i - length; j++) {
+                list.add(length + j, null);
+            }
+        }
+        list.set(i, root.val);
+        levelOrder(root.left, 2 * i, list);
+        levelOrder(root.right, 2 * i + 1, list);
     }
 
     public static void preOrder(TreeDeep.TreeNode root) {
@@ -31,6 +50,13 @@ public class BinaryTree {
         midOrder(root.left);
         System.out.println(root.val);
         midOrder(root.right);
+    }
+
+    public static void lastOrder(TreeDeep.TreeNode root) {
+        if (root == null) return;
+        lastOrder(root.left);
+        lastOrder(root.right);
+        System.out.println(root.val);
     }
 
 }
