@@ -14,6 +14,11 @@ public class Triangles {
         System.out.println(largestPerimeter(new int[]{3, 6, 2, 3}));
     }
 
+    /**
+     * 求三角形的最大周长
+     * @param nums
+     * @return
+     */
     public static int largestPerimeter(int[] nums) {
         Arrays.sort(nums);
         for (int i = nums.length - 1; i >= 2; i--) {
