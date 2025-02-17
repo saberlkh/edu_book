@@ -1,9 +1,6 @@
 package cn.tulingxueyuan.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * @Classname BinaryTree
@@ -24,7 +21,7 @@ public class BinaryTree {
 //        ArrayList result = new ArrayList<>();
 //        levelOrder(node1, 1, result);
 //        System.out.println(Arrays.toString(result.toArray()));
-        postOrderIter(node1);
+        levelOrderIter(node1);
     }
 
     public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
@@ -96,6 +93,23 @@ public class BinaryTree {
                     System.out.println(root.val);
                     root = root.right;
                 }
+            }
+        }
+    }
+
+    /**
+     * 层序遍历
+     * @param root
+     */
+    public static void levelOrderIter(TreeDeep.TreeNode root) {
+        Queue<TreeDeep.TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            TreeDeep.TreeNode node = queue.poll();
+            if (node != null) {
+                System.out.println(node.val);
+                queue.add(node.left);
+                queue.add(node.right);
             }
         }
     }
