@@ -21,7 +21,7 @@ public class BinaryTree {
 //        ArrayList result = new ArrayList<>();
 //        levelOrder(node1, 1, result);
 //        System.out.println(Arrays.toString(result.toArray()));
-        levelOrderIter(node1);
+        morrisMid(node1);
     }
 
     public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
@@ -137,6 +137,59 @@ public class BinaryTree {
                     root = root.right;
                 }
             }
+        }
+    }
+
+    public static void morrisMid(TreeDeep.TreeNode cur) {
+        if (cur == null) {
+            return;
+        }
+        TreeDeep.TreeNode mostRight = null;
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) {
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                if (mostRight.right == null) {
+                    mostRight.right = cur;
+//                    System.out.println(cur.val);
+                    cur = cur.left;
+                    continue;
+                } else {
+                    mostRight.right = null;
+                }
+            } else {
+//                System.out.println(cur.val);
+            }
+            System.out.println(cur.val);
+            cur = cur.right;
+        }
+    }
+
+    public static void morrisPre(TreeDeep.TreeNode cur) {
+        if (cur == null) {
+            return;
+        }
+        TreeDeep.TreeNode mostRight = null;
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) {
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                if (mostRight.right == null) {
+                    mostRight.right = cur;
+                    System.out.println(cur.val);
+                    cur = cur.left;
+                    continue;
+                } else {
+                    mostRight.right = null;
+                }
+            } else {
+                System.out.println(cur.val);
+            }
+            cur = cur.right;
         }
     }
 
