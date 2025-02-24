@@ -21,7 +21,7 @@ public class BinaryTree {
 //        ArrayList result = new ArrayList<>();
 //        levelOrder(node1, 1, result);
 //        System.out.println(Arrays.toString(result.toArray()));
-        morrisMid(node1);
+        morrisPost(node1);
     }
 
     public static void levelOrder(TreeDeep.TreeNode root, int i, ArrayList list) {
@@ -166,6 +166,54 @@ public class BinaryTree {
             cur = cur.right;
         }
     }
+
+    public static void morrisPost(TreeDeep.TreeNode cur) {
+        if (cur == null) {
+            return;
+        }
+        TreeDeep.TreeNode root = cur;
+        TreeDeep.TreeNode mostRight = null;
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) {
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                if (mostRight.right == null) {
+                    mostRight.right = cur;
+                    cur = cur.left;
+                    continue;
+                } else {
+                    mostRight.right = null;
+                    printNode(cur.left);
+                }
+            }
+            cur = cur.right;
+        }
+        printNode(root);
+    }
+
+    private static void printNode(TreeDeep.TreeNode head) {
+        TreeDeep.TreeNode tail = reverse(head);
+        while (tail != null) {
+            System.out.println(tail.val);
+            tail = tail.right;
+        }
+        reverse(tail);
+    }
+
+    private static TreeDeep.TreeNode reverse(TreeDeep.TreeNode head) {
+        TreeDeep.TreeNode prev = null, curr, next;
+        curr = head;
+        while (curr != null) {
+            next = curr.right;
+            curr.right = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
 
     public static void morrisPre(TreeDeep.TreeNode cur) {
         if (cur == null) {
